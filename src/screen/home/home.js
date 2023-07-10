@@ -17,13 +17,13 @@ export default function Home({navigation}) {
 
         <View style={styles.title_container}>
           <Text style={styles.title}>
-            Create, share and play quizes whenever and wherever you want
+            Create and play quizes whenever and wherever you want
           </Text>
         </View>
        
         <View>
 
-        <TouchableOpacity onPress={() => navigation.navigate("Quiz")} style={styles.add_btn_container}>
+        <TouchableOpacity onPress={() => navigation.navigate("Question")} style={styles.add_btn_container}>
           <Text style={styles.add_btn}>
           Add Quiz
           </Text>

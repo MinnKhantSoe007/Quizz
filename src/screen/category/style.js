@@ -31,9 +31,8 @@ export const styles = StyleSheet.create({
   },
 
   back_btn_container: {
-    marginTop: 100,
+    marginTop: 60,
     marginHorizontal: 15,
-    marginBottom: 70
   },
 
   back_btn:{
@@ -45,5 +44,10 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#ffff'
   },
+
+  start_btn_container: {
+    marginHorizontal: 15,
+    marginTop: 30
+  }
 
 })

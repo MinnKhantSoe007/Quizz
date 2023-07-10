@@ -4,6 +4,8 @@ import Home from "../screen/home/home";
 import Splash from "../screen/splash/splash";
 import Quiz from "../screen/quiz/quiz";
 import Level from "../screen/level/level";
+import Question from "../screen/question/question";
+import Category from "../screen/category/category";
 
 const Stack = createStackNavigator();
 
@@ -21,6 +23,8 @@ export default function NavigationStack() {
         <Stack.Screen name="Home" component={Home}/>
         <Stack.Screen name="Quiz" component={Quiz} />
         <Stack.Screen name="Level" component={Level} />
+        <Stack.Screen name="Question" component={Question} />
+        <Stack.Screen name="Category" component={Category} />
         
       </Stack.Navigator>
     </NavigationContainer>

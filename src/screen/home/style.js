@@ -33,12 +33,10 @@ export const styles = StyleSheet.create({
 
   add_btn:{
     fontSize: 20,
-    backgroundColor: '#6930c3',
+    backgroundColor: '#5E60CE',
     paddingVertical: 10,
     paddingHorizontal: 10,
-    borderWidth: 1,
     borderRadius: 30,
-    borderColor: '#6930c3',
     textAlign: 'center'
   },
 
@@ -50,12 +48,10 @@ export const styles = StyleSheet.create({
 
   start_btn:{
     fontSize: 20,
-    backgroundColor: '#6930c3',
+    backgroundColor: '#5E60CE',
     paddingVertical: 10,
     paddingHorizontal: 10,
-    borderWidth: 1,
     borderRadius: 30,
-    borderColor: '#6930c3',
     textAlign: 'center',
   }
 

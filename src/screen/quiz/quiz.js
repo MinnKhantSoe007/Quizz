@@ -4,7 +4,7 @@ export default function Quiz({navigation}) {
   return (
     <SafeAreaView>
  <Text>
-      hi
+      Quiz
     </Text>
       <TouchableOpacity onPress={() => navigation.navigate("Home")}>
         <Text>
