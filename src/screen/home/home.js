@@ -21,7 +21,7 @@ export default function Home({navigation}) {
           </Text>
         </View>
        
-        <View style={styles.btn_container}>
+        <View>
 
         <TouchableOpacity onPress={() => navigation.navigate("Quiz")} style={styles.add_btn_container}>
           <Text style={styles.add_btn}>
@@ -29,7 +29,7 @@ export default function Home({navigation}) {
           </Text>
           </TouchableOpacity>
           
-          <TouchableOpacity onPress={() => navigation.navigate("Quiz")} style={styles.start_btn_container}>
+          <TouchableOpacity onPress={() => navigation.navigate("Level")} style={styles.start_btn_container}>
           <Text style={styles.start_btn}>
           Let's Play
           </Text>
