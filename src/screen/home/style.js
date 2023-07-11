@@ -4,6 +4,7 @@ export const styles = StyleSheet.create({
 
   container: {
     backgroundColor: '#fff',
+    flex: 1
   },
 
   image: {
@@ -22,7 +23,11 @@ export const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 30,
+    fontSize: 20,
+    color:'#00000088',
+    paddingHorizontal:20,
+    fontWeight:'bold',
+    letterSpacing:2,
     textAlign: 'center',
   },
 
@@ -34,9 +39,9 @@ export const styles = StyleSheet.create({
   add_btn:{
     fontSize: 20,
     backgroundColor: '#5E60CE',
-    paddingVertical: 10,
+    paddingVertical: 13,
     paddingHorizontal: 10,
-    borderRadius: 30,
+    borderRadius: 10,
     textAlign: 'center'
   },
 
@@ -49,9 +54,9 @@ export const styles = StyleSheet.create({
   start_btn:{
     fontSize: 20,
     backgroundColor: '#5E60CE',
-    paddingVertical: 10,
+    paddingVertical: 13,
     paddingHorizontal: 10,
-    borderRadius: 30,
+    borderRadius: 10,
     textAlign: 'center',
   }
 

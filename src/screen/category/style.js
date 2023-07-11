@@ -10,8 +10,13 @@ export const styles = StyleSheet.create({
   main_text: {
     textAlign: 'center',
     fontSize: 30,
-    marginTop: 80,
+    marginTop: 100,
     marginBottom: 30
+  },
+
+  flatList: {
+    position: 'relative',
+    marginBottom: 200
   },
 
   level_container: {
@@ -21,7 +26,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 10,
     backgroundColor: '#5E60CE',
-    borderRadius: 15
+    borderRadius: 15,
   },
 
   level: {
@@ -30,24 +35,11 @@ export const styles = StyleSheet.create({
     color: '#ffff'
   },
 
-  back_btn_container: {
-    marginTop: 60,
-    marginHorizontal: 15,
-  },
-
-  back_btn:{
-    fontSize: 20,
-    backgroundColor: '#5E60CE',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 30,
-    textAlign: 'center',
-    color: '#ffff'
-  },
-
-  start_btn_container: {
-    marginHorizontal: 15,
-    marginTop: 30
+  back: {
+    position: 'absolute',
+    top: 30,
+    left: 10,
+    color: '#000',
   }
 
 })

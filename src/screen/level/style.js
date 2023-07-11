@@ -10,12 +10,12 @@ export const styles = StyleSheet.create({
   main_text: {
     textAlign: 'center',
     fontSize: 30,
-    marginTop: 80,
+    marginTop: 100,
     marginBottom: 30
   },
 
   level_container: {
-    marginTop: 30,
+    marginTop: 40,
     marginLeft: 10,
     marginHorizontal: 10,
     paddingVertical: 20,
@@ -30,20 +30,11 @@ export const styles = StyleSheet.create({
     color: '#ffff'
   },
 
-  back_btn_container: {
-    marginTop: 100,
-    marginHorizontal: 15,
-    marginBottom: 70
-  },
-
-  back_btn:{
-    fontSize: 20,
-    backgroundColor: '#5E60CE',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 30,
-    textAlign: 'center',
-    color: '#ffff'
-  },
+  back: {
+    position: 'absolute',
+    top: 30,
+    left: 10,
+    color: '#000',
+  }
 
 })

@@ -1,10 +1,13 @@
 import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./style";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Level({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
 
+      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back } onPress={() => navigation.navigate("Home")}/>
+      
       <Text style={styles.main_text}>
         Choose Level
       </Text>
@@ -29,12 +32,6 @@ export default function Level({navigation}) {
           <Text style={{color: '#80FFDB'}}>Contains 20 questions</Text>
         </TouchableOpacity>
       </View>
-
-      <TouchableOpacity onPress={() => navigation.navigate("Home")} style={styles.back_btn_container}>
-          <Text style={styles.back_btn}>
-          Go Back
-          </Text>
-      </TouchableOpacity>
       
     </SafeAreaView>
   )

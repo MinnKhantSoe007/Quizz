@@ -2,6 +2,7 @@ import { TouchableOpacity, View, Text } from "react-native"
 import { styles } from "./style"
 import { SafeAreaView } from "react-native"
 import { Image } from "react-native"
+import { ImageResource } from "../../resource/imageResource"
 
 export default function Home({navigation}) {
   return (
@@ -9,7 +10,7 @@ export default function Home({navigation}) {
       <SafeAreaView style={styles.container}>
 
         <View style={styles.image_container}>
-        <Image source={require('../home/img/img_main.png')}
+        <Image source={ImageResource.logo.home_logo}
           style={styles.image}
           resizeMode="contain"
         />
