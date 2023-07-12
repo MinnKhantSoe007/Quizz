@@ -56,6 +56,7 @@ export default function Category({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      
 
 <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back } onPress={() => navigation.navigate("Level")}/>
 

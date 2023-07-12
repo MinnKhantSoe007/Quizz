@@ -36,13 +36,15 @@ export const styles = StyleSheet.create({
     marginTop: 30,
     paddingHorizontal: 10,
     backgroundColor: '#5E60CE',
-    borderRadius: 10,
+    borderRadius: 10
   },
 
   answer: {
     fontSize: 30,
     color: '#ffff',
     textAlignVertical: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 5
   },
 
   continue_btn_container: {
@@ -62,6 +64,55 @@ export const styles = StyleSheet.create({
     left: 300,
     bottom: 43,
     position: 'relative',
+  },
+
+  correct_logo: {
+    alignItems: 'flex-end',
+    position: 'relative',
+    bottom: 40
+  },
+
+  wrong_logo: {
+    alignItems: 'flex-end',
+    position: 'relative',
+    bottom: 40
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  modalView: {
+    marginTop: 30,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 40,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 7,
+    elevation: 9,
+  },
+
+  result_text: {
+    fontSize: 24,
+  },
+
+  result_score: {
+    color: 'grey',
+    fontSize: 20,
+  },
+
+  result_button: {
+    marginTop: 10,
+    fontSize: 20,
+    color: 'green'
   }
 
 })
