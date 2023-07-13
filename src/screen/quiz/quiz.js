@@ -1,11 +1,11 @@
-import { StatusBar } from "expo-status-bar"
-import { SafeAreaView, Text, View, TouchableOpacity, FlatList, Modal } from "react-native"
-import { styles } from "./style"
+import { SafeAreaView, Text, View, TouchableOpacity, FlatList, Modal, Image } from "react-native";
+import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
 import { DATA } from '../../data/quizData';
 import { useState } from "react";
 import { AntDesign } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import { ImageResource } from "../../resource/imageResource";
 
 export default function Quiz({ navigation }) {
 
@@ -16,7 +16,7 @@ export default function Quiz({ navigation }) {
   const [isOptionDisabled, setIsOptionDisabled] = useState(false);
   const [score, setScore] = useState(0);
   const [continueButton, setContinueButton] = useState(false);
-  const [scoreModal, setScoreModal] = useState(false)
+  const [scoreModal, setScoreModal] = useState(false);
 
   const validateAnswer = (selectedOption) => {
     const correct_option = allQuestions[currentQuestionIndex]['correct_option'];
@@ -118,18 +118,48 @@ export default function Quiz({ navigation }) {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.result_text}>
-                {score > (allQuestions.length / 2) ? 'Congratulations' : 'You Loose'}
-              </Text>
-              <View>
+
+              {score > (allQuestions.length / 2) ?
+                <View style={styles.img_container}>
+                  <Image source={ImageResource.logo.congraz_logo} style={styles.img_congraz} resizeMode="contain"/>
+                 <Text style={styles.result_text}>
+                 Congratulations
+                  </Text>
+                </View> : 
+                <View style={styles.img_container}>
+                  <Image source={ImageResource.logo.loose_logo} style={styles.img_congraz} resizeMode="contain"/>
+                 <Text style={styles.result_text}>
+                 You Loose
+                  </Text>
+                  </View>
+            }
+             
+              <View style={{ flexDirection: 'row' }}>
+                
+                {score > (allQuestions.length / 2) ?
+                  <Text style={{ fontSize: 22, color: 'green' }}>
+                    {score}
+                  </Text> :
+                  <Text style={{ fontSize: 22, color: 'red' }}>
+                    {score}
+                  </Text> }
+                  
+
+
                 <Text style={styles.result_score}>
-                  {score} / {allQuestions.length}
+                  /
                 </Text>
+
+                <Text style={styles.bottom_result_score}>
+                  {allQuestions.length}
+                </Text>
+
               </View>
               <TouchableOpacity onPress={() => goHome()}>
                 <Text style={styles.result_button}>
-                  Go Home
+                  Go Home  <AntDesign name="home" size={22} color="black" />
                 </Text>
+               
               </TouchableOpacity>
             </View>
           </View>

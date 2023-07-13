@@ -106,13 +106,39 @@ export const styles = StyleSheet.create({
 
   result_score: {
     color: 'grey',
-    fontSize: 20,
+    fontSize: 22,
+    marginHorizontal: 3
+  },
+
+  bottom_result_score: {
+    color: 'green',
+    fontSize: 22,
   },
 
   result_button: {
     marginTop: 10,
     fontSize: 20,
-    color: 'green'
+    color: '#000',
+    backgroundColor: '#5E60CE',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+  },
+
+  img_congraz: {
+    width: 100,
+    height: 100,
+  },
+
+  img_loose: {
+    width: 100,
+    height: 100,
+  },
+
+  img_container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff'
   }
 
 })

@@ -24,7 +24,7 @@ export default function Home({navigation}) {
        
         <View>
 
-        <TouchableOpacity onPress={() => navigation.navigate("Question")} style={styles.add_btn_container}>
+        <TouchableOpacity onPress={() => navigation.navigate("Auth")} style={styles.add_btn_container}>
           <Text style={styles.add_btn}>
           Add Quiz
           </Text>
