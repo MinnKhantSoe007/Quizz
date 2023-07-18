@@ -3,7 +3,7 @@ import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
 
 export default function Category({ navigation }) {
-  
+
   const DATA = [
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
@@ -45,33 +45,28 @@ export default function Category({ navigation }) {
   const renderCategoryItems = ({ item }) => {
     return (
       <View style={styles.level_container}>
-      <TouchableOpacity onPress={()=> navigation.navigate("Quiz")}>
+        <TouchableOpacity onPress={() => navigation.navigate("QuizTest")}>
           <Text style={styles.level}>{item.title}</Text>
           <Text style={{ color: '#80FFDB' }}>{item.body}</Text>
-      </TouchableOpacity>
-    </View>
+        </TouchableOpacity>
+      </View>
     )
-   
+
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      
-
-<Ionicons name="ios-chevron-back-outline" size={30} style={styles.back } onPress={() => navigation.navigate("Level")}/>
-
+      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Level")} />
       <Text style={styles.main_text}>
         Choose Category
       </Text>
-
       <View style={styles.flatList}>
-      <FlatList
-        data={DATA}
-        renderItem={renderCategoryItems}
-        keyExtractor={item => item.id}
-      />
+        <FlatList
+          data={DATA}
+          renderItem={renderCategoryItems}
+          keyExtractor={item => item.id}
+        />
       </View>
-      
     </SafeAreaView>
   )
 }

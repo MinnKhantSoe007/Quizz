@@ -42,7 +42,8 @@ export const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 10,
     borderRadius: 10,
-    textAlign: 'center'
+    textAlign: 'center',
+    color:'#fff'
   },
 
   start_btn_container: {
@@ -58,6 +59,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 10,
     textAlign: 'center',
+    color:'#fff'
   }
 
 })
