@@ -195,26 +195,48 @@ export const styles = StyleSheet.create({
     sure_text: {
         fontFamily: 'RobotoBold',
         fontSize: 20,
-        marginBottom: 5
+        marginBottom: 10
     },
 
     loose_text: {
         fontFamily: 'RobotoRegular',
         fontSize: 16,
-        marginBottom: 5
+        marginBottom: 10
     },
 
     yes: {
+        marginTop: 10,
         fontFamily: 'RobotoBold',
         fontSize: 18,
         color: '#52b788',
-        marginRight: 10,
+        marginHorizontal: 40,
     },
 
     no: {
+        marginTop: 10,
         fontFamily: 'RobotoBold',
         fontSize: 18,
         color: '#dc2f02',
+        marginHorizontal: 40,
+    },
+
+    timerContainer: {
+        alignSelf: 'center',
+        position: 'absolute',
+        top: -30
+    },
+    
+
+    timerText: {
+        fontFamily: 'RobotoBold',
+        fontSize: 20,
+        color: '#000',
+    },
+    
+    sound_logo: {
+        position: 'relative',
+        left: 345,
+        top: -25
     }
 
 
