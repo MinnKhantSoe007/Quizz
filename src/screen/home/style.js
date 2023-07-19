@@ -23,10 +23,10 @@ export const styles = StyleSheet.create({
   },
 
   title: {
+    fontFamily: 'RobotoBold',
     fontSize: 20,
     color:'#00000088',
     paddingHorizontal:20,
-    fontWeight:'bold',
     letterSpacing:2,
     textAlign: 'center',
   },
@@ -36,7 +36,8 @@ export const styles = StyleSheet.create({
     marginHorizontal: 15
   },
 
-  add_btn:{
+  add_btn: {
+    fontFamily: 'RobotoRegular',
     fontSize: 20,
     backgroundColor: '#5E60CE',
     paddingVertical: 13,
@@ -52,7 +53,8 @@ export const styles = StyleSheet.create({
     marginBottom: 70
   },
 
-  start_btn:{
+  start_btn: {
+    fontFamily: 'RobotoRegular',
     fontSize: 20,
     backgroundColor: '#5E60CE',
     paddingVertical: 13,

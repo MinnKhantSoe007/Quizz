@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: '#fff'
   },
 
   back: {
@@ -15,6 +16,7 @@ export const styles = StyleSheet.create({
   },
 
   create_input: {
+    fontFamily: 'RobotoRegular',
     borderColor: '#5E60CE',
     borderWidth: 1,
     fontSize: 20,
@@ -32,6 +34,7 @@ export const styles = StyleSheet.create({
   },
 
   login_button_text: {
+    fontFamily: 'RobotoRegular',
     textAlign: 'center',
     fontSize: 20,
     paddingVertical: 10,
@@ -39,6 +42,7 @@ export const styles = StyleSheet.create({
   },
 
   auth_text: {
+    fontFamily: 'RobotoBold',
     fontSize: 24,
     textAlign: 'center',
     marginBottom: 30,

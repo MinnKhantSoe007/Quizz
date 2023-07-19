@@ -47,7 +47,7 @@ export default function Category({ navigation }) {
       <View style={styles.level_container}>
         <TouchableOpacity onPress={() => navigation.navigate("QuizTest")}>
           <Text style={styles.level}>{item.title}</Text>
-          <Text style={{ color: '#80FFDB' }}>{item.body}</Text>
+          <Text style={{ color: '#80FFDB', fontFamily: 'RobotoRegular' }}>{item.body}</Text>
         </TouchableOpacity>
       </View>
     )

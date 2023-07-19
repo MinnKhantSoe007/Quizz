@@ -15,21 +15,21 @@ export default function Level({navigation}) {
       <View style={styles.level_container}>
         <TouchableOpacity style={styles.level_text} onPress={()=> navigation.navigate("Category")}>
           <Text style={styles.level}>Easy</Text>
-          <Text style={{color: '#80FFDB'}}>Contains 10 questions</Text>
+          <Text style={{color: '#80FFDB', fontFamily: 'RobotoRegular'}}>Contains 10 questions</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.level_container}>
         <TouchableOpacity style={styles.level_text} onPress={()=> navigation.navigate("Category")}>
           <Text style={styles.level}>Medium</Text>
-          <Text style={{color: '#80FFDB'}}>Contains 15 questions</Text>
+          <Text style={{color: '#80FFDB', fontFamily: 'RobotoRegular'}}>Contains 15 questions</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.level_container}>
         <TouchableOpacity style={styles.level_text} onPress={()=> navigation.navigate("Category")}>
           <Text style={styles.level}>Hard</Text>
-          <Text style={{color: '#80FFDB'}}>Contains 20 questions</Text>
+          <Text style={{color: '#80FFDB', fontFamily: 'RobotoRegular'}}>Contains 20 questions</Text>
         </TouchableOpacity>
       </View>
       

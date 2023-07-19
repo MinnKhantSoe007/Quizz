@@ -7,10 +7,12 @@ export const styles = StyleSheet.create({
     },
 
     quiz_container: {
-        flex: 1
+        flex: 1,
+        marginTop: 60
     },
 
     number: {
+        fontFamily: 'RobotoBold',
         color: 'grey',
         textAlign: 'center',
         fontSize: 20,
@@ -39,7 +41,26 @@ export const styles = StyleSheet.create({
         borderColor: '#00000015',
     },
 
+    correct_answer_container: {
+
+        padding: 10,
+        backgroundColor: '#52b788',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#52b788',
+    },
+
+    wrong_answer_container: {
+
+        padding: 10,
+        backgroundColor: '#dc2f02',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#dc2f02',
+    },
+
     answer: {
+        fontFamily: 'RobotoRegular',
         fontSize: 16,
         color: '#000',
         textAlignVertical: 'center',
@@ -52,8 +73,9 @@ export const styles = StyleSheet.create({
     },
 
     continue_btn: {
+        fontFamily: 'RobotoBold',
         fontSize: 20,
-        backgroundColor: '#5E60CE',
+        color: '#5E60CE',
         paddingVertical: 13,
         borderRadius: 10,
         textAlign: 'center',
@@ -64,18 +86,6 @@ export const styles = StyleSheet.create({
         left: 300,
         bottom: 43,
         position: 'relative',
-    },
-
-    correct_logo: {
-        alignItems: 'flex-end',
-        position: 'relative',
-        bottom: 40
-    },
-
-    wrong_logo: {
-        alignItems: 'flex-end',
-        position: 'relative',
-        bottom: 40
     },
 
     centeredView: {
@@ -101,6 +111,7 @@ export const styles = StyleSheet.create({
     },
 
     result_text: {
+        fontFamily: 'RobotoBold',
         fontSize: 24,
     },
 
@@ -116,10 +127,10 @@ export const styles = StyleSheet.create({
     },
 
     result_button: {
+        fontFamily: 'RobotoBold',
         marginTop: 10,
         fontSize: 20,
-        color: '#000',
-        backgroundColor: '#5E60CE',
+        color: '#5E60CE',
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 10,
@@ -140,9 +151,11 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#fff'
     },
+
+
     indicatorStyle: (isActive) => {
         return {
-            margin: 10,
+            margin: 12,
             width: 30,
             height: 30,
             borderRadius: 20,
@@ -153,6 +166,8 @@ export const styles = StyleSheet.create({
 
         }
     },
+
+
     indicatorText: (isActive) => {
         return {
             fontSize:12,
@@ -160,5 +175,47 @@ export const styles = StyleSheet.create({
             textAlign: 'center',
             fontWeight: 'bold'
         }
+    },
+
+
+    scoreText: (isPass) => {
+        return {
+          fontSize: 22,
+          color: isPass ? '#52b788' : '#dc2f02',
+        }
+    },
+    
+    back: {
+        position: 'absolute',
+        top: -30,
+        left: 10,
+        color: '#000',
+    },
+    
+    sure_text: {
+        fontFamily: 'RobotoBold',
+        fontSize: 20,
+        marginBottom: 5
+    },
+
+    loose_text: {
+        fontFamily: 'RobotoRegular',
+        fontSize: 16,
+        marginBottom: 5
+    },
+
+    yes: {
+        fontFamily: 'RobotoBold',
+        fontSize: 18,
+        color: '#52b788',
+        marginRight: 10,
+    },
+
+    no: {
+        fontFamily: 'RobotoBold',
+        fontSize: 18,
+        color: '#dc2f02',
     }
+
+
 })

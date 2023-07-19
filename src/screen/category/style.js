@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
   },
 
   main_text: {
+    fontFamily: 'RobotoBold',
     textAlign: 'center',
     fontSize: 30,
     marginTop: 100,
@@ -30,6 +31,7 @@ export const styles = StyleSheet.create({
   },
 
   level: {
+    fontFamily: 'RobotoRegular',
     fontSize: 30,
     marginBottom: 10,
     color: '#ffff'
