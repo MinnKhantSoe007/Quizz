@@ -45,7 +45,7 @@ export default function Category({ navigation }) {
   const renderCategoryItems = ({ item }) => {
     return (
       <View style={styles.level_container}>
-        <TouchableOpacity onPress={() => navigation.navigate("QuizTest")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Level")}>
           <Text style={styles.level}>{item.title}</Text>
           <Text style={{ color: '#80FFDB', fontFamily: 'RobotoRegular' }}>{item.body}</Text>
         </TouchableOpacity>

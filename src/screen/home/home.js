@@ -30,7 +30,7 @@ export default function Home({navigation}) {
           </Text>
           </TouchableOpacity>
           
-          <TouchableOpacity onPress={() => navigation.navigate("Level")} style={styles.start_btn_container}>
+          <TouchableOpacity onPress={() => navigation.navigate("Category")} style={styles.start_btn_container}>
           <Text style={styles.start_btn}>
           Let's Play
           </Text>

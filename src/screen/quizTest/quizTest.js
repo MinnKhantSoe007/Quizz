@@ -12,9 +12,10 @@ import { Audio } from "expo-av";
 import { Music } from "../../resource/music";
 import { Entypo } from '@expo/vector-icons';
 
-export default function QuizTest({ navigation }) {
+export default function QuizTest({ navigation, route }) {
 
   const allQuestions = DATA;
+  const { questionCount, timeLimit } = route.params;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentOptionSelected, setCurrentOptionSelected] = useState(null);
   const [correctOption, setCorrectOption] = useState(null);
@@ -24,11 +25,15 @@ export default function QuizTest({ navigation }) {
   const [scoreModal, setScoreModal] = useState(false);
   const [backModal, setBackModal] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [remainingTime, setRemainingTime] = useState(50);
+  const [remainingTime, setRemainingTime] = useState(timeLimit);
   const [isSoundPlaying, setIsSoundPlaying] = useState(false);
   const [isLogoChanged, setIsLogoChanged] = useState(false);
   const [soundObject, setSoundObject] = useState(null);
+  const [questions, setQuestions] = useState([]);
   const carouselRef = useRef(null);
+
+  console.log("Question Count::", questionCount);
+  console.log("Amount of time::", timeLimit);
 
   useEffect(() => {
 
@@ -43,6 +48,11 @@ export default function QuizTest({ navigation }) {
     return () => clearTimeout(timer);
 
   }, [remainingTime, isOptionDisabled]);
+
+  useEffect(() => {
+    const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, questionCount);
+    setQuestions(selectedQuestions);
+  }, []);
 
   useEffect(() => {
 
@@ -86,6 +96,8 @@ export default function QuizTest({ navigation }) {
     );
   };
 
+
+
   const validateAnswer = (selectedOption) => {
     const correct_option = allQuestions[currentQuestionIndex]['correct_option'];
     setCurrentOptionSelected(selectedOption);
@@ -96,7 +108,7 @@ export default function QuizTest({ navigation }) {
       setScore(score + 1);
     }
     setContinueButton(true);
-    setRemainingTime(50);
+    setRemainingTime(timeLimit);
   };
 
   const goHome = () => {
@@ -109,7 +121,7 @@ export default function QuizTest({ navigation }) {
       return (
         <TouchableOpacity onPress={() => handleNext()}>
           <Text style={styles.continue_btn}>
-            {currentQuestionIndex == allQuestions.length - 1 ? <Text>END </Text> : <Text>CONTINUE</Text>}
+            {currentQuestionIndex == questions.length - 1 ? <Text>END </Text> : <Text>CONTINUE</Text>}
           </Text>
         </TouchableOpacity>
       )
@@ -117,9 +129,9 @@ export default function QuizTest({ navigation }) {
   };
 
   const handleNext = () => {
-    if (currentQuestionIndex == allQuestions.length - 1) {
+    if (currentQuestionIndex == questions.length - 1) {
       setScoreModal(true);
-      setRemainingTime(50);
+      setRemainingTime(timeLimit);
     } else {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setCurrentOptionSelected(null);
@@ -127,7 +139,7 @@ export default function QuizTest({ navigation }) {
       setIsOptionDisabled(false);
       setContinueButton(false);
       carouselRef.current.snapToNext();
-      setRemainingTime(50);
+      setRemainingTime(timeLimit);
     }
   };
 
@@ -215,7 +227,7 @@ export default function QuizTest({ navigation }) {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
 
-              {score > (allQuestions.length / 2) ?
+              {score > (questions.length / 2) ?
                 <View style={styles.img_container}>
                   <Image source={ImageResource.logo.congraz_logo} style={styles.img_congraz} resizeMode="contain" />
                   <Text style={styles.result_text}>
@@ -232,8 +244,8 @@ export default function QuizTest({ navigation }) {
 
               <View style={{ flexDirection: 'row' }}>
 
-                <Text style={styles.scoreText(score > (allQuestions.length / 2))}>
-                  {score} / {allQuestions.length}
+                <Text style={styles.scoreText(score > (questions.length / 2))}>
+                  {score} / {questions.length}
                 </Text>
 
               </View>
@@ -251,6 +263,43 @@ export default function QuizTest({ navigation }) {
     )
   };
 
+
+  const renderIndicators = () => {
+    const maxIndicators = 5;
+    const numQuestions = questions.length;
+    const numIndicators = Math.min(maxIndicators, numQuestions);
+
+    let startIndex = activeIndex;
+    if (numQuestions - activeIndex < numIndicators) {
+      startIndex = numQuestions - numIndicators;
+    }
+
+    const indicators = [];
+
+    for (let i = 0; i < numIndicators; i++) {
+      const questionIndex = startIndex + i;
+      indicators.push(
+        <View key={i} style={styles.indicatorStyle(questionIndex === activeIndex)}>
+          <Text style={styles.indicatorText(questionIndex === activeIndex)}>{questionIndex + 1}</Text>
+        </View>
+      );
+    }
+
+    if (numQuestions > maxIndicators && numQuestions - activeIndex > numIndicators) {
+      indicators.push(
+        <View key={numIndicators} style={styles.indicatorStyle(false)}>
+          <Text style={styles.indicatorText(false)}>...</Text>
+        </View>
+      );
+    }
+
+    return indicators;
+  };
+
+
+
+
+
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient colors={["#fff", "#5E60CE"]} style={{ flex: 1 }}>
@@ -266,20 +315,14 @@ export default function QuizTest({ navigation }) {
           {renderSoundLogo()}
 
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 20 }}>
-            {[...Array(allQuestions.length ?? 0)].map((_, i) => {
-              return (
-                <View key={i} style={styles.indicatorStyle(i == activeIndex)}>
-                  <Text style={styles.indicatorText(i == activeIndex)}>{i + 1}</Text>
-                </View>
-              )
-            })}
+            {renderIndicators()}
           </View>
 
           <View>
             <Carousel
               ref={carouselRef}
               layout={"default"}
-              data={allQuestions}
+              data={questions}
               renderItem={renderItem}
               sliderWidth={Dimensions.get('window').width}
               itemWidth={Math.round(Dimensions.get('window').width * 0.8)}
