@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.17.11",
     "@react-native-community/netinfo": "9.3.5",
+    "@react-native-firebase/analytics": "^18.3.0",
     "@react-native-masked-view/masked-view": "0.2.8",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/stack": "^6.3.16",
@@ -23,6 +24,7 @@
     "expo-font": "~11.0.1",
     "expo-linear-gradient": "~12.0.1",
     "expo-status-bar": "~1.4.4",
+    "firebase": "^10.1.0",
     "patch-package": "^7.0.2",
     "react": "18.1.0",
     "react-native": "0.70.8",

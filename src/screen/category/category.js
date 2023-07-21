@@ -1,53 +1,22 @@
 import { SafeAreaView, Text, TouchableOpacity, View, FlatList } from "react-native";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
+import { DATA } from '../../data/quizData';
 
 export default function Category({ navigation }) {
 
-  const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'Technology',
-      body: 'Questions about modern technology'
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Culture',
-      body: 'Questions about different cultures'
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'History',
-      body: 'Questions about world wide history'
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d73',
-      title: 'History',
-      body: 'Questions about world wide history'
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d74',
-      title: 'History',
-      body: 'Questions about world wide history'
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d75',
-      title: 'History',
-      body: 'Questions about world wide history'
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d76',
-      title: 'History',
-      body: 'Questions about world wide history'
-    },
-  ];
+  const allQuestions = DATA;
+
+  const handleCategory = (categoryTitle) => {
+    console.log(categoryTitle);
+    navigation.navigate("Level", {categoryTitle})
+  }
 
   const renderCategoryItems = ({ item }) => {
     return (
       <View style={styles.level_container}>
-        <TouchableOpacity onPress={() => navigation.navigate("Level")}>
+        <TouchableOpacity onPress={() => handleCategory(item.title)}>
           <Text style={styles.level}>{item.title}</Text>
-          <Text style={{ color: '#80FFDB', fontFamily: 'RobotoRegular' }}>{item.body}</Text>
         </TouchableOpacity>
       </View>
     )
@@ -56,15 +25,15 @@ export default function Category({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Level")} />
+      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Home")} />
       <Text style={styles.main_text}>
         Choose Category
       </Text>
       <View style={styles.flatList}>
         <FlatList
-          data={DATA}
+          data={allQuestions}
           renderItem={renderCategoryItems}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.title}
         />
       </View>
     </SafeAreaView>

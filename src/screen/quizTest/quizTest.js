@@ -15,7 +15,7 @@ import { Entypo } from '@expo/vector-icons';
 export default function QuizTest({ navigation, route }) {
 
   const allQuestions = DATA;
-  const { questionCount, timeLimit } = route.params;
+  const { questionCount, timeLimit, categoryTitle } = route.params;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentOptionSelected, setCurrentOptionSelected] = useState(null);
   const [correctOption, setCorrectOption] = useState(null);
@@ -32,8 +32,13 @@ export default function QuizTest({ navigation, route }) {
   const [questions, setQuestions] = useState([]);
   const carouselRef = useRef(null);
 
+  const selectedTitle = allQuestions.find((item) => item.title === categoryTitle);
+  const selectedQuestions = selectedTitle ? selectedTitle.questions : [];
+  const currentQuestion = selectedQuestions[activeIndex];
+
   console.log("Question Count::", questionCount);
   console.log("Amount of time::", timeLimit);
+  console.log("Title of Category::", categoryTitle);
 
   useEffect(() => {
 
@@ -50,7 +55,7 @@ export default function QuizTest({ navigation, route }) {
   }, [remainingTime, isOptionDisabled]);
 
   useEffect(() => {
-    const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, questionCount);
+    const selectedQuestions = selectedTitle.questions.sort(() => 0.5 - Math.random()).slice(0, questionCount);
     setQuestions(selectedQuestions);
   }, []);
 
@@ -99,7 +104,7 @@ export default function QuizTest({ navigation, route }) {
 
 
   const validateAnswer = (selectedOption) => {
-    const correct_option = allQuestions[currentQuestionIndex]['correct_option'];
+    const correct_option = currentQuestion['correct_option'];
     setCurrentOptionSelected(selectedOption);
     setCorrectOption(correct_option);
     setIsOptionDisabled(true);
@@ -144,17 +149,20 @@ export default function QuizTest({ navigation, route }) {
   };
 
   const renderItem = ({ item, index }) => {
+    if (!currentQuestion) {
+      return null;
+    }
     console.log("Item ::", item);
     return (
       <View style={{ height: Dimensions.get('window').height * 0.7, borderRadius: 10, backgroundColor: '#fff' }}>
         <View style={{ minHeight: 100 }}>
           <Text style={styles.number}>
-            {item.question}
+            {currentQuestion.question}
           </Text>
         </View>
 
         <View>
-          {item.options.map((item, index) => (
+          {currentQuestion.options.map((item, index) => (
             <TouchableRipple onPress={() => validateAnswer(item)} key={index} borderless={true} disabled={isOptionDisabled} style={{ margin: 15, borderRadius: 10 }}>
               <View style={item == correctOption ? styles.correct_answer_container : correctOption !== currentOptionSelected && item == currentOptionSelected ? styles.wrong_answer_container : styles.answer_container}>
                 <Text style={styles.answer}>{index + 1}. {item}</Text>
@@ -295,10 +303,6 @@ export default function QuizTest({ navigation, route }) {
 
     return indicators;
   };
-
-
-
-
 
   return (
     <SafeAreaView style={styles.container}>

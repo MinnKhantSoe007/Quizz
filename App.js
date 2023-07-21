@@ -5,6 +5,7 @@ import { Font } from './src/resource/fonts';
 import { Audio } from "expo-av";
 import { Music } from './src/resource/music';
 import { useState } from 'react';
+import { FirebaseConfig } from './src/firebase/firebaseConfig';
 
 export default function App() {
 
@@ -28,7 +29,7 @@ export default function App() {
 
     if (!isSoundReady) {
         return null
-    }
+    };
 
     return (
         <>

@@ -3,14 +3,17 @@ import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
 
 export default function Level({ navigation, route }) {
+
+  const {categoryTitle}  = route.params;
+  console.log(categoryTitle);
   
   const handleLevel = (questionCount, timeLimit) => {
-    navigation.navigate("QuizTest", { questionCount, timeLimit });
+    navigation.navigate("QuizTest", { questionCount, timeLimit, categoryTitle });
   }
   return (
     <SafeAreaView style={styles.container}>
 
-      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back } onPress={() => navigation.navigate("Home")}/>
+      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back } onPress={() => navigation.navigate("Category")}/>
       
       <Text style={styles.main_text}>
         Choose Level
