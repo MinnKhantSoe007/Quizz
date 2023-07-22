@@ -1,12 +1,17 @@
-import { SafeAreaView, TextInput, TouchableOpacity, Text, Alert } from "react-native";
+import { SafeAreaView, TextInput, TouchableOpacity, Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { styles } from "./style";
 import { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
+import { FIREBASE_AUTH } from "../../../firebaseConfig";
+import { ActivityIndicator } from "react-native-paper";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Auth({ navigation }) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [loading, setLoading] = useState(false);
+  const auth = FIREBASE_AUTH;
 
   const handleOnChangeEmail = text => {
     setEmail(text);
@@ -18,11 +23,32 @@ export default function Auth({ navigation }) {
     console.log("password", text)
   };
 
-  const login = () => {
-    email == "mks@gmail.com" && password == "mks11111" ? navigation.navigate("Question") :
-    Alert.alert('Error', 'Check the information you have filled again.', [
-      { text: 'OK' }
-    ]);
+  const login = async () => {
+    setLoading(true);
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      console.log("Response::", response);
+      navigation.navigate("Question");
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createAccount = async () => {
+    setLoading(true);
+    try {
+      const response = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("Response::", response);
+      alert("Successfully Created");
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    } finally {
+      setLoading(false);
+    }
   }
 
 
@@ -37,7 +63,14 @@ export default function Auth({ navigation }) {
 
       <TextInput style={styles.create_input} secureTextEntry={true} placeholder="password" onChangeText={handleOnChangePassword} />
 
-      <TouchableOpacity style={styles.login_button} onPress={login}><Text style={styles.login_button_text}>Login</Text></TouchableOpacity>
+      {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
+        <View>
+           <TouchableOpacity style={styles.login_button} onPress={login}><Text style={styles.login_button_text}>Login</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.login_button} onPress={createAccount}><Text style={styles.login_button_text}>Create account</Text></TouchableOpacity>
+        </View>
+       
+      }
+      
 
     </SafeAreaView>
   )

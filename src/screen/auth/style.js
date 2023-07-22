@@ -30,7 +30,8 @@ export const styles = StyleSheet.create({
   login_button: {
     backgroundColor: '#5E60CE',
     borderRadius: 10,
-    marginHorizontal: 15
+    marginHorizontal: 15,
+    marginBottom: 30
   },
 
   login_button_text: {

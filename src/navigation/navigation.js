@@ -7,7 +7,6 @@ import Question from "../screen/question/question";
 import Category from "../screen/category/category";
 import Auth from "../screen/auth/auth";
 import QuizTest from "../screen/quizTest/quizTest";
-import createTitle from "../screen/createTitle/createTitle";
 
 const Stack = createStackNavigator();
 
@@ -17,7 +16,6 @@ export default function NavigationStack() {
 
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="CreateTitle" component={createTitle} />
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="QuizTest" component={QuizTest} />
