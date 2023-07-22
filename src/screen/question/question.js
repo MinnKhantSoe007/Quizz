@@ -1,16 +1,25 @@
-import { Text } from "react-native";
-import { TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native";
-import { styles } from "./style";
+import { Text, TouchableOpacity, View } from "react-native";
+import { FIREBASE_AUTH } from "../../../firebaseConfig";
 
 export default function Question({navigation}) {
+
+  const handleLogOut = () => {
+    try {
+      FIREBASE_AUTH.signOut();
+      navigation.navigate("Home");
+    } catch (error) {
+      alert(error);
+    }
+    
+
+  }
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={()=> navigation.navigate("Home")}>
+    <View>
+      <TouchableOpacity onPress={handleLogOut}>
         <Text>
-          This is Question screen
+          Log out
         </Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   )
 }
