@@ -37,20 +37,6 @@ export default function Auth({ navigation }) {
     }
   };
 
-  const createAccount = async () => {
-    setLoading(true);
-    try {
-      const response = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("Response::", response);
-      alert("Successfully Created");
-    } catch (error) {
-      console.log(error);
-      alert(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -66,7 +52,7 @@ export default function Auth({ navigation }) {
       {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
         <View>
            <TouchableOpacity style={styles.login_button} onPress={login}><Text style={styles.login_button_text}>Login</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.login_button} onPress={createAccount}><Text style={styles.login_button_text}>Create account</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.login_button} onPress={()=> navigation.navigate("CreateAccount")}><Text style={styles.login_button_text}>Create account</Text></TouchableOpacity>
         </View>
        
       }

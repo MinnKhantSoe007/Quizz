@@ -11,7 +11,6 @@ export default function Question({navigation}) {
       alert(error);
     }
     
-
   }
   return (
     <View>
