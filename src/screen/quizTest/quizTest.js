@@ -80,9 +80,11 @@ export default function QuizTest({ navigation, route }) {
       if (soundObject && isSoundPlaying) {
         await soundObject.pauseAsync();
       } else {
-        const { sound } = await Audio.Sound.createAsync(Music.music.music);
+        const { sound } = await Audio.Sound.createAsync(Music.music.music, {
+          shouldPlay: true,
+          isLooping: true
+        });
         setSoundObject(sound);
-        await sound.playAsync();
       }
       setIsSoundPlaying(!isSoundPlaying);
       setIsLogoChanged(!isLogoChanged);
@@ -103,7 +105,7 @@ export default function QuizTest({ navigation, route }) {
 
 
 
-  const validateAnswer = (selectedOption) => {
+  const validateAnswer = async (selectedOption) => {
     const correct_option = currentQuestion['correct_option'];
     setCurrentOptionSelected(selectedOption);
     setCorrectOption(correct_option);
@@ -111,7 +113,12 @@ export default function QuizTest({ navigation, route }) {
 
     if (selectedOption == correct_option) {
       setScore(score + 1);
-    }
+      const { sound } = await Audio.Sound.createAsync(Music.music.correct);
+    sound.playAsync();
+    } else {
+      const { sound } = await Audio.Sound.createAsync(Music.music.wrong);
+    sound.playAsync();
+    };
     setContinueButton(true);
     setRemainingTime(timeLimit);
   };
@@ -220,9 +227,6 @@ export default function QuizTest({ navigation, route }) {
       </View>
     )
   };
-
-
-
 
   const renderModal = () => {
     return (

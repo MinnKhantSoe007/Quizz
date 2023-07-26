@@ -1,4 +1,4 @@
-import { SafeAreaView, TextInput, TouchableOpacity, Text, View, ScrollView } from "react-native";
+import { SafeAreaView, TextInput, TouchableOpacity, Text, View, Modal } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { styles } from "./style";
 import { useState } from "react";
@@ -15,6 +15,7 @@ export default function CreateAccount({ navigation }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [name, setName] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const [accModal, setAccModal] = useState(false);
   const auth = FIREBASE_AUTH;
 
   const handleOnChangeName = text => {
@@ -48,6 +49,41 @@ export default function CreateAccount({ navigation }) {
     }
   };
 
+  const renderModal = () => {
+    return (
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={accModal}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+
+              <Text style={styles.success}>
+                Successfully Created.
+              </Text>
+
+              <Text style={styles.check}>
+                Check your email for the verification process.
+              </Text>
+
+              <TouchableOpacity onPress={() => navigation.navigate("Auth")}>
+                <Text style={styles.ok}>
+                  Okay
+                </Text>
+
+              </TouchableOpacity>
+            </View>
+          </View>
+
+        </Modal>
+      </View>
+    )
+  };
+
+
+
   const createAccount = async () => {
     setLoading(true);
     try {
@@ -61,8 +97,7 @@ export default function CreateAccount({ navigation }) {
 
       await sendEmailVerification(user);
 
-      alert("Successfully Created");
-      navigation.navigate("Auth");
+      setAccModal(true);
 
     } catch (error) {
       console.log(error);
@@ -95,6 +130,8 @@ export default function CreateAccount({ navigation }) {
         </View>
        
       }
+
+      {renderModal()}
       
       
     </SafeAreaView>

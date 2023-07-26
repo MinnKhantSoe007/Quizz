@@ -16,7 +16,7 @@ export default function App() {
             const { sound } = await Audio.Sound.createAsync(Music.music.music);
             setIsSoundReady(true);
         } catch (error) {
-            console.error('Error while loading sound:', error);
+            console.error('Error while loading sound::', error);
         }
     };
 
