@@ -8,6 +8,9 @@ import Category from "../screen/category/category";
 import Auth from "../screen/auth/auth";
 import QuizTest from "../screen/quizTest/quizTest";
 import CreateAccount from "../screen/createAccount/createAccount";
+import QuizCategory from "../screen/quizCategory/quizCategory";
+import CreateCategory from "../screen/createCategory/createCategory";
+import CreateQuiz from "../screen/createQuiz/createQuiz";
 
 const Stack = createStackNavigator();
 
@@ -22,9 +25,12 @@ export default function NavigationStack() {
         <Stack.Screen name="QuizTest" component={QuizTest} />
         <Stack.Screen name="Level" component={Level} />
         <Stack.Screen name="Question" component={Question} />
+        <Stack.Screen name="QuizCategory" component={QuizCategory} />
+        <Stack.Screen name="CreateCategory" component={CreateCategory} />
         <Stack.Screen name="Category" component={Category} />
         <Stack.Screen name="Auth" component={Auth} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
+        <Stack.Screen name="CreateQuiz" component={CreateQuiz} />
       </Stack.Navigator>
     </NavigationContainer>
   )

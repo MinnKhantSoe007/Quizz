@@ -109,7 +109,7 @@ export default function CreateAccount({ navigation }) {
 
     } catch (error) {
       console.log(error);
-      alert(error);
+      alert(error.message);
     } finally {
       setLoading(false);
     }

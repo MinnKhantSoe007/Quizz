@@ -31,7 +31,7 @@ export default function Auth({ navigation }) {
       navigation.navigate("Question");
     } catch (error) {
       console.log(error);
-      alert(error);
+      alert(error.message);
     } finally {
       setLoading(false);
     }
