@@ -7,6 +7,8 @@ import { FIREBASE_AUTH } from "../../../firebaseConfig";
 import { ActivityIndicator } from "react-native-paper";
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
 import * as ImagePicker from "expo-image-picker";
+import { collection, addDoc } from "firebase/firestore"
+import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
 
 export default function CreateAccount({ navigation }) {
   const [email, setEmail] = useState();
@@ -34,7 +36,7 @@ export default function CreateAccount({ navigation }) {
   };
 
   const handleSelectProfilePicture = async () => {
-    
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -95,6 +97,12 @@ export default function CreateAccount({ navigation }) {
         photoURL: profilePicture
       });
 
+      const usersCollection = collection(firestore, "users");
+      await addDoc(usersCollection, {
+        name: name,
+        email: email,
+      });
+
       await sendEmailVerification(user);
 
       setAccModal(true);
@@ -110,10 +118,10 @@ export default function CreateAccount({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-       
-      
+
+
       <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Auth")} />
-      
+
       <Text style={styles.auth_text}>Create Account</Text>
 
       <TextInput style={styles.create_input} placeholder="Name" onChangeText={handleOnChangeName} />
@@ -126,14 +134,14 @@ export default function CreateAccount({ navigation }) {
 
       {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
         <View>
-        <TouchableOpacity style={styles.login_button} onPress={createAccount}><Text style={styles.login_button_text}>Create account</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.login_button} onPress={createAccount}><Text style={styles.login_button_text}>Create account</Text></TouchableOpacity>
         </View>
-       
+
       }
 
       {renderModal()}
-      
-      
+
+
     </SafeAreaView>
   )
 }
