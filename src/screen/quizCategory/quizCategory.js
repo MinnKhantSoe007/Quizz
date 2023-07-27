@@ -23,24 +23,29 @@ export default function QuizCategory({ navigation, route }) {
 
   const handleDeleteCategory = async () => {
     try {
-      // Delete the category document from Firestore
       await deleteDoc(doc(firestore, 'categories', category.id));
       alert('Category deleted successfully.');
-      navigation.goBack(); // Navigate back to the previous screen after deleting the category
+      navigation.goBack();
     } catch (error) {
       console.error('Error deleting category:', error);
       alert('Failed to delete category. Please try again later.');
     }
   };
 
+  const handleQuizPress = (quiz) => {
+    navigation.navigate('EditQuiz', { category, quiz });
+  };
+
   const renderQuizItem = ({ item }) => (
+    <TouchableOpacity style={styles.quizItem} onPress={() => handleQuizPress(item)}>
     <View style={styles.quizItem}>
       <Text style={styles.quizQuestion}>{item.question}</Text>
       <Text>Options:</Text>
       <Text>{item.options.join(', ')}</Text>
       <Text>Correct Option: {item.correct_option}</Text>
       <Text>Level: {item.level}</Text>
-    </View>
+      </View>
+      </TouchableOpacity>
   );
 
   return (
