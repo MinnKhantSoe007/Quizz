@@ -3,10 +3,16 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-nativ
 import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 import { ActivityIndicator } from "react-native-paper";
+import { getAuth } from "firebase/auth";
 
 export default function CreateCategory({ navigation }) {
   const [categoryTitle, setCategoryTitle] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const auth = getAuth();
+    const user = auth.currentUser;
+  const userId = user ? user.uid : null;
+  console.log(userId);
 
   const handleCreateCategory = async () => {
     setLoading(true);
@@ -17,7 +23,8 @@ export default function CreateCategory({ navigation }) {
 
     const titlesCollection = collection(firestore, "categories");
       await addDoc(titlesCollection, {
-       title: categoryTitle,
+        title: categoryTitle,
+        creatorUid: userId,
       })
     .then(() => {
       setCategoryTitle('');

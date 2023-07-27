@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
-import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, onSnapshot, deleteDoc } from 'firebase/firestore';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function QuizCategory({ navigation, route }) {
   const { category } = route.params;
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(false);
+  console.log(category.id);
 
   useEffect(() => {
     setLoading(true);
@@ -19,6 +20,18 @@ export default function QuizCategory({ navigation, route }) {
         setLoading(false);
       });
   }, [category]);
+
+  const handleDeleteCategory = async () => {
+    try {
+      // Delete the category document from Firestore
+      await deleteDoc(doc(firestore, 'categories', category.id));
+      alert('Category deleted successfully.');
+      navigation.goBack(); // Navigate back to the previous screen after deleting the category
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      alert('Failed to delete category. Please try again later.');
+    }
+  };
 
   const renderQuizItem = ({ item }) => (
     <View style={styles.quizItem}>
@@ -36,6 +49,10 @@ export default function QuizCategory({ navigation, route }) {
         <Text>
           Create Quiz
         </Text>
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteCategory}>
+        <Text style={styles.deleteButtonText}>Delete Category</Text>
+        </TouchableOpacity>
+        
       </TouchableOpacity>
       <Text style={styles.categoryTitle}>{category.title}</Text>
       { loading ? <ActivityIndicator animating={true} size="large" color="black" /> : <FlatList
@@ -65,5 +82,16 @@ const styles = StyleSheet.create({
   quizQuestion: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });

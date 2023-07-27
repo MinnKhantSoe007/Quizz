@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-nativ
 import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
 import { collection, doc, addDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { ActivityIndicator } from "react-native-paper";
 
 export default function CreateQuiz({ route, navigation }) {
   const { categoryId } = route.params;
@@ -13,10 +14,11 @@ export default function CreateQuiz({ route, navigation }) {
   const [option4, setOption4] = useState("");
   const [correctOption, setCorrectOption] = useState("");
   const [level, setLevel] = useState("");
+  const [loading, setLoading] = useState(false)
 
   const handleCreateQuiz = async () => {
 
-    const auth = getAuth(); // Get the current user from Firebase Authentication
+    const auth = getAuth();
     const user = auth.currentUser;
     const userId = user ? user.uid : null;
 
@@ -26,14 +28,16 @@ export default function CreateQuiz({ route, navigation }) {
       return;
     }
 
-    // Add the new quiz to the "quizzes" subcollection in Firestore
+
+
     const quizzesCollectionRef = collection(firestore, "categories", categoryId, "quizzes");
+    setLoading(true);
     await addDoc(quizzesCollectionRef, {
       question,
       options: [option1, option2, option3, option4],
       correct_option: correctOption,
       level,
-      creatorUid: userId, // Replace "USER_ID" with the actual UID of the user creating the quiz
+      creatorUid: userId,
     })
       .then(() => {
         setQuestion("");
@@ -43,6 +47,7 @@ export default function CreateQuiz({ route, navigation }) {
         setOption4("");
         setCorrectOption("");
         setLevel("");
+        setLoading(false);
         navigation.goBack();
       })
       .catch((error) => {
@@ -106,6 +111,8 @@ export default function CreateQuiz({ route, navigation }) {
       <TouchableOpacity style={styles.createButton} onPress={handleCreateQuiz}>
         <Text style={styles.createButtonText}>Create Quiz</Text>
       </TouchableOpacity>
+
+      {loading && <ActivityIndicator animating={true} size="large" color="black" />}
     </View>
   );
 }
