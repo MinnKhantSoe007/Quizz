@@ -8,31 +8,65 @@ export const styles = StyleSheet.create({
     padding: 20,
   },
 
-  categoryItem: {
-    paddingVertical: 10,
+  categoryTitle: {
+    fontFamily: 'RobotoBold',
+    fontSize: 20,
+    marginBottom: 20,
   },
 
-  categoryTitle: {
-    color: '#000',
-    fontFamily: 'RobotoRegular',
-    fontSize: 20,
+  quizItem: {
+    marginBottom: 20,
     backgroundColor: '#F5F3F4',
-    textAlign: 'center',
     paddingVertical: 10,
-    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+
+  quizQuestion: {
+    fontSize: 16,
+    fontFamily: 'RobotoRegular',
+    marginBottom: 5,
+  },
+
+  quizOptions: {
+    fontFamily: 'RobotoRegular',
+    fontSize: 16,
+    marginBottom: 5
+  },
+
+  quizOption: {
+    fontFamily: 'RobotoRegular',
+    fontSize: 16,
+  },
+
+  quizCorrectOption: {
+    fontFamily: 'RobotoRegular',
+    fontSize: 16,
+    marginBottom: 5
+  },
+
+  quizLevel: {
+    fontFamily: 'RobotoRegular',
+    fontSize: 16,
   },
 
   deleteButton: {
-    backgroundColor: '#E5383B',
+    backgroundColor: 'red',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
   },
 
   deleteButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+
+  back: {
+    position: 'absolute',
+    top: 30,
+    left: 10,
     color: '#000',
-    fontFamily: 'RobotoRegular',
-    fontSize: 20,
   },
 
   createButton: {
@@ -51,17 +85,16 @@ export const styles = StyleSheet.create({
     fontSize: 20,
   },
 
-  signButton: {
-    backgroundColor: '#5E60CE',
+  deleteButton: {
+    backgroundColor: '#E5383B',
     paddingVertical: 13,
     paddingHorizontal: 10,
     borderRadius: 5,
     alignItems: 'center',
-    marginBottom: 20,
     marginTop: 20,
   },
 
-  signButtonText: {
+  deleteButtonText: {
     fontFamily: 'RobotoRegular',
     color: '#000',
     fontSize: 20,
@@ -112,12 +145,5 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 10
   },
-
-  back: {
-    position: 'absolute',
-    top: 30,
-    left: 10,
-    color: '#000',
-  }
 
 });

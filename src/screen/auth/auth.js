@@ -28,6 +28,8 @@ export default function Auth({ navigation }) {
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
       console.log("Response::", response);
+      setEmail("");
+      setPassword("");
       navigation.navigate("Question");
     } catch (error) {
       console.log(error);

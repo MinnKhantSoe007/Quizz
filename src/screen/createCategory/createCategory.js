@@ -4,6 +4,8 @@ import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 import { ActivityIndicator } from "react-native-paper";
 import { getAuth } from "firebase/auth";
+import { styles } from "./style";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function CreateCategory({ navigation }) {
   const [categoryTitle, setCategoryTitle] = useState('');
@@ -38,6 +40,9 @@ export default function CreateCategory({ navigation }) {
 
   return (
     <View style={styles.container}>
+
+      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
+      
       <Text style={styles.label}>Category Title:</Text>
       <TextInput
         style={styles.input}
@@ -53,34 +58,3 @@ export default function CreateCategory({ navigation }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 20,
-  },
-  createButton: {
-    backgroundColor: "#5E60CE",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  createButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-});

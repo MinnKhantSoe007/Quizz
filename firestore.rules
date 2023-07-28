@@ -20,5 +20,9 @@ service cloud.firestore {
       allow update, delete: if request.auth != null && request.auth.uid == resource.data.creatorUid;
     }
 
+    match /quizzes/{quizId} {
+      allow delete: if request.auth != null && request.auth.uid == resource.data.creatorUid;
+    }
+
   }
 }

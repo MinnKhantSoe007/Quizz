@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, Modal } from "react-native";
 import { FIREBASE_FIRESTORE as firestore, FIREBASE_AUTH } from "../../../firebaseConfig";
-import { collection, onSnapshot} from "firebase/firestore";
+import { collection, onSnapshot, writeBatch, query, where, getDocs } from "firebase/firestore";
 import { ActivityIndicator } from "react-native-paper";
 import { deleteUser } from "firebase/auth";
+import { styles } from "./style";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Question({ navigation }) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [signModal, setSignModal] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -23,108 +27,170 @@ export default function Question({ navigation }) {
   };
 
   const renderCategoryItem = ({ item }) => (
-    <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress(item)}>
-      <Text style={styles.categoryTitle}>{item.title}</Text>
-    </TouchableOpacity>
+    
+      <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress(item)}>
+        <Text style={styles.categoryTitle}>{item.title}</Text>
+      </TouchableOpacity>
+   
+
   );
+
 
   const handleDeleteAccount = async () => {
     try {
       const user = FIREBASE_AUTH.currentUser;
+      const userId = user.uid;
+
+      const categoriesRef = collection(firestore, "categories");
+      const batch = writeBatch(firestore);
+
+      const categoriesQuery = query(categoriesRef, where("creatorUid", "==", userId));
+      const categoriesSnapshot = await getDocs(categoriesQuery);
+
+      categoriesSnapshot.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+
+      await batch.commit();
       await deleteUser(user);
-      alert('Account deleted successfully.');
+
+      alert('Account and related data deleted successfully.');
       navigation.goBack();
+
     } catch (error) {
       alert(error.message);
-    }};
+      console.log(error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await FIREBASE_AUTH.signOut();
+      navigation.navigate("Home");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const deleteAccount = () => {
+    setModal(true);
+  };
+
+  const signOut = () => {
+    setSignModal(true);
+  };
+
+  const renderModal = () => {
+    return (
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modal}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+
+              <Text style={styles.success}>
+                Are you sure?
+              </Text>
+
+              <Text style={styles.check}>
+                All data including your account will be deleted.
+              </Text>
+
+              <TouchableOpacity onPress={handleDeleteAccount}>
+                <Text style={styles.ok}>
+                  Okay
+                </Text>
+
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => setModal(false)}>
+                <Text style={styles.no}>
+                  No
+                </Text>
+
+              </TouchableOpacity>
+            </View>
+          </View>
+
+        </Modal>
+      </View>
+    )
+  };
+
+  const renderSignModal = () => {
+    return (
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={signModal}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+
+              <Text style={styles.success}>
+                Are you sure?
+              </Text>
+
+              <Text style={styles.check}>
+                You will be logged out of your account.
+              </Text>
+
+              <TouchableOpacity onPress={handleSignOut}>
+                <Text style={styles.ok}>
+                  Okay
+                </Text>
+
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => setSignModal(false)}>
+                <Text style={styles.no}>
+                  No
+                </Text>
+
+              </TouchableOpacity>
+            </View>
+          </View>
+
+        </Modal>
+      </View>
+    )
+  };
 
 
   return (
     <View style={styles.container}>
 
-      <TouchableOpacity onPress={()=> navigation.navigate("CreateCategory")}>
-        <Text>
+<Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Auth")} />
+
+      <TouchableOpacity onPress={() => navigation.navigate("CreateCategory")} style={styles.createButton}>
+        <Text style={styles.createButtonText}>
           Create Category
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
-        <Text style={styles.deleteButtonText}>Delete Account</Text>
-      </TouchableOpacity>
-      
       {loading ? <ActivityIndicator animating={true} size="large" color="black" /> : <FlatList
         data={categories}
         renderItem={renderCategoryItem}
         keyExtractor={(item) => item.id}
       />}
 
-      
+      {renderModal()}
+      {renderSignModal()}
+
+      <TouchableOpacity style={styles.signButton} onPress={signOut}>
+        <Text style={styles.signButtonText}>Sign Out</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.deleteButton} onPress={deleteAccount}>
+        <Text style={styles.deleteButtonText}>Delete Account</Text>
+      </TouchableOpacity>
+
+
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-  },
-  categoryItem: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  categoryTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  deleteButton: {
-    backgroundColor: 'red',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  deleteButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-},
-
-modalView: {
-    marginTop: 30,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 40,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-        width: 0,
-        height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 7,
-    elevation: 9,
-  },
-
-  success: {
-    fontFamily: 'RobotoBold',
-    fontSize: 20,
-  },
-
-  check: {
-    fontFamily: 'RobotoRegular',
-    marginTop: 5,
-  },
-
-  ok: {
-    fontFamily: 'RobotoRegular',
-    color: '#5E60CE',
-    fontSize: 20,
-    marginTop: 10
-  },
-});
