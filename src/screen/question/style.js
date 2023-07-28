@@ -118,6 +118,13 @@ export const styles = StyleSheet.create({
     top: 30,
     left: 10,
     color: '#000',
+  },
+
+  text: {
+    fontFamily: 'RobotoBold',
+    fontSize: 20,
+    marginBottom: 10,
+    textAlign: 'center',
   }
 
 });

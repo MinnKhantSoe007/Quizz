@@ -6,13 +6,11 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 20,
-    justifyContent: 'center'
-
   },
 
   label: {
-    fontFamily: 'RobotoBold',
-    fontSize: 20,
+    fontFamily: 'RobotoRegular',
+    fontSize: 18,
     marginBottom: 10,
   },
 
@@ -30,6 +28,7 @@ export const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 5,
     alignItems: "center",
+    marginTop: 30
   },
 
   createButtonText: {
@@ -43,5 +42,10 @@ export const styles = StyleSheet.create({
     top: 30,
     left: 10,
     color: '#000',
+  },
+
+  inputs: {
+    marginTop: 50
   }
+
 });

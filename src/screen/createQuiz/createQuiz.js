@@ -1,9 +1,12 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState, useRef } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
 import { collection, doc, addDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { ActivityIndicator } from "react-native-paper";
+import { Picker } from "@react-native-picker/picker";
+import { styles } from "./style";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function CreateQuiz({ route, navigation }) {
   const { categoryId } = route.params;
@@ -14,7 +17,7 @@ export default function CreateQuiz({ route, navigation }) {
   const [option4, setOption4] = useState("");
   const [correctOption, setCorrectOption] = useState("");
   const [level, setLevel] = useState("");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const handleCreateQuiz = async () => {
 
@@ -58,6 +61,12 @@ export default function CreateQuiz({ route, navigation }) {
 
   return (
     <View style={styles.container}>
+
+      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
+
+      <ScrollView style={styles.inputs}>
+
+      
       <Text style={styles.label}>Question:</Text>
       <TextInput
         style={styles.input}
@@ -73,18 +82,21 @@ export default function CreateQuiz({ route, navigation }) {
         onChangeText={setOption1}
         placeholder="Enter option 1"
       />
+
       <TextInput
         style={styles.input}
         value={option2}
         onChangeText={setOption2}
         placeholder="Enter option 2"
       />
+
       <TextInput
         style={styles.input}
         value={option3}
         onChangeText={setOption3}
         placeholder="Enter option 3"
       />
+
       <TextInput
         style={styles.input}
         value={option4}
@@ -97,53 +109,27 @@ export default function CreateQuiz({ route, navigation }) {
         style={styles.input}
         value={correctOption}
         onChangeText={setCorrectOption}
-        placeholder="Enter the correct option (e.g., 'option1')"
-      />
+        placeholder="Enter the correct option"
+        />
 
       <Text style={styles.label}>Level:</Text>
-      <TextInput
-        style={styles.input}
-        value={level}
-        onChangeText={setLevel}
-        placeholder="Enter the level (e.g., 'easy', 'medium', 'hard')"
-      />
+      <Picker
+        selectedValue={level}
+        onValueChange={(itemValue, itemIndex) =>
+          setLevel(itemValue)
+        }>
+        <Picker.Item label="Easy" value="Easy" />
+        <Picker.Item label="Medium" value="Medium" />
+        <Picker.Item label="Hard" value="Hard" />
+        </Picker>
+        
+        {loading && <ActivityIndicator animating={true} size="large" color="black" />}
 
       <TouchableOpacity style={styles.createButton} onPress={handleCreateQuiz}>
         <Text style={styles.createButtonText}>Create Quiz</Text>
-      </TouchableOpacity>
-
-      {loading && <ActivityIndicator animating={true} size="large" color="black" />}
+        </TouchableOpacity>
+        
+        </ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 20,
-  },
-  createButton: {
-    backgroundColor: "#5E60CE",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  createButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-});

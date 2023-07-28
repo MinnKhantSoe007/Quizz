@@ -31,7 +31,6 @@ export default function QuizCategory({ navigation, route }) {
       await deleteDoc(doc(firestore, 'categories', category.id));
       navigation.goBack();
     } catch (error) {
-      console.error('Error deleting category:', error);
       alert('Failed to delete category. Please try again later.');
     }
   };

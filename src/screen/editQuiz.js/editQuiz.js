@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { styles } from "./style";
+import { Ionicons } from '@expo/vector-icons';
+import { Picker } from "@react-native-picker/picker";
 
 export default function EditQuiz({ route, navigation }) {
   const { category, quiz } = route.params;
@@ -9,6 +12,7 @@ export default function EditQuiz({ route, navigation }) {
   const [options, setOptions] = useState(quiz.options);
   const [correctOption, setCorrectOption] = useState(quiz.correct_option);
   const [level, setLevel] = useState(quiz.level);
+  const [modal, setModal] = useState(false);
 
   const handleOptionChange = (index, text) => {
     const updatedOptions = [...options];
@@ -35,8 +39,6 @@ export default function EditQuiz({ route, navigation }) {
         correct_option: correctOption,
         level: level,
       });
-
-      alert("Quiz updated successfully!");
       navigation.goBack();
     } catch (error) {
       console.log("Error updating quiz:", error);
@@ -48,8 +50,6 @@ export default function EditQuiz({ route, navigation }) {
     try {
       const quizRef = doc(firestore, "categories", category.id, "quizzes", quiz.id);
       await deleteDoc(quizRef);
-
-      alert("Quiz deleted successfully!");
       navigation.goBack();
     } catch (error) {
       console.log("Error deleting quiz:", error);
@@ -57,8 +57,59 @@ export default function EditQuiz({ route, navigation }) {
     }
   };
 
+  const deleteQuiz = () => {
+    setModal(true);
+  }
+
+  const renderModal = () => {
+    return (
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modal}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+
+              <Text style={styles.success}>
+                Are you sure?
+              </Text>
+
+              <Text style={styles.check}>
+                This quiz will be permanently deleted.
+              </Text>
+
+              <TouchableOpacity onPress={handleDeleteQuiz}>
+                <Text style={styles.ok}>
+                  Okay
+                </Text>
+
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => setModal(false)}>
+                <Text style={styles.no}>
+                  No
+                </Text>
+
+              </TouchableOpacity>
+            </View>
+          </View>
+
+        </Modal>
+      </View>
+    )
+  };
+
+
   return (
     <View style={styles.container}>
+
+<Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
+
+      <ScrollView style={styles.inputs}>
+
+     
   
       <Text style={styles.label}>Question:</Text>
       <TextInput
@@ -72,7 +123,7 @@ export default function EditQuiz({ route, navigation }) {
       {options.map((option, index) => (
         <TextInput
           key={index}
-          style={styles.optionInput}
+          style={styles.input}
           value={option}
           onChangeText={(text) => handleOptionChange(index, text)}
           placeholder={`Option ${index + 1}`}
@@ -87,72 +138,27 @@ export default function EditQuiz({ route, navigation }) {
         placeholder="Enter correct option"
       />
   
-      <Text style={styles.label}>Level:</Text>
-      <TextInput
-        style={styles.input}
-        value={level}
-        onChangeText={setLevel}
-        placeholder="Enter level"
-      />
+  <Text style={styles.label}>Level:</Text>
+      <Picker
+        selectedValue={level}
+        onValueChange={(itemValue, itemIndex) =>
+          setLevel(itemValue)
+        }>
+        <Picker.Item label="Easy" value="Easy" />
+        <Picker.Item label="Medium" value="Medium" />
+        <Picker.Item label="Hard" value="Hard" />
+        </Picker>
+
+        {renderModal()}
   
       <TouchableOpacity style={styles.updateButton} onPress={handleUpdateQuiz}>
         <Text style={styles.updateButtonText}>Update Quiz</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteQuiz}>
+      <TouchableOpacity style={styles.deleteButton} onPress={deleteQuiz}>
         <Text style={styles.deleteButtonText}>Delete Quiz</Text>
       </TouchableOpacity>
-
+      </ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 20,
-  },
-  updateButton: {
-    backgroundColor: '#5E60CE',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  updateButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  optionInput: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  },
-  deleteButton: {
-    backgroundColor: "#FF5050",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  deleteButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-});

@@ -164,13 +164,17 @@ export default function Question({ navigation }) {
   return (
     <View style={styles.container}>
 
-<Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Auth")} />
+      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={signOut} />
 
       <TouchableOpacity onPress={() => navigation.navigate("CreateCategory")} style={styles.createButton}>
         <Text style={styles.createButtonText}>
           Create Category
         </Text>
       </TouchableOpacity>
+
+      <Text style={styles.text}>
+        Category List:
+      </Text>
 
       {loading ? <ActivityIndicator animating={true} size="large" color="black" /> : <FlatList
         data={categories}

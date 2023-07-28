@@ -8,83 +8,54 @@ export const styles = StyleSheet.create({
     padding: 20,
   },
 
-  categoryTitle: {
-    fontFamily: 'RobotoBold',
-    fontSize: 20,
-    marginBottom: 20,
-  },
-
-  quizItem: {
-    marginBottom: 20,
-    backgroundColor: '#F5F3F4',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 10
-  },
-
-  quizQuestion: {
-    fontSize: 16,
+  label: {
     fontFamily: 'RobotoRegular',
-    marginBottom: 5,
+    fontSize: 18,
+    marginBottom: 10,
   },
 
-  quizOptions: {
+  input: {
+    borderWidth: 1,
+    borderColor: "#5E60CE",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
     fontFamily: 'RobotoRegular',
-    fontSize: 16,
-    marginBottom: 5
   },
 
-  quizOption: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 16,
-  },
-
-  quizCorrectOption: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 16,
-    marginBottom: 5
-  },
-
-  quizLevel: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 16,
-  },
-
-  back: {
-    position: 'absolute',
-    top: 30,
-    left: 10,
-    color: '#000',
-  },
-
-  createButton: {
+  updateButton: {
     backgroundColor: '#5E60CE',
-    paddingVertical: 13,
-    paddingHorizontal: 10,
+    padding: 15,
     borderRadius: 5,
     alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 50
+    marginTop: 20
   },
 
-  createButtonText: {
-    fontFamily: 'RobotoRegular',
+  updateButtonText: {
     color: '#000',
+    fontFamily: 'RobotoRegular',
     fontSize: 20,
+  },
+  
+  optionInput: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
   },
 
   deleteButton: {
-    backgroundColor: '#E5383B',
-    paddingVertical: 13,
-    paddingHorizontal: 10,
+    padding: 15,
     borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 20,
+    alignItems: "center",
+    marginTop: 10,
+    backgroundColor: '#E5383B',
   },
 
   deleteButtonText: {
+    color: "#000",
     fontFamily: 'RobotoRegular',
-    color: '#000',
     fontSize: 20,
   },
 
@@ -133,5 +104,17 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 10
   },
+
+  back: {
+    position: 'absolute',
+    top: 30,
+    left: 10,
+    color: '#000',
+  },
+
+  inputs: {
+    marginTop: 50
+  }
+  
 
 });
