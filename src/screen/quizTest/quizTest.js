@@ -1,21 +1,20 @@
 import { SafeAreaView, Text, View, TouchableOpacity, Modal, Image, Dimensions } from "react-native";
 import { styles } from "./style";
-import { DATA } from '../../data/quizData';
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { ImageResource } from "../../resource/imageResource";
 import Carousel from "react-native-snap-carousel";
 import { TouchableRipple } from "react-native-paper";
-import { useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from "expo-av";
 import { Music } from "../../resource/music";
 import { Entypo } from '@expo/vector-icons';
+import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
+import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
 
 export default function QuizTest({ navigation, route }) {
 
-  const allQuestions = DATA;
-  const { questionCount, timeLimit, categoryTitle } = route.params;
+  const { questionCount, timeLimit, category, difficultyLevel } = route.params;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentOptionSelected, setCurrentOptionSelected] = useState(null);
   const [correctOption, setCorrectOption] = useState(null);
@@ -31,14 +30,10 @@ export default function QuizTest({ navigation, route }) {
   const [soundObject, setSoundObject] = useState(null);
   const [questions, setQuestions] = useState([]);
   const carouselRef = useRef(null);
+  const correctSoundRef = useRef(null);
+  const wrongSoundRef = useRef(null);
 
-  const selectedTitle = allQuestions.find((item) => item.title === categoryTitle);
-  const selectedQuestions = selectedTitle ? selectedTitle.questions : [];
-  const currentQuestion = selectedQuestions[activeIndex];
-
-  console.log("Question Count::", questionCount);
-  console.log("Amount of time::", timeLimit);
-  console.log("Title of Category::", categoryTitle);
+  const currentQuestion = questions[activeIndex];
 
   useEffect(() => {
 
@@ -55,11 +50,6 @@ export default function QuizTest({ navigation, route }) {
   }, [remainingTime, isOptionDisabled]);
 
   useEffect(() => {
-    const selectedQuestions = selectedTitle.questions.sort(() => 0.5 - Math.random()).slice(0, questionCount);
-    setQuestions(selectedQuestions);
-  }, []);
-
-  useEffect(() => {
 
     Audio.setAudioModeAsync({
       shouldDuckAndroid: true,
@@ -74,6 +64,52 @@ export default function QuizTest({ navigation, route }) {
       }
     };
   }, [soundObject]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const quizzesRef = collection(doc(firestore, "categories", category.id), 'quizzes');
+      const quizzesQuery = query(quizzesRef, where("level", "==", difficultyLevel));
+
+      try {
+        return onSnapshot(quizzesQuery, (snapshot) => {
+          const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          const selectedQuestions = data.sort(() => 0.5 - Math.random()).slice(0, questionCount);
+          setQuestions(selectedQuestions);
+        });
+      } catch (error) {
+        console.log("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [category, difficultyLevel, questionCount]);
+
+  useEffect(() => {
+    const loadSounds = async () => {
+      const correctSound = new Audio.Sound();
+      const wrongSound = new Audio.Sound();
+
+      try {
+        await correctSound.loadAsync(Music.music.correct);
+        await wrongSound.loadAsync(Music.music.wrong);
+        correctSoundRef.current = correctSound;
+        wrongSoundRef.current = wrongSound;
+      } catch (error) {
+        console.error('Error loading sounds:', error);
+      }
+    };
+
+    loadSounds();
+
+    return () => {
+      if (correctSoundRef.current) {
+        correctSoundRef.current.unloadAsync();
+      }
+      if (wrongSoundRef.current) {
+        wrongSoundRef.current.unloadAsync();
+      }
+    };
+  }, []);
 
   const handleSoundLogoPress = async () => {
     try {
@@ -103,22 +139,46 @@ export default function QuizTest({ navigation, route }) {
     );
   };
 
-
+  const AnswerOption = React.memo(
+    ({ option, index, selectedOption, correctOption, isOptionDisabled, onPress }) => {
+      return (
+        <TouchableRipple
+          onPress={() => onPress(option)}
+          key={index}
+          borderless={true}
+          disabled={isOptionDisabled}
+          style={{ margin: 15, borderRadius: 10 }}
+        >
+          <View
+            style={
+              option === correctOption
+                ? styles.correct_answer_container
+                : correctOption !== selectedOption && option === selectedOption
+                  ? styles.wrong_answer_container
+                  : styles.answer_container
+            }
+          >
+            <Text style={styles.answer}>
+              {index + 1}. {option}
+            </Text>
+          </View>
+        </TouchableRipple>
+      );
+    }
+  );
 
   const validateAnswer = async (selectedOption) => {
-    const correct_option = currentQuestion['correct_option'];
     setCurrentOptionSelected(selectedOption);
-    setCorrectOption(correct_option);
+    setCorrectOption(currentQuestion.correct_option);
     setIsOptionDisabled(true);
 
-    if (selectedOption == correct_option) {
-      setScore(score + 1);
-      const { sound } = await Audio.Sound.createAsync(Music.music.correct);
-    sound.playAsync();
+    if (selectedOption === currentQuestion.correct_option) {
+      setScore((prevScore) => prevScore + 1);
+      correctSoundRef.current.replayAsync();
     } else {
-      const { sound } = await Audio.Sound.createAsync(Music.music.wrong);
-    sound.playAsync();
-    };
+      wrongSoundRef.current.replayAsync();
+    }
+
     setContinueButton(true);
     setRemainingTime(timeLimit);
   };
@@ -155,35 +215,38 @@ export default function QuizTest({ navigation, route }) {
     }
   };
 
-  const renderItem = ({ item, index }) => {
-    if (!currentQuestion) {
-      return null;
-    }
-    console.log("Item ::", item);
-    return (
-      <View style={{ height: Dimensions.get('window').height * 0.7, borderRadius: 10, backgroundColor: '#fff' }}>
-        <View style={{ minHeight: 100 }}>
-          <Text style={styles.number}>
-            {currentQuestion.question}
-          </Text>
+  const renderItem = useCallback(
+    ({ item, index }) => {
+      if (!currentQuestion) {
+        return null;
+      }
+
+      return (
+        <View style={{ height: Dimensions.get("window").height * 0.7, borderRadius: 10, backgroundColor: "#fff" }}>
+          <View style={{ minHeight: 100 }}>
+            <Text style={styles.number}>{item.question}</Text>
+          </View>
+
+          <View>
+            {item.options.map((option, index) => (
+              <AnswerOption
+                key={index}
+                option={option}
+                index={index}
+                selectedOption={currentOptionSelected}
+                correctOption={correctOption}
+                isOptionDisabled={isOptionDisabled}
+                onPress={validateAnswer}
+              />
+            ))}
+          </View>
+
+          {renderContinueButton()}
         </View>
-
-        <View>
-          {currentQuestion.options.map((item, index) => (
-            <TouchableRipple onPress={() => validateAnswer(item)} key={index} borderless={true} disabled={isOptionDisabled} style={{ margin: 15, borderRadius: 10 }}>
-              <View style={item == correctOption ? styles.correct_answer_container : correctOption !== currentOptionSelected && item == currentOptionSelected ? styles.wrong_answer_container : styles.answer_container}>
-                <Text style={styles.answer}>{index + 1}. {item}</Text>
-              </View>
-            </TouchableRipple>
-          ))}
-        </View>
-
-        {renderContinueButton()}
-
-      </View>
-    )
-  };
-
+      );
+    },
+    [currentQuestion, currentOptionSelected, correctOption, isOptionDisabled, validateAnswer]
+  );
 
   const renderBackModal = () => {
     return (
@@ -275,7 +338,6 @@ export default function QuizTest({ navigation, route }) {
     )
   };
 
-
   const renderIndicators = () => {
     const maxIndicators = 5;
     const numQuestions = questions.length;
@@ -341,7 +403,6 @@ export default function QuizTest({ navigation, route }) {
               scrollEnabled={false}
             />
           </View>
-
 
         </View>
       </LinearGradient>

@@ -11,6 +11,7 @@ export default function QuizCategory({ navigation, route }) {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
+  console.log("category", category);
 
   useEffect(() => {
     setLoading(true);

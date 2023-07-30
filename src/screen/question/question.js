@@ -173,7 +173,7 @@ export default function Question({ navigation }) {
       </TouchableOpacity>
 
       <Text style={styles.text}>
-        Category List:
+        Category List
       </Text>
 
       {loading ? <ActivityIndicator animating={true} size="large" color="black" /> : <FlatList
