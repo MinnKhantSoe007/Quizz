@@ -37,35 +37,6 @@ export default function QuizTest({ navigation, route }) {
 
   useEffect(() => {
 
-    let timer;
-    if (remainingTime > 0 && !isOptionDisabled) {
-      timer = setTimeout(() => {
-        setRemainingTime(remainingTime - 1);
-      }, 1000);
-    } else if (remainingTime === 0 && !isOptionDisabled) {
-      handleNext();
-    }
-    return () => clearTimeout(timer);
-
-  }, [remainingTime, isOptionDisabled]);
-
-  useEffect(() => {
-
-    Audio.setAudioModeAsync({
-      shouldDuckAndroid: true,
-      playThroughEarpieceAndroid: false,
-    });
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (soundObject) {
-        soundObject.unloadAsync();
-      }
-    };
-  }, [soundObject]);
-
-  useEffect(() => {
     const fetchData = async () => {
       const quizzesRef = collection(doc(firestore, "categories", category.id), 'quizzes');
       const quizzesQuery = query(quizzesRef, where("level", "==", difficultyLevel));
@@ -76,6 +47,7 @@ export default function QuizTest({ navigation, route }) {
           const selectedQuestions = data.sort(() => 0.5 - Math.random()).slice(0, questionCount);
           setQuestions(selectedQuestions);
         });
+
       } catch (error) {
         console.log("Error fetching data:", error);
       }
@@ -85,6 +57,41 @@ export default function QuizTest({ navigation, route }) {
   }, [category, difficultyLevel, questionCount]);
 
   useEffect(() => {
+
+    let timer;
+
+    if (remainingTime > 0 && !isOptionDisabled) {
+      timer = setTimeout(() => {
+        setRemainingTime(remainingTime - 1);
+      }, 1000);
+
+    } else if (remainingTime === 0 && !isOptionDisabled) {
+      handleNext();
+    }
+
+    return () => clearTimeout(timer);
+
+  }, [remainingTime, isOptionDisabled]);
+
+
+  useEffect(() => {
+    Audio.setAudioModeAsync({
+      shouldDuckAndroid: true,
+      playThroughEarpieceAndroid: false,
+    });
+  }, []);
+
+
+  useEffect(() => {
+    return () => {
+      if (soundObject) {
+        soundObject.unloadAsync();
+      }
+    };
+  }, [soundObject]);
+
+  useEffect(() => {
+
     const loadSounds = async () => {
       const correctSound = new Audio.Sound();
       const wrongSound = new Audio.Sound();
@@ -167,7 +174,7 @@ export default function QuizTest({ navigation, route }) {
     }
   );
 
-  const validateAnswer = async (selectedOption) => {
+  const validateAnswer = useCallback(async (selectedOption) => {
     setCurrentOptionSelected(selectedOption);
     setCorrectOption(currentQuestion.correct_option);
     setIsOptionDisabled(true);
@@ -181,7 +188,7 @@ export default function QuizTest({ navigation, route }) {
 
     setContinueButton(true);
     setRemainingTime(timeLimit);
-  };
+  });
 
   const goHome = () => {
     setScoreModal(false);
@@ -216,12 +223,14 @@ export default function QuizTest({ navigation, route }) {
   };
 
   const renderItem = useCallback(
+
     ({ item, index }) => {
       if (!currentQuestion) {
         return null;
       }
 
       return (
+
         <View style={{ height: Dimensions.get("window").height * 0.7, borderRadius: 10, backgroundColor: "#fff" }}>
           <View style={{ minHeight: 100 }}>
             <Text style={styles.number}>{item.question}</Text>
@@ -242,6 +251,7 @@ export default function QuizTest({ navigation, route }) {
           </View>
 
           {renderContinueButton()}
+
         </View>
       );
     },
@@ -249,7 +259,9 @@ export default function QuizTest({ navigation, route }) {
   );
 
   const renderBackModal = () => {
+
     return (
+
       <View>
         <Modal
           animationType="slide"
@@ -280,25 +292,25 @@ export default function QuizTest({ navigation, route }) {
                     No
                   </Text>
                 </TouchableOpacity>
-
               </View>
-
             </View>
           </View>
-
         </Modal>
       </View>
     )
   };
 
   const renderModal = () => {
+
     return (
+
       <View>
         <Modal
           animationType="slide"
           transparent={true}
           visible={scoreModal}
         >
+
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
 
@@ -328,11 +340,9 @@ export default function QuizTest({ navigation, route }) {
                 <Text style={styles.result_button}>
                   Go Home
                 </Text>
-
               </TouchableOpacity>
             </View>
           </View>
-
         </Modal>
       </View>
     )
@@ -371,10 +381,10 @@ export default function QuizTest({ navigation, route }) {
   };
 
   return (
+
     <SafeAreaView style={styles.container}>
       <LinearGradient colors={["#fff", "#5E60CE"]} style={{ flex: 1 }}>
         <View style={styles.quiz_container}>
-
 
           <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => setBackModal(true)} />
 

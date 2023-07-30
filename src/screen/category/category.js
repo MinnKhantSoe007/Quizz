@@ -54,7 +54,7 @@ export default function Category({ navigation }) {
           <FlatList
             data={categories}
             renderItem={renderCategoryItems}
-            keyExtractor={item => item.id}
+            keyExtractor={(item) => item.id}
           />
         </View>
       }
