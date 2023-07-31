@@ -15,7 +15,7 @@ export default function QuizCategory({ navigation, route }) {
   useEffect(() => {
     setLoading(true);
     return unsubscribe = onSnapshot(collection(doc(firestore, "categories", category.id), 'quizzes')
-      ,(snapshot) => {
+      , (snapshot) => {
         const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         setQuizzes(data);
         setLoading(false);
@@ -47,7 +47,7 @@ export default function QuizCategory({ navigation, route }) {
       <Text style={styles.quizOptions}>{item.options.join(', ')}</Text>
       <Text style={styles.quizCorrectOption}>Correct Option: {item.correct_option}</Text>
       <Text style={styles.quizLevel}>Level: {item.level}</Text>
-      </TouchableOpacity>
+    </TouchableOpacity>
   );
 
   const renderModal = () => {
@@ -80,8 +80,8 @@ export default function QuizCategory({ navigation, route }) {
                 <Text style={styles.no}>
                   No
                 </Text>
-
               </TouchableOpacity>
+
             </View>
           </View>
 
@@ -95,27 +95,27 @@ export default function QuizCategory({ navigation, route }) {
     <View style={styles.container}>
 
       <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
-      
-      <TouchableOpacity onPress={()=> navigation.navigate("CreateQuiz", { categoryId: category.id })} style={styles.createButton}>
+
+      <TouchableOpacity onPress={() => navigation.navigate("CreateQuiz", { categoryId: category.id })} style={styles.createButton}>
         <Text style={styles.createButtonText}>
           Create Quiz
         </Text>
       </TouchableOpacity>
-     
+
       <Text style={styles.categoryTitle}>Category: {category.title} </Text>
 
-      { loading ? <ActivityIndicator animating={true} size="large" color="black" /> : <FlatList
+      {loading ? <ActivityIndicator animating={true} size="large" color="black" /> : <FlatList
         data={quizzes}
         renderItem={renderQuizItem}
         keyExtractor={(item) => item.id}
       />}
 
       {renderModal()}
-      
+
       <TouchableOpacity style={styles.deleteButton} onPress={deleteCategory}>
         <Text style={styles.deleteButtonText}>Delete Category</Text>
-        </TouchableOpacity>
-      
+      </TouchableOpacity>
+
     </View>
   );
 }

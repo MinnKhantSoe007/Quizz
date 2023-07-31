@@ -21,6 +21,7 @@ export default function NavigationStack() {
 
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="QuizTest" component={QuizTest} />
@@ -33,6 +34,7 @@ export default function NavigationStack() {
         <Stack.Screen name="Auth" component={Auth} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen name="CreateQuiz" component={CreateQuiz} />
+
       </Stack.Navigator>
     </NavigationContainer>
   )

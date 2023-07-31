@@ -12,6 +12,7 @@ export default function Category({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+
     const fetchCategories = async () => {
       setLoading(true);
       try {
@@ -29,7 +30,6 @@ export default function Category({ navigation }) {
 
   const handleCategory = (category) => {
     navigation.navigate("Level", { category })
-    console.log("categories::", category);
   }
 
   const renderCategoryItems = ({ item }) => {
@@ -40,10 +40,10 @@ export default function Category({ navigation }) {
         </TouchableOpacity>
       </View>
     )
-
   }
 
   return (
+
     <SafeAreaView style={styles.container}>
       <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Home")} />
       <Text style={styles.main_text}>
@@ -58,7 +58,6 @@ export default function Category({ navigation }) {
           />
         </View>
       }
-
     </SafeAreaView>
   )
 }

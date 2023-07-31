@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 import { ActivityIndicator } from "react-native-paper";
@@ -12,9 +12,8 @@ export default function CreateCategory({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const auth = getAuth();
-    const user = auth.currentUser;
+  const user = auth.currentUser;
   const userId = user ? user.uid : null;
-  console.log(userId);
 
   const handleCreateCategory = async () => {
     setLoading(true);
@@ -24,17 +23,17 @@ export default function CreateCategory({ navigation }) {
     }
 
     const titlesCollection = collection(firestore, "categories");
-      await addDoc(titlesCollection, {
-        title: categoryTitle,
-        creatorUid: userId,
-      })
-    .then(() => {
-      setCategoryTitle('');
-      navigation.goBack();
+    await addDoc(titlesCollection, {
+      title: categoryTitle,
+      creatorUid: userId,
     })
-    .catch((error) => {
-      alert("Error creating category::", error.message);
-    });
+      .then(() => {
+        setCategoryTitle('');
+        navigation.goBack();
+      })
+      .catch((error) => {
+        alert("Error creating category::", error.message);
+      });
     setLoading(false);
   };
 
@@ -42,7 +41,7 @@ export default function CreateCategory({ navigation }) {
     <View style={styles.container}>
 
       <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
-      
+
       <Text style={styles.label}>Category Title:</Text>
       <TextInput
         style={styles.input}
@@ -54,7 +53,9 @@ export default function CreateCategory({ navigation }) {
       <TouchableOpacity style={styles.createButton} onPress={handleCreateCategory}>
         <Text style={styles.createButtonText}>Create Category</Text>
       </TouchableOpacity>
+
       {loading && <ActivityIndicator animating={true} size="large" color="black" />}
+
     </View>
   );
 }

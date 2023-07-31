@@ -1,9 +1,8 @@
 import { SafeAreaView, TextInput, TouchableOpacity, Text, View, Modal } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import { styles } from "./style";
 import { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
-import { FIREBASE_AUTH } from "../../../firebaseConfig";
+import { FIREBASE_AUTH as auth } from "../../../firebaseConfig";
 import { ActivityIndicator } from "react-native-paper";
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
 import * as ImagePicker from "expo-image-picker";
@@ -14,25 +13,20 @@ export default function CreateAccount({ navigation }) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [name, setName] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
   const [accModal, setAccModal] = useState(false);
-  const auth = FIREBASE_AUTH;
 
   const handleOnChangeName = text => {
     setName(text);
-    console.log("name", text)
   };
 
   const handleOnChangeEmail = text => {
     setEmail(text);
-    console.log("email", text)
   };
 
   const handleOnChangePassword = text => {
     setPassword(text);
-    console.log("password", text)
   };
 
   const handleSelectProfilePicture = async () => {
@@ -43,8 +37,6 @@ export default function CreateAccount({ navigation }) {
       aspect: [4, 3],
       quality: 1,
     });
-
-    console.log(result.assets[0].uri);
 
     if (!result.canceled) {
       setProfilePicture(result.assets[0].uri);
@@ -83,8 +75,6 @@ export default function CreateAccount({ navigation }) {
       </View>
     )
   };
-
-
 
   const createAccount = async () => {
     setLoading(true);
@@ -136,12 +126,10 @@ export default function CreateAccount({ navigation }) {
         <View>
           <TouchableOpacity style={styles.login_button} onPress={createAccount}><Text style={styles.login_button_text}>Create account</Text></TouchableOpacity>
         </View>
-
       }
 
       {renderModal()}
-
-
+      
     </SafeAreaView>
   )
 }

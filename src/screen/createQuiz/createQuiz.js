@@ -1,7 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
-import { collection, doc, addDoc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { ActivityIndicator } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
@@ -25,13 +25,10 @@ export default function CreateQuiz({ route, navigation }) {
     const user = auth.currentUser;
     const userId = user ? user.uid : null;
 
-
     if (question.trim() === "" || option1.trim() === "" || option2.trim() === "" || option3.trim() === "" || option4.trim() === "" || correctOption.trim() === "" || level.trim() === "") {
       alert("Please fill in all fields.");
       return;
     }
-
-
 
     const quizzesCollectionRef = collection(firestore, "categories", categoryId, "quizzes");
     setLoading(true);
@@ -60,76 +57,76 @@ export default function CreateQuiz({ route, navigation }) {
   };
 
   return (
+
     <View style={styles.container}>
 
       <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
 
       <ScrollView style={styles.inputs}>
 
-      
-      <Text style={styles.label}>Question:</Text>
-      <TextInput
-        style={styles.input}
-        value={question}
-        onChangeText={setQuestion}
-        placeholder="Enter the question"
-      />
-
-      <Text style={styles.label}>Options:</Text>
-      <TextInput
-        style={styles.input}
-        value={option1}
-        onChangeText={setOption1}
-        placeholder="Enter option 1"
-      />
-
-      <TextInput
-        style={styles.input}
-        value={option2}
-        onChangeText={setOption2}
-        placeholder="Enter option 2"
-      />
-
-      <TextInput
-        style={styles.input}
-        value={option3}
-        onChangeText={setOption3}
-        placeholder="Enter option 3"
-      />
-
-      <TextInput
-        style={styles.input}
-        value={option4}
-        onChangeText={setOption4}
-        placeholder="Enter option 4"
-      />
-
-      <Text style={styles.label}>Correct Option:</Text>
-      <TextInput
-        style={styles.input}
-        value={correctOption}
-        onChangeText={setCorrectOption}
-        placeholder="Enter the correct option"
+        <Text style={styles.label}>Question:</Text>
+        <TextInput
+          style={styles.input}
+          value={question}
+          onChangeText={setQuestion}
+          placeholder="Enter the question"
         />
 
-      <Text style={styles.label}>Level:</Text>
-      <Picker
-        selectedValue={level}
-        onValueChange={(itemValue, itemIndex) =>
-          setLevel(itemValue)
-        }>
-        <Picker.Item label="Easy" value="Easy" />
-        <Picker.Item label="Medium" value="Medium" />
-        <Picker.Item label="Hard" value="Hard" />
+        <Text style={styles.label}>Options:</Text>
+        <TextInput
+          style={styles.input}
+          value={option1}
+          onChangeText={setOption1}
+          placeholder="Enter option 1"
+        />
+
+        <TextInput
+          style={styles.input}
+          value={option2}
+          onChangeText={setOption2}
+          placeholder="Enter option 2"
+        />
+
+        <TextInput
+          style={styles.input}
+          value={option3}
+          onChangeText={setOption3}
+          placeholder="Enter option 3"
+        />
+
+        <TextInput
+          style={styles.input}
+          value={option4}
+          onChangeText={setOption4}
+          placeholder="Enter option 4"
+        />
+
+        <Text style={styles.label}>Correct Option:</Text>
+        <TextInput
+          style={styles.input}
+          value={correctOption}
+          onChangeText={setCorrectOption}
+          placeholder="Enter the correct option"
+        />
+
+        <Text style={styles.label}>Level:</Text>
+        <Picker
+          selectedValue={level}
+          onValueChange={(itemValue, itemIndex) =>
+            setLevel(itemValue)
+          }>
+          <Picker.Item label="Easy" value="Easy" />
+          <Picker.Item label="Medium" value="Medium" />
+          <Picker.Item label="Hard" value="Hard" />
         </Picker>
-        
+
         {loading && <ActivityIndicator animating={true} size="large" color="black" />}
 
-      <TouchableOpacity style={styles.createButton} onPress={handleCreateQuiz}>
-        <Text style={styles.createButtonText}>Create Quiz</Text>
+        <TouchableOpacity style={styles.createButton} onPress={handleCreateQuiz}>
+          <Text style={styles.createButtonText}>Create Quiz</Text>
         </TouchableOpacity>
-        
-        </ScrollView>
+
+      </ScrollView>
     </View>
   );
 }

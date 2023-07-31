@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { styles } from "./style";
@@ -105,59 +105,58 @@ export default function EditQuiz({ route, navigation }) {
   return (
     <View style={styles.container}>
 
-<Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
+      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
 
       <ScrollView style={styles.inputs}>
 
-     
-  
-      <Text style={styles.label}>Question:</Text>
-      <TextInput
-        style={styles.input}
-        value={question}
-        onChangeText={setQuestion}
-        placeholder="Enter question"
-      />
-  
-      <Text style={styles.label}>Options:</Text>
-      {options.map((option, index) => (
+        <Text style={styles.label}>Question:</Text>
         <TextInput
-          key={index}
           style={styles.input}
-          value={option}
-          onChangeText={(text) => handleOptionChange(index, text)}
-          placeholder={`Option ${index + 1}`}
+          value={question}
+          onChangeText={setQuestion}
+          placeholder="Enter question"
         />
-      ))}
-  
-      <Text style={styles.label}>Correct Option:</Text>
-      <TextInput
-        style={styles.input}
-        value={correctOption}
-        onChangeText={setCorrectOption}
-        placeholder="Enter correct option"
-      />
-  
-  <Text style={styles.label}>Level:</Text>
-      <Picker
-        selectedValue={level}
-        onValueChange={(itemValue, itemIndex) =>
-          setLevel(itemValue)
-        }>
-        <Picker.Item label="Easy" value="Easy" />
-        <Picker.Item label="Medium" value="Medium" />
-        <Picker.Item label="Hard" value="Hard" />
+
+        <Text style={styles.label}>Options:</Text>
+        {options.map((option, index) => (
+          <TextInput
+            key={index}
+            style={styles.input}
+            value={option}
+            onChangeText={(text) => handleOptionChange(index, text)}
+            placeholder={`Option ${index + 1}`}
+          />
+        ))}
+
+        <Text style={styles.label}>Correct Option:</Text>
+        <TextInput
+          style={styles.input}
+          value={correctOption}
+          onChangeText={setCorrectOption}
+          placeholder="Enter correct option"
+        />
+
+        <Text style={styles.label}>Level:</Text>
+        <Picker
+          selectedValue={level}
+          onValueChange={(itemValue, itemIndex) =>
+            setLevel(itemValue)
+          }>
+          <Picker.Item label="Easy" value="Easy" />
+          <Picker.Item label="Medium" value="Medium" />
+          <Picker.Item label="Hard" value="Hard" />
         </Picker>
 
         {renderModal()}
-  
-      <TouchableOpacity style={styles.updateButton} onPress={handleUpdateQuiz}>
-        <Text style={styles.updateButtonText}>Update Quiz</Text>
-      </TouchableOpacity>
 
-      <TouchableOpacity style={styles.deleteButton} onPress={deleteQuiz}>
-        <Text style={styles.deleteButtonText}>Delete Quiz</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.updateButton} onPress={handleUpdateQuiz}>
+          <Text style={styles.updateButtonText}>Update Quiz</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.deleteButton} onPress={deleteQuiz}>
+          <Text style={styles.deleteButtonText}>Delete Quiz</Text>
+        </TouchableOpacity>
+
       </ScrollView>
     </View>
   );

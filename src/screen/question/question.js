@@ -27,12 +27,10 @@ export default function Question({ navigation }) {
   };
 
   const renderCategoryItem = ({ item }) => (
-    
-      <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress(item)}>
-        <Text style={styles.categoryTitle}>{item.title}</Text>
-      </TouchableOpacity>
-   
 
+    <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress(item)}>
+      <Text style={styles.categoryTitle}>{item.title}</Text>
+    </TouchableOpacity>
   );
 
 
@@ -183,6 +181,7 @@ export default function Question({ navigation }) {
       />}
 
       {renderModal()}
+
       {renderSignModal()}
 
       <TouchableOpacity style={styles.signButton} onPress={signOut}>
@@ -192,7 +191,6 @@ export default function Question({ navigation }) {
       <TouchableOpacity style={styles.deleteButton} onPress={deleteAccount}>
         <Text style={styles.deleteButtonText}>Delete Account</Text>
       </TouchableOpacity>
-
 
     </View>
   );
