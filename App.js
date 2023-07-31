@@ -1,5 +1,5 @@
 import NavigationStack from './src/navigation/navigation';
-import { StatusBar, StyleSheet } from 'react-native';
+import { StatusBar } from 'react-native';
 import { useFonts } from 'expo-font';
 import { Font } from './src/resource/fonts';
 import { Audio } from "expo-av";
@@ -35,8 +35,6 @@ export default function App() {
             <StatusBar barStyle="dark-content" backgroundColor="white" />
             <NavigationStack />
         </>
-
-
     );
 }
 
