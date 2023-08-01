@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Brain Stormer",
-    "slug": "Brain Stormer",
+    "slug": "Quiz",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.minnkhant.BrainStormer"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3027f1d1-2e94-49da-9427-bef6b999e530"
+      }
     }
   }
 }
