@@ -7,6 +7,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { styles } from "./style";
 import { ImageResource } from "../../resource/imageResource";
 import { AntDesign } from '@expo/vector-icons';
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function Question({ navigation }) {
   const [categories, setCategories] = useState([]);
@@ -36,7 +37,7 @@ export default function Question({ navigation }) {
 
   const renderCategoryItem = ({ item }) => (
 
-    <TouchableRipple onPress={() => handleCategoryPress(item)}>
+    <TouchableRipple onPress={() => handleCategoryPress(item)} style={styles.itemWrapper} rippleColor={'#00000055'} borderless={true}>
       <Text style={styles.categoryTitle}>{item.title}</Text>
     </TouchableRipple>
   );
@@ -71,8 +72,12 @@ export default function Question({ navigation }) {
       />}
       </View>
       
-      <AntDesign name="pluscircleo" size={43} onPress={() => navigation.navigate("CreateCategory")} style={ styles.createButton} />
-
+      <TouchableRipple onPress={() => navigation.navigate("CreateCategory")} style={styles.createBtnWrapper} rippleColor='#ffffff88' borderless={true}>
+        <View style={styles.createButton} >
+          <AntDesign name="plus" size={30} style={styles.plusBtn} />
+        </View>
+      </TouchableRipple>
+      
     </View>
   );
 }

@@ -66,7 +66,6 @@ export default function DetailAccount({ navigation }) {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-
               <Text style={styles.success}>
                 Are you sure?
               </Text>
