@@ -9,6 +9,10 @@ service cloud.firestore {
       allow create;
     }
 
+     match /users/{userId}{
+      allow update: if request.auth != null && request.auth.uid == userId;
+     }
+
     match /categories/{category} {
       allow read;
       allow create: if request.auth != null;

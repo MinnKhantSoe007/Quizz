@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, FlatList, Modal } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, Modal, Image } from "react-native";
 import { FIREBASE_FIRESTORE as firestore, FIREBASE_AUTH } from "../../../firebaseConfig";
 import { collection, onSnapshot, writeBatch, query, where, getDocs } from "firebase/firestore";
-import { ActivityIndicator } from "react-native-paper";
-import { deleteUser } from "firebase/auth";
+import { ActivityIndicator, TouchableRipple } from "react-native-paper";
+import { deleteUser, getAuth, onAuthStateChanged } from "firebase/auth";
 import { styles } from "./style";
-import { Ionicons } from '@expo/vector-icons';
+import { ImageResource } from "../../resource/imageResource";
+import { AntDesign } from '@expo/vector-icons';
 
 export default function Question({ navigation }) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [modal, setModal] = useState(false);
-  const [signModal, setSignModal] = useState(false);
+  const [userProfilePicture, setUserProfilePicture] = useState(null);
+  const auth = getAuth();
 
   useEffect(() => {
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserProfilePicture(user.photoURL);
+      }
+    });
+
     setLoading(true);
     return unsubscribe = onSnapshot(collection(firestore, "categories"), (snapshot) => {
       const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -28,169 +36,47 @@ export default function Question({ navigation }) {
 
   const renderCategoryItem = ({ item }) => (
 
-    <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress(item)}>
+    <TouchableOpacity onPress={() => handleCategoryPress(item)}>
       <Text style={styles.categoryTitle}>{item.title}</Text>
     </TouchableOpacity>
   );
 
-
-  const handleDeleteAccount = async () => {
-    try {
-      const user = FIREBASE_AUTH.currentUser;
-      const userId = user.uid;
-
-      const categoriesRef = collection(firestore, "categories");
-      const batch = writeBatch(firestore);
-
-      const categoriesQuery = query(categoriesRef, where("creatorUid", "==", userId));
-      const categoriesSnapshot = await getDocs(categoriesQuery);
-
-      categoriesSnapshot.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
-
-      await batch.commit();
-      await deleteUser(user);
-
-      alert('Account and related data deleted successfully.');
-      navigation.goBack();
-
-    } catch (error) {
-      alert(error.message);
-      console.log(error);
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await FIREBASE_AUTH.signOut();
-      navigation.navigate("Home");
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  const deleteAccount = () => {
-    setModal(true);
-  };
-
-  const signOut = () => {
-    setSignModal(true);
-  };
-
-  const renderModal = () => {
-    return (
-      <View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modal}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-
-              <Text style={styles.success}>
-                Are you sure?
-              </Text>
-
-              <Text style={styles.check}>
-                All data including your account will be deleted.
-              </Text>
-
-              <TouchableOpacity onPress={handleDeleteAccount}>
-                <Text style={styles.ok}>
-                  Okay
-                </Text>
-
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => setModal(false)}>
-                <Text style={styles.no}>
-                  No
-                </Text>
-
-              </TouchableOpacity>
-            </View>
-          </View>
-
-        </Modal>
-      </View>
-    )
-  };
-
-  const renderSignModal = () => {
-    return (
-      <View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={signModal}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-
-              <Text style={styles.success}>
-                Are you sure?
-              </Text>
-
-              <Text style={styles.check}>
-                You will be logged out of your account.
-              </Text>
-
-              <TouchableOpacity onPress={handleSignOut}>
-                <Text style={styles.ok}>
-                  Okay
-                </Text>
-
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => setSignModal(false)}>
-                <Text style={styles.no}>
-                  No
-                </Text>
-
-              </TouchableOpacity>
-            </View>
-          </View>
-
-        </Modal>
-      </View>
-    )
+  const navigateToOtherScreen = () => {
+    navigation.navigate("DetailAccount");
   };
 
 
   return (
     <View style={styles.container}>
 
-      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={signOut} />
+      <View style={styles.back}>
+        <Image source={ImageResource.logo.icon_logo} style={styles.icon_logo} resizeMode="contain" />
 
-      <TouchableOpacity onPress={() => navigation.navigate("CreateCategory")} style={styles.createButton}>
-        <Text style={styles.createButtonText}>
-          Create Category
-        </Text>
-      </TouchableOpacity>
+        <Text style={styles.icon_text}>Brain Stormer</Text>
 
-      <Text style={styles.text}>
-        Category List
-      </Text>
+        {userProfilePicture ? (
+          <View style={styles.logo_container}>
+          <TouchableRipple onPress={navigateToOtherScreen}>
+             <Image source={{ uri: userProfilePicture }} style={styles.profile_icon_logo} />
+          </TouchableRipple>
+            </View>
+        ) : null}
+      </View>
 
+      <View style={styles.categoryItem}>
       {loading ? <ActivityIndicator animating={true} size="large" color="black" /> : <FlatList
         data={categories}
         renderItem={renderCategoryItem}
         keyExtractor={(item) => item.id}
       />}
+      </View>
 
-      {renderModal()}
+     
 
-      {renderSignModal()}
+      
+      <AntDesign name="pluscircleo" size={43} onPress={() => navigation.navigate("CreateCategory")} style={ styles.createButton} />
 
-      <TouchableOpacity style={styles.signButton} onPress={signOut}>
-        <Text style={styles.signButtonText}>Sign Out</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.deleteButton} onPress={deleteAccount}>
-        <Text style={styles.deleteButtonText}>Delete Account</Text>
-      </TouchableOpacity>
+      
 
     </View>
   );

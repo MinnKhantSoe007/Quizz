@@ -30,7 +30,7 @@ export default function Home({ navigation }) {
 
           <TouchableOpacity onPress={() => navigation.navigate("Category")} style={styles.start_btn_container}>
             <Text style={styles.start_btn}>
-              Let's Play
+              Let's Brain Storm
             </Text>
           </TouchableOpacity>
 

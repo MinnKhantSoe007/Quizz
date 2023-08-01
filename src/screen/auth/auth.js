@@ -1,4 +1,4 @@
-import { SafeAreaView, TextInput, TouchableOpacity, Text, View } from "react-native";
+import { SafeAreaView, TextInput, TouchableOpacity, Text, View, KeyboardAvoidingView } from "react-native";
 import { styles } from "./style";
 import { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
@@ -25,9 +25,14 @@ export default function Auth({ navigation }) {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      setEmail("");
-      setPassword("");
-      navigation.navigate("Question");
+      if (response.user.emailVerified) {
+        setEmail("");
+        setPassword("");
+        navigation.navigate("Question");
+      } else {
+        setLoading(false);
+        alert("Please verify your email address before logging in.");
+      }
     } catch (error) {
       console.log(error);
       alert(error.message);
@@ -44,9 +49,13 @@ export default function Auth({ navigation }) {
 
       <Text style={styles.auth_text}>Enter your email and password</Text>
 
-      <TextInput style={styles.create_input} placeholder="email" onChangeText={handleOnChangeEmail} />
+      <KeyboardAvoidingView behavior="padding">
 
-      <TextInput style={styles.create_input} secureTextEntry={true} placeholder="password" onChangeText={handleOnChangePassword} />
+        <TextInput style={styles.create_input} placeholder="email" onChangeText={handleOnChangeEmail} keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
+
+        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="password" onChangeText={handleOnChangePassword} autoCapitalize="none" autoComplete="password" />
+
+      </KeyboardAvoidingView>
 
       {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
         <View>

@@ -12,6 +12,8 @@ import QuizCategory from "../screen/quizCategory/quizCategory";
 import CreateCategory from "../screen/createCategory/createCategory";
 import CreateQuiz from "../screen/createQuiz/createQuiz";
 import EditQuiz from "../screen/editQuiz.js/editQuiz";
+import DetailAccount from "../screen/detailAccount/detailAccount";
+import UpdateAccount from "../screen/updateAccount/updateAccount";
 
 const Stack = createStackNavigator();
 
@@ -34,6 +36,8 @@ export default function NavigationStack() {
         <Stack.Screen name="Auth" component={Auth} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen name="CreateQuiz" component={CreateQuiz} />
+        <Stack.Screen name="DetailAccount" component={DetailAccount} />
+        <Stack.Screen name="UpdateAccount" component={UpdateAccount} />
 
       </Stack.Navigator>
     </NavigationContainer>
