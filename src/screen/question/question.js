@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, FlatList, Modal, Image } from "react-native";
-import { FIREBASE_FIRESTORE as firestore, FIREBASE_AUTH } from "../../../firebaseConfig";
-import { collection, onSnapshot, writeBatch, query, where, getDocs } from "firebase/firestore";
+import { View, Text, FlatList, Image } from "react-native";
+import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
+import { collection, onSnapshot} from "firebase/firestore";
 import { ActivityIndicator, TouchableRipple } from "react-native-paper";
-import { deleteUser, getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { styles } from "./style";
 import { ImageResource } from "../../resource/imageResource";
 import { AntDesign } from '@expo/vector-icons';
@@ -36,9 +36,9 @@ export default function Question({ navigation }) {
 
   const renderCategoryItem = ({ item }) => (
 
-    <TouchableOpacity onPress={() => handleCategoryPress(item)}>
+    <TouchableRipple onPress={() => handleCategoryPress(item)}>
       <Text style={styles.categoryTitle}>{item.title}</Text>
-    </TouchableOpacity>
+    </TouchableRipple>
   );
 
   const navigateToOtherScreen = () => {
@@ -70,13 +70,8 @@ export default function Question({ navigation }) {
         keyExtractor={(item) => item.id}
       />}
       </View>
-
-     
-
       
       <AntDesign name="pluscircleo" size={43} onPress={() => navigation.navigate("CreateCategory")} style={ styles.createButton} />
-
-      
 
     </View>
   );

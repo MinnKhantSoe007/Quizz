@@ -5,6 +5,7 @@ import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { collection, doc, onSnapshot, deleteDoc } from 'firebase/firestore';
 import { styles } from './style';
 import { Ionicons } from '@expo/vector-icons';
+import { TouchableRipple } from "react-native-paper"
 
 export default function QuizCategory({ navigation, route }) {
   const { category } = route.params;
@@ -96,11 +97,11 @@ export default function QuizCategory({ navigation, route }) {
 
       <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
 
-      <TouchableOpacity onPress={() => navigation.navigate("CreateQuiz", { categoryId: category.id })} style={styles.createButton}>
+      <TouchableRipple onPress={() => navigation.navigate("CreateQuiz", { categoryId: category.id })} style={styles.createButton}>
         <Text style={styles.createButtonText}>
           Create Quiz
         </Text>
-      </TouchableOpacity>
+      </TouchableRipple>
 
       <Text style={styles.categoryTitle}>Category: {category.title} </Text>
 
@@ -112,9 +113,9 @@ export default function QuizCategory({ navigation, route }) {
 
       {renderModal()}
 
-      <TouchableOpacity style={styles.deleteButton} onPress={deleteCategory}>
+      <TouchableRipple style={styles.deleteButton} onPress={deleteCategory}>
         <Text style={styles.deleteButtonText}>Delete Category</Text>
-      </TouchableOpacity>
+      </TouchableRipple>
 
     </View>
   );

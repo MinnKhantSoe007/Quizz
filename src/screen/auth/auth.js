@@ -1,10 +1,11 @@
-import { SafeAreaView, TextInput, TouchableOpacity, Text, View, KeyboardAvoidingView } from "react-native";
+import { SafeAreaView, TextInput, Text, View, KeyboardAvoidingView } from "react-native";
 import { styles } from "./style";
 import { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import { FIREBASE_AUTH } from "../../../firebaseConfig";
 import { ActivityIndicator } from "react-native-paper";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { TouchableRipple } from "react-native-paper"
 
 export default function Auth({ navigation }) {
   const [email, setEmail] = useState('');
@@ -59,8 +60,9 @@ export default function Auth({ navigation }) {
 
       {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
         <View>
-          <TouchableOpacity style={styles.login_button} onPress={login}><Text style={styles.login_button_text}>Login</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.login_button} onPress={() => navigation.navigate("CreateAccount")}><Text style={styles.login_button_text}>Create account</Text></TouchableOpacity>
+          <TouchableRipple style={styles.login_button} onPress={login}><Text style={styles.login_button_text}>Login</Text></TouchableRipple>
+
+          <TouchableRipple style={styles.login_button} onPress={() => navigation.navigate("CreateAccount")}><Text style={styles.login_button_text}>Create account</Text></TouchableRipple>
         </View>
       }
     </SafeAreaView>

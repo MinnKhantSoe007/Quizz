@@ -6,6 +6,7 @@ import { ActivityIndicator } from "react-native-paper";
 import { getAuth } from "firebase/auth";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
+import { TouchableRipple } from "react-native-paper"
 
 export default function CreateCategory({ navigation }) {
   const [categoryTitle, setCategoryTitle] = useState('');
@@ -16,12 +17,13 @@ export default function CreateCategory({ navigation }) {
   const userId = user ? user.uid : null;
 
   const handleCreateCategory = async () => {
-    setLoading(true);
+    
     if (categoryTitle.trim() === '') {
       alert("Please enter a category title.");
       return;
     }
 
+    setLoading(true);
     const titlesCollection = collection(firestore, "categories");
     await addDoc(titlesCollection, {
       title: categoryTitle,
@@ -29,12 +31,14 @@ export default function CreateCategory({ navigation }) {
     })
       .then(() => {
         setCategoryTitle('');
+        setLoading(false);
         navigation.goBack();
       })
       .catch((error) => {
+        setLoading(false);
         alert("Error creating category::", error.message);
       });
-    setLoading(false);
+    
   };
 
   return (
@@ -50,9 +54,9 @@ export default function CreateCategory({ navigation }) {
         placeholder="Enter category title"
       />
 
-      <TouchableOpacity style={styles.createButton} onPress={handleCreateCategory}>
+      <TouchableRipple style={styles.createButton} onPress={handleCreateCategory}>
         <Text style={styles.createButtonText}>Create Category</Text>
-      </TouchableOpacity>
+      </TouchableRipple>
 
       {loading && <ActivityIndicator animating={true} size="large" color="black" />}
 

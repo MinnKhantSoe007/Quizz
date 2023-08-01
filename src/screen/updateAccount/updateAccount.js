@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
-import { FIREBASE_AUTH as auth, FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
-import { updateProfile, getAuth, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
-import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { FIREBASE_AUTH as auth } from "../../../firebaseConfig";
+import { updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import * as ImagePicker from "expo-image-picker";
 import { ActivityIndicator } from "react-native-paper";
 import { styles } from "./style";
@@ -45,6 +44,8 @@ export default function UpdateAccount({ navigation }) {
   };
 
   const handleUpdateProfile = async () => {
+
+    setLoading(true);
     try {
       const user = auth.currentUser;
 
@@ -62,8 +63,8 @@ export default function UpdateAccount({ navigation }) {
 
       console.log("Profile picture updated successfully.");
 
-      alert("Successfully updated");
-      navigation.navigate("Question");
+      setLoading(false);
+      navigation.navigate("Auth");
 
     } catch (error) {
       console.error("Error updating::", error);
@@ -75,17 +76,17 @@ export default function UpdateAccount({ navigation }) {
 
       <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
 
-      <Text style={styles.auth_text}>Update Account</Text>
+      <Text style={styles.text}>Update Account</Text>
 
       <TextInput
-        style={styles.create_input}
+        style={styles.input}
         placeholder="Name"
         value={name}
         onChangeText={setName}
       />
 
       <TextInput
-        style={styles.create_input}
+        style={styles.input}
         placeholder="Current Password"
         secureTextEntry={true}
         value={currentPassword}
@@ -94,7 +95,7 @@ export default function UpdateAccount({ navigation }) {
 
       {/* New Input for New Password */}
       <TextInput
-        style={styles.create_input}
+        style={styles.input}
         placeholder="New Password"
         secureTextEntry={true}
         value={newPassword}
@@ -102,21 +103,17 @@ export default function UpdateAccount({ navigation }) {
       />
 
       {/* Profile Picture */}
-      <TouchableOpacity style={styles.profilePictureButton} onPress={handleSelectProfilePicture}>
-        {profilePicture ? (
-          <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
-        ) : (
-          <View style={styles.defaultProfilePicture}>
-            <Text style={styles.defaultProfilePictureText}>Select Picture</Text>
-          </View>
-        )}
+      <TouchableOpacity style={styles.createButton} onPress={handleSelectProfilePicture}>
+
+          <Text style={styles.createButtonText}>Select Picture</Text>
+
       </TouchableOpacity>
 
       {loading ? (
         <ActivityIndicator animating={true} size="large" color="black" />
       ) : (
-        <TouchableOpacity style={styles.update_button} onPress={handleUpdateProfile}>
-          <Text style={styles.update_button_text}>Update Account</Text>
+        <TouchableOpacity style={styles.createButton} onPress={handleUpdateProfile}>
+          <Text style={styles.createButtonText}>Update Account</Text>
         </TouchableOpacity>
       )}
     </View>

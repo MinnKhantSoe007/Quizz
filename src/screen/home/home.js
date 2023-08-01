@@ -1,6 +1,7 @@
-import { TouchableOpacity, View, Text, SafeAreaView, Image } from "react-native"
+import { View, Text, SafeAreaView, Image } from "react-native"
 import { styles } from "./style"
 import { ImageResource } from "../../resource/imageResource"
+import { TouchableRipple } from "react-native-paper"
 
 export default function Home({ navigation }) {
   return (
@@ -22,17 +23,17 @@ export default function Home({ navigation }) {
 
         <View>
 
-          <TouchableOpacity onPress={() => navigation.navigate("Auth")} style={styles.add_btn_container}>
+          <TouchableRipple onPress={() => navigation.navigate("Auth")} style={styles.add_btn_container}>
             <Text style={styles.add_btn}>
               Add Quiz
             </Text>
-          </TouchableOpacity>
+          </TouchableRipple>
 
-          <TouchableOpacity onPress={() => navigation.navigate("Category")} style={styles.start_btn_container}>
+          <TouchableRipple onPress={() => navigation.navigate("Category")} style={styles.start_btn_container}>
             <Text style={styles.start_btn}>
               Let's Brain Storm
             </Text>
-          </TouchableOpacity>
+          </TouchableRipple>
 
         </View>
       </SafeAreaView>

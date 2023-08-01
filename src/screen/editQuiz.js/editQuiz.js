@@ -5,6 +5,7 @@ import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from "@react-native-picker/picker";
+import { TouchableRipple } from "react-native-paper"
 
 export default function EditQuiz({ route, navigation }) {
   const { category, quiz } = route.params;
@@ -149,13 +150,13 @@ export default function EditQuiz({ route, navigation }) {
 
         {renderModal()}
 
-        <TouchableOpacity style={styles.updateButton} onPress={handleUpdateQuiz}>
+        <TouchableRipple style={styles.updateButton} onPress={handleUpdateQuiz}>
           <Text style={styles.updateButtonText}>Update Quiz</Text>
-        </TouchableOpacity>
+        </TouchableRipple>
 
-        <TouchableOpacity style={styles.deleteButton} onPress={deleteQuiz}>
+        <TouchableRipple style={styles.deleteButton} onPress={deleteQuiz}>
           <Text style={styles.deleteButtonText}>Delete Quiz</Text>
-        </TouchableOpacity>
+        </TouchableRipple>
 
       </ScrollView>
     </View>

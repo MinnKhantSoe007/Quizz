@@ -7,6 +7,7 @@ import { ActivityIndicator } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
+import { TouchableRipple } from "react-native-paper";
 
 export default function CreateQuiz({ route, navigation }) {
   const { categoryId } = route.params;
@@ -120,12 +121,12 @@ export default function CreateQuiz({ route, navigation }) {
           <Picker.Item label="Hard" value="Hard" />
         </Picker>
 
-        {loading && <ActivityIndicator animating={true} size="large" color="black" />}
-
-        <TouchableOpacity style={styles.createButton} onPress={handleCreateQuiz}>
-          <Text style={styles.createButtonText}>Create Quiz</Text>
-        </TouchableOpacity>
-
+        {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
+          <TouchableRipple style={styles.createButton} onPress={handleCreateQuiz}>
+            <Text style={styles.createButtonText}>Create Quiz</Text>
+          </TouchableRipple>
+        }
+        
       </ScrollView>
     </View>
   );

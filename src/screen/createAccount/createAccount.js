@@ -8,6 +8,7 @@ import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } 
 import * as ImagePicker from "expo-image-picker";
 import { collection, addDoc } from "firebase/firestore"
 import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
+import { TouchableRipple } from "react-native-paper"
 
 export default function CreateAccount({ navigation }) {
   const [email, setEmail] = useState();
@@ -120,11 +121,11 @@ export default function CreateAccount({ navigation }) {
 
       <TextInput style={styles.create_input} secureTextEntry={true} placeholder="Password" onChangeText={handleOnChangePassword} />
 
-      <TouchableOpacity style={styles.login_button} onPress={handleSelectProfilePicture}><Text style={styles.login_button_text}>Select Picture</Text></TouchableOpacity>
+      <TouchableRipple style={styles.login_button} onPress={handleSelectProfilePicture}><Text style={styles.login_button_text}>Select Picture</Text></TouchableRipple>
 
       {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
         <View>
-          <TouchableOpacity style={styles.login_button} onPress={createAccount}><Text style={styles.login_button_text}>Create account</Text></TouchableOpacity>
+          <TouchableRipple style={styles.login_button} onPress={createAccount}><Text style={styles.login_button_text}>Create account</Text></TouchableRipple>
         </View>
       }
 
