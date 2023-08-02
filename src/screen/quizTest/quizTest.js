@@ -25,6 +25,7 @@ export default function QuizTest({ navigation, route }) {
   const [backModal, setBackModal] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [remainingTime, setRemainingTime] = useState(timeLimit);
+  const [reRenderOccur, forceRenderTimer] = useState({})
   const [isSoundPlaying, setIsSoundPlaying] = useState(false);
   const [isLogoChanged, setIsLogoChanged] = useState(false);
   const [soundObject, setSoundObject] = useState(null);
@@ -56,22 +57,23 @@ export default function QuizTest({ navigation, route }) {
     fetchData();
   }, [category, difficultyLevel, questionCount]);
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    let timer;
+  //   let timer;
 
-    if (remainingTime > 0 && !isOptionDisabled) {
-      timer = setTimeout(() => {
-        setRemainingTime(remainingTime - 1);
-      }, 1000);
+  //   if (remainingTime.current > 0 && !isOptionDisabled) {
+  //     timer = setTimeout(() => {
+  //       // setRemainingTime(remainingTime.current - 1);
+  //       remainingTime.current -= 1
+  //     }, 1000);
 
-    } else if (remainingTime === 0 && !isOptionDisabled) {
-      handleNext();
-    }
+  //   } else if (remainingTime.current === 0 && !isOptionDisabled) {
+  //     handleNext();
+  //   }
 
-    return () => clearTimeout(timer);
+  //   return () => clearTimeout(timer);
 
-  }, [remainingTime, isOptionDisabled]);
+  // }, [remainingTime, isOptionDisabled]);
 
 
   useEffect(() => {
@@ -187,7 +189,7 @@ export default function QuizTest({ navigation, route }) {
     }
 
     setContinueButton(true);
-    setRemainingTime(timeLimit);
+    // setRemainingTime(timeLimit);
   });
 
   const goHome = () => {
@@ -210,7 +212,7 @@ export default function QuizTest({ navigation, route }) {
   const handleNext = () => {
     if (currentQuestionIndex == questions.length - 1) {
       setScoreModal(true);
-      setRemainingTime(timeLimit);
+      forceRenderTimer([])
     } else {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setCurrentOptionSelected(null);
@@ -218,7 +220,7 @@ export default function QuizTest({ navigation, route }) {
       setIsOptionDisabled(false);
       setContinueButton(false);
       carouselRef.current.snapToNext();
-      setRemainingTime(timeLimit);
+      forceRenderTimer([])
     }
   };
 
@@ -389,7 +391,7 @@ export default function QuizTest({ navigation, route }) {
           <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => setBackModal(true)} />
 
           <View style={styles.timerContainer}>
-            <Text style={styles.timerText}>{remainingTime}s remaining</Text>
+            <TimerComponent reRenderOccur={reRenderOccur} intialTime={timeLimit} isOptionDisabled={isOptionDisabled} handleNext={handleNext} />
           </View>
 
           {renderSoundLogo()}
@@ -424,4 +426,26 @@ export default function QuizTest({ navigation, route }) {
     </SafeAreaView>
 
   );
+}
+
+const TimerComponent = ({ intialTime, isOptionDisabled, handleNext, reRenderOccur }) => {
+  const [remainingTime, setRemainingTime] = useState(intialTime)
+
+  useEffect(()=>{
+    setRemainingTime(intialTime)
+  },[reRenderOccur])
+
+  useEffect(() => {
+    let timer;
+    if (remainingTime > 0 && !isOptionDisabled) {
+      timer = setTimeout(() => {
+        setRemainingTime(remainingTime - 1);
+      }, 1000);
+    } else if (remainingTime === 0 && !isOptionDisabled) {
+      setRemainingTime(intialTime)
+      handleNext();
+    }
+    return () => clearTimeout(timer);
+  }, [remainingTime, isOptionDisabled]);
+  return (<Text style={styles.timerText}>{remainingTime}s remaining</Text>)
 }
