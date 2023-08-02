@@ -29,6 +29,9 @@ export default function Question({ navigation }) {
 
       if (user.photoURL) {
         setUserProfilePicture(user.photoURL);
+      }
+
+      if (user) {
         setLoading(true);
 
         const categoriesQuery = query(
@@ -42,6 +45,8 @@ export default function Question({ navigation }) {
           setLoading(false);
         });
       }
+
+
     };
 
     const unsubscribeAuthStateChange = onAuthStateChanged(auth, (user) => {
