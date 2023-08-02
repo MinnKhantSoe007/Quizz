@@ -108,7 +108,7 @@ export default function EditQuiz({ route, navigation }) {
 
       <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
 
-      <ScrollView style={styles.inputs}>
+      <ScrollView style={styles.inputs} showsVerticalScrollIndicator={false}>
 
         <Text style={styles.label}>Question:</Text>
         <TextInput

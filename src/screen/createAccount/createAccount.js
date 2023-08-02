@@ -1,4 +1,4 @@
-import { SafeAreaView, TextInput, TouchableOpacity, Text, View, Modal } from "react-native";
+import { SafeAreaView, TextInput, TouchableOpacity, Text, View, Modal, Image } from "react-native";
 import { styles } from "./style";
 import { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +16,7 @@ export default function CreateAccount({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const [selectedProfilePicture, setSelectedProfilePicture] = useState("");
   const [accModal, setAccModal] = useState(false);
 
   const handleOnChangeName = text => {
@@ -41,6 +42,7 @@ export default function CreateAccount({ navigation }) {
 
     if (!result.canceled) {
       setProfilePicture(result.assets[0].uri);
+      setSelectedProfilePicture(result.assets[0].uri);
     }
   };
 
@@ -115,13 +117,15 @@ export default function CreateAccount({ navigation }) {
 
       <Text style={styles.auth_text}>Create Account</Text>
 
+      <TouchableRipple style={styles.photoButton} onPress={handleSelectProfilePicture}><Text style={styles.photoButtonText}>Select Picture</Text></TouchableRipple>
+
       <TextInput style={styles.create_input} placeholder="Name" onChangeText={handleOnChangeName} />
 
       <TextInput style={styles.create_input} placeholder="Email" onChangeText={handleOnChangeEmail} />
 
       <TextInput style={styles.create_input} secureTextEntry={true} placeholder="Password" onChangeText={handleOnChangePassword} />
 
-      <TouchableRipple style={styles.login_button} onPress={handleSelectProfilePicture}><Text style={styles.login_button_text}>Select Picture</Text></TouchableRipple>
+      {selectedProfilePicture ? <Image source={{ uri: selectedProfilePicture }} style={styles.selectedPic} /> : null}
 
       {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
         <View>

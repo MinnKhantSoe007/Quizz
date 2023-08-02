@@ -1,6 +1,6 @@
 import { SafeAreaView, TextInput, Text, View, KeyboardAvoidingView } from "react-native";
 import { styles } from "./style";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import { FIREBASE_AUTH } from "../../../firebaseConfig";
 import { ActivityIndicator } from "react-native-paper";

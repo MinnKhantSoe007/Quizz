@@ -6,12 +6,14 @@ import * as ImagePicker from "expo-image-picker";
 import { ActivityIndicator } from "react-native-paper";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
+import TouchableRipple from "react-native-paper";
 
 export default function UpdateAccount({ navigation }) {
   const [name, setName] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const [selectedProfilePicture, setSelectedProfilePicture] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -40,6 +42,8 @@ export default function UpdateAccount({ navigation }) {
 
     if (!result.canceled) {
       setProfilePicture(result.assets[0].uri);
+      setSelectedProfilePicture(result.assets[0].uri);
+      console.log(selectedProfilePicture);
     }
   };
 
@@ -77,6 +81,12 @@ export default function UpdateAccount({ navigation }) {
 
       <Text style={styles.text}>Update Account</Text>
 
+      <TouchableOpacity style={styles.photoButton} onPress={handleSelectProfilePicture}>
+
+        <Text style={styles.photoButtonText}>Select Picture</Text>
+
+      </TouchableOpacity>
+
       <TextInput
         style={styles.input}
         placeholder="Name"
@@ -101,12 +111,7 @@ export default function UpdateAccount({ navigation }) {
         onChangeText={setNewPassword}
       />
 
-      {/* Profile Picture */}
-      <TouchableOpacity style={styles.createButton} onPress={handleSelectProfilePicture}>
-
-          <Text style={styles.createButtonText}>Select Picture</Text>
-
-      </TouchableOpacity>
+      {selectedProfilePicture ? <Image source={{ uri: selectedProfilePicture }} style={styles.selectedPic} /> : null}
 
       {loading ? (
         <ActivityIndicator animating={true} size="large" color="black" />

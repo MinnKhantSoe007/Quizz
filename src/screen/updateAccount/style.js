@@ -36,13 +36,38 @@ export const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 5,
     alignItems: "center",
-    marginTop: 20
+    marginTop: 20,
   },
 
   createButtonText: {
     fontFamily: 'RobotoRegular',
     color: "#000",
     fontSize: 20,
+  },
+
+  selectedPic: {
+    width: 100,
+    height: 100,
+    marginTop: 20,
+    borderRadius: 10,
+    alignSelf: 'center'
+  },
+
+  photoButton: {
+    backgroundColor: "#5E60CE",
+    width: 100,
+    height: 100,
+    marginTop: 30,
+    borderRadius: 10,
+    alignSelf: 'center'
+  },
+
+  photoButtonText: {
+    fontFamily: 'RobotoRegular',
+    color: "#000",
+    fontSize: 20,
+    textAlign: 'center',
+    paddingTop: 20
   },
 
 

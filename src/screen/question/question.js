@@ -58,6 +58,7 @@ export default function Question({ navigation }) {
   //   const user = auth.currentUser;
   //   const token = await user.getIdToken();
   //   await AsyncStorage.setItem('userToken', token);
+  //   console.log("Token ::", token);
   // }
 
   const handleCategoryPress = (category) => {
@@ -98,6 +99,7 @@ export default function Question({ navigation }) {
           data={categories}
           renderItem={renderCategoryItem}
           keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
         />}
       </View>
 

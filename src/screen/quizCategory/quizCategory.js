@@ -104,6 +104,7 @@ export default function QuizCategory({ navigation, route }) {
             data={quizzes}
             renderItem={renderQuizItem}
             keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
           />
         </View>}
 

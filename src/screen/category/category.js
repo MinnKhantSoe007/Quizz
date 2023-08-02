@@ -55,6 +55,7 @@ export default function Category({ navigation }) {
             data={categories}
             renderItem={renderCategoryItems}
             keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
           />
         </View>
       }

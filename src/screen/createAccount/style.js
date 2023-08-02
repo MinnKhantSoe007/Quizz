@@ -88,4 +88,29 @@ modalView: {
     marginTop: 10
   },
 
+  photoButton: {
+    backgroundColor: "#5E60CE",
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    alignSelf: 'center',
+    marginBottom: 30
+  },
+
+  photoButtonText: {
+    fontFamily: 'RobotoRegular',
+    color: "#000",
+    fontSize: 20,
+    textAlign: 'center',
+    paddingTop: 20
+  },
+
+  selectedPic: {
+    width: 100,
+    height: 100,
+    marginBottom: 30,
+    borderRadius: 10,
+    alignSelf: 'center'
+  },
+
 })
