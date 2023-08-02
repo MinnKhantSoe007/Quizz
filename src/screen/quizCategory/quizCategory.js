@@ -6,6 +6,8 @@ import { collection, doc, onSnapshot, deleteDoc } from 'firebase/firestore';
 import { styles } from './style';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableRipple } from "react-native-paper"
+import { AntDesign } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function QuizCategory({ navigation, route }) {
   const { category } = route.params;
@@ -44,9 +46,6 @@ export default function QuizCategory({ navigation, route }) {
 
     <TouchableOpacity style={styles.quizItem} onPress={() => handleQuizPress(item)}>
       <Text style={styles.quizQuestion}>Question: {item.question}</Text>
-      <Text style={styles.quizOption}>Options:</Text>
-      <Text style={styles.quizOptions}>{item.options.join(', ')}</Text>
-      <Text style={styles.quizCorrectOption}>Correct Option: {item.correct_option}</Text>
       <Text style={styles.quizLevel}>Level: {item.level}</Text>
     </TouchableOpacity>
   );
@@ -97,24 +96,29 @@ export default function QuizCategory({ navigation, route }) {
 
       <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
 
-      <TouchableRipple onPress={() => navigation.navigate("CreateQuiz", { categoryId: category.id })} style={styles.createButton}>
-        <Text style={styles.createButtonText}>
-          Create Quiz
-        </Text>
-      </TouchableRipple>
-
       <Text style={styles.categoryTitle}>Category: {category.title} </Text>
 
-      {loading ? <ActivityIndicator animating={true} size="large" color="black" /> : <FlatList
-        data={quizzes}
-        renderItem={renderQuizItem}
-        keyExtractor={(item) => item.id}
-      />}
+      {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
+        <View style={styles.list}>
+          <FlatList
+            data={quizzes}
+            renderItem={renderQuizItem}
+            keyExtractor={(item) => item.id}
+          />
+        </View>}
 
       {renderModal()}
 
-      <TouchableRipple style={styles.deleteButton} onPress={deleteCategory}>
-        <Text style={styles.deleteButtonText}>Delete Category</Text>
+      <TouchableRipple onPress={deleteCategory} style={styles.deleteBtnWrapper} rippleColor='#ffffff88' borderless={true}>
+
+        <MaterialCommunityIcons name="delete-circle" size={40} style={styles.deleteBtn} />
+
+      </TouchableRipple>
+
+      <TouchableRipple onPress={() => navigation.navigate("CreateQuiz", { categoryId: category.id })} style={styles.createBtnWrapper} rippleColor='#ffffff88' borderless={true}>
+        <View style={styles.createButton} >
+          <AntDesign name="plus" size={30} style={styles.plusBtn} />
+        </View>
       </TouchableRipple>
 
     </View>

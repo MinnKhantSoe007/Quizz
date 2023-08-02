@@ -6,6 +6,7 @@ import { deleteUser } from "firebase/auth";
 import { TouchableRipple } from "react-native-paper";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function DetailAccount({ navigation }) {
 
@@ -41,6 +42,7 @@ export default function DetailAccount({ navigation }) {
 
   const handleSignOut = async () => {
     try {
+      // await AsyncStorage.removeItem('userToken');
       await FIREBASE_AUTH.signOut();
       navigation.navigate("Home");
     } catch (error) {

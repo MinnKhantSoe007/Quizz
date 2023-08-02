@@ -4,14 +4,24 @@ import { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import { FIREBASE_AUTH } from "../../../firebaseConfig";
 import { ActivityIndicator } from "react-native-paper";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithCustomToken } from "firebase/auth";
 import { TouchableRipple } from "react-native-paper"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Auth({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const auth = FIREBASE_AUTH;
+
+  // AsyncStorage
+  // .getItem('userToken')
+  // .then((token) => {
+  //   if (token) {
+  //     signInWithCustomToken(auth, token);
+  //   }
+  // })
+  //   .catch((error) => console.log('Error loading user token:', error));
 
   const handleOnChangeEmail = text => {
     setEmail(text);
@@ -26,9 +36,8 @@ export default function Auth({ navigation }) {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
+
       if (response.user.emailVerified) {
-        setEmail("");
-        setPassword("");
         navigation.navigate("Question");
       } else {
         setLoading(false);

@@ -24,8 +24,10 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 5,
   },
-  itemWrapper:{marginVertical:10, backgroundColor:'#F5F3F4', borderRadius:10},
-  createBtnWrapper:{backgroundColor:'#000',position: 'absolute', bottom:30,right:30,borderRadius:30 },
+  itemWrapper: { marginVertical: 10, backgroundColor: '#F5F3F4', borderRadius: 10 },
+  
+  createBtnWrapper: { backgroundColor: '#000', position: 'absolute', bottom: 30, right: 30, borderRadius: 30 },
+  
   createButton: {
     backgroundColor: '#000',
     width:60,
@@ -54,7 +56,7 @@ export const styles = StyleSheet.create({
   },
 
   logo_container: {
-    marginLeft: 100,
+    marginLeft: 150,
     marginTop: 8,
   },
 
@@ -68,7 +70,7 @@ export const styles = StyleSheet.create({
   icon_text: {
     fontFamily: 'RobotoBold',
     fontSize: 23,
-    marginTop: 10,
+    marginTop: 5,
     marginLeft: 10
   },
 

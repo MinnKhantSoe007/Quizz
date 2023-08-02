@@ -2,8 +2,12 @@ import { View, Text, SafeAreaView, Image } from "react-native"
 import { styles } from "./style"
 import { ImageResource } from "../../resource/imageResource"
 import { TouchableRipple } from "react-native-paper"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { FIREBASE_AUTH as auth } from "../../../firebaseConfig"
+import { signInWithCustomToken } from "firebase/auth"
 
 export default function Home({ navigation }) {
+  
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -31,7 +35,7 @@ export default function Home({ navigation }) {
 
           <TouchableRipple onPress={() => navigation.navigate("Category")} style={styles.start_btn_container}>
             <Text style={styles.start_btn}>
-              Let's Brain Storm
+              Let's Play
             </Text>
           </TouchableRipple>
 

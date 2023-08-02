@@ -54,17 +54,16 @@ export default function UpdateAccount({ navigation }) {
         await reauthenticateWithCredential(user, credential);
         await updatePassword(user, newPassword);
       }
-      console.log("Password updated successfully.");
 
       await updateProfile(user, {
         displayName: name,
         photoURL: profilePicture,
       });
 
-      console.log("Profile picture updated successfully.");
+      alert("Profile updated successfully.");
 
       setLoading(false);
-      navigation.navigate("Auth");
+      navigation.navigate("Home");
 
     } catch (error) {
       console.error("Error updating::", error);

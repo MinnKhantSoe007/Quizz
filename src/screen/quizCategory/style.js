@@ -12,13 +12,19 @@ export const styles = StyleSheet.create({
     fontFamily: 'RobotoBold',
     fontSize: 20,
     marginBottom: 20,
+    marginTop: 50,
+    textAlign: 'center',
+  },
+
+  list: {
+    marginBottom: 170,
   },
 
   quizItem: {
     marginBottom: 20,
     backgroundColor: '#F5F3F4',
     paddingVertical: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     borderRadius: 10
   },
 
@@ -26,23 +32,6 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'RobotoRegular',
     marginBottom: 5,
-  },
-
-  quizOptions: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 16,
-    marginBottom: 5
-  },
-
-  quizOption: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 16,
-  },
-
-  quizCorrectOption: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 16,
-    marginBottom: 5
   },
 
   quizLevel: {
@@ -55,37 +44,6 @@ export const styles = StyleSheet.create({
     top: 30,
     left: 10,
     color: '#000',
-  },
-
-  createButton: {
-    backgroundColor: '#5E60CE',
-    paddingVertical: 13,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 50
-  },
-
-  createButtonText: {
-    fontFamily: 'RobotoRegular',
-    color: '#000',
-    fontSize: 20,
-  },
-
-  deleteButton: {
-    backgroundColor: '#E5383B',
-    paddingVertical: 13,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-
-  deleteButtonText: {
-    fontFamily: 'RobotoRegular',
-    color: '#000',
-    fontSize: 20,
   },
 
   centeredView: {
@@ -132,6 +90,39 @@ export const styles = StyleSheet.create({
     color: '#5E60CE',
     fontSize: 20,
     marginTop: 10
+  },
+
+  createBtnWrapper: {
+    backgroundColor: '#000',
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    borderRadius: 30
+  },
+  
+  createButton: {
+    backgroundColor: '#000',
+    width:60,
+    height:60,
+    borderRadius:30,
+    justifyContent:'center',
+    alignItems:'center'
+  },
+
+  plusBtn:{
+    color:'#fff',
+  },
+
+  deleteBtnWrapper: {
+    backgroundColor: '#E5383B',
+    position: 'absolute',
+    right: 30,
+    borderRadius: 30,
+    top: 23
+  },
+
+  deleteBtn:{
+    color:'#fff',
   },
 
 });
