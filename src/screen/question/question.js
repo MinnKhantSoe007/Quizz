@@ -23,12 +23,14 @@ export default function Question({ navigation }) {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        setUserProfilePicture(user.photoURL);
-        const userId = user.uid;
 
+      const user = auth.currentUser;
+      const userId = user.uid;
+
+      if (user.photoURL) {
+        setUserProfilePicture(user.photoURL);
         setLoading(true);
+
         const categoriesQuery = query(
           collection(firestore, "categories"),
           where("creatorUid", "==", userId)
@@ -53,6 +55,21 @@ export default function Question({ navigation }) {
 
     return () => unsubscribeAuthStateChange();
   }, []);
+
+  // useEffect(() => {
+  //   const retrieveProfilePicture = async () => {
+  //     try {
+  //       const profilePictureURL = await AsyncStorage.getItem("userProfilePicture");
+  //       if (profilePictureURL) {
+  //         setUserProfilePicture(profilePictureURL);
+  //       }
+  //     } catch (error) {
+  //       console.log("Error retrieving profile picture URL from AsyncStorage:", error);
+  //     }
+  //   };
+
+  //   retrieveProfilePicture();
+  // }, []);
 
   // const checkToken = async () => {
   //   const user = auth.currentUser;
