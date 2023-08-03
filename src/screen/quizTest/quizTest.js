@@ -24,7 +24,6 @@ export default function QuizTest({ navigation, route }) {
   const [scoreModal, setScoreModal] = useState(false);
   const [backModal, setBackModal] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [remainingTime, setRemainingTime] = useState(timeLimit);
   const [reRenderOccur, forceRenderTimer] = useState({})
   const [isSoundPlaying, setIsSoundPlaying] = useState(false);
   const [isLogoChanged, setIsLogoChanged] = useState(false);
@@ -431,9 +430,9 @@ export default function QuizTest({ navigation, route }) {
 const TimerComponent = ({ intialTime, isOptionDisabled, handleNext, reRenderOccur }) => {
   const [remainingTime, setRemainingTime] = useState(intialTime)
 
-  useEffect(()=>{
+  useEffect(() => {
     setRemainingTime(intialTime)
-  },[reRenderOccur])
+  }, [reRenderOccur])
 
   useEffect(() => {
     let timer;

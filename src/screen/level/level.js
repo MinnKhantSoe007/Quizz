@@ -1,7 +1,6 @@
 import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableRipple } from "react-native-paper";
 
 export default function Level({ navigation, route }) {
 

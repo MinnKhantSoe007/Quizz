@@ -1,12 +1,11 @@
 import { SafeAreaView, TextInput, Text, View, KeyboardAvoidingView } from "react-native";
 import { styles } from "./style";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import { FIREBASE_AUTH } from "../../../firebaseConfig";
 import { ActivityIndicator } from "react-native-paper";
-import { signInWithEmailAndPassword, signInWithCustomToken } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { TouchableRipple } from "react-native-paper"
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Auth({ navigation }) {
   const [email, setEmail] = useState('');

@@ -6,7 +6,6 @@ import { deleteUser } from "firebase/auth";
 import { TouchableRipple } from "react-native-paper";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function DetailAccount({ navigation }) {
 
@@ -142,7 +141,7 @@ export default function DetailAccount({ navigation }) {
 
       <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
 
-      <TouchableRipple style={styles.button} onPress={()=> navigation.navigate("UpdateAccount")}>
+      <TouchableRipple style={styles.button} onPress={() => navigation.navigate("UpdateAccount")}>
         <Text style={styles.buttonText}>Update Profile</Text>
       </TouchableRipple>
 

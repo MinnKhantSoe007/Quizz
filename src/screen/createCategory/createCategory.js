@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 import { ActivityIndicator } from "react-native-paper";
@@ -17,7 +17,7 @@ export default function CreateCategory({ navigation }) {
   const userId = user ? user.uid : null;
 
   const handleCreateCategory = async () => {
-    
+
     if (categoryTitle.trim() === '') {
       alert("Please enter a category title.");
       return;
@@ -38,7 +38,7 @@ export default function CreateCategory({ navigation }) {
         setLoading(false);
         alert("Error creating category::", error.message);
       });
-    
+
   };
 
   return (
@@ -47,6 +47,7 @@ export default function CreateCategory({ navigation }) {
       <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
 
       <Text style={styles.label}>Category Title:</Text>
+
       <TextInput
         style={styles.input}
         value={categoryTitle}

@@ -134,7 +134,7 @@ export default function CreateAccount({ navigation }) {
       }
 
       {renderModal()}
-      
+
     </SafeAreaView>
   )
 }

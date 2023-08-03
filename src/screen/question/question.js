@@ -7,9 +7,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { styles } from "./style";
 import { ImageResource } from "../../resource/imageResource";
 import { AntDesign } from '@expo/vector-icons';
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Question({ navigation }) {
   const [categories, setCategories] = useState([]);
@@ -45,8 +43,6 @@ export default function Question({ navigation }) {
           setLoading(false);
         });
       }
-
-
     };
 
     const unsubscribeAuthStateChange = onAuthStateChanged(auth, (user) => {

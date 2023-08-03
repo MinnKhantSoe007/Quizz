@@ -6,7 +6,6 @@ import * as ImagePicker from "expo-image-picker";
 import { ActivityIndicator } from "react-native-paper";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
-import TouchableRipple from "react-native-paper";
 
 export default function UpdateAccount({ navigation }) {
   const [name, setName] = useState("");
@@ -102,7 +101,6 @@ export default function UpdateAccount({ navigation }) {
         onChangeText={setCurrentPassword}
       />
 
-      {/* New Input for New Password */}
       <TextInput
         style={styles.input}
         placeholder="New Password"
