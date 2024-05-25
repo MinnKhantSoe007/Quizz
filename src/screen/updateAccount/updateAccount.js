@@ -76,7 +76,7 @@ export default function UpdateAccount({ navigation }) {
   return (
     <View style={styles.container}>
 
-      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
+      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
 
       <Text style={styles.text}>Update Account</Text>
 

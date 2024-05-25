@@ -41,8 +41,8 @@ export const styles = StyleSheet.create({
 
   back: {
     position: 'absolute',
-    top: 30,
-    left: 10,
+    top: "8%",
+    left: "5%",
     color: '#000',
   },
 
@@ -118,7 +118,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: 30,
     borderRadius: 30,
-    top: 23
+    top: "7%"
   },
 
   deleteBtn:{

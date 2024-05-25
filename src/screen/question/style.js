@@ -43,8 +43,8 @@ export const styles = StyleSheet.create({
 
   back: {
     position: 'absolute',
-    top: 5,
-    left: 20,
+    top: "8%",
+    left: "5%",
     flexDirection: "row"
   },
 
@@ -56,7 +56,7 @@ export const styles = StyleSheet.create({
   },
 
   logo_container: {
-    marginLeft: 150,
+    marginLeft: "51%",
     marginTop: 8,
   },
 

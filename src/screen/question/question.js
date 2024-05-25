@@ -8,6 +8,7 @@ import { styles } from "./style";
 import { ImageResource } from "../../resource/imageResource";
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Question({ navigation }) {
   const [categories, setCategories] = useState([]);
@@ -96,7 +97,7 @@ export default function Question({ navigation }) {
 
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
 
       <View style={styles.back}>
         <Image source={ImageResource.logo.icon_logo} style={styles.icon_logo} resizeMode="contain" />
@@ -127,7 +128,7 @@ export default function Question({ navigation }) {
         </View>
       </TouchableRipple>
 
-    </View>
+    </SafeAreaView>
   );
 }
 

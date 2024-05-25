@@ -139,7 +139,7 @@ export default function DetailAccount({ navigation }) {
   return (
     <View style={styles.container}>
 
-      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
+      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
 
       <TouchableRipple style={styles.button} onPress={() => navigation.navigate("UpdateAccount")}>
         <Text style={styles.buttonText}>Update Profile</Text>

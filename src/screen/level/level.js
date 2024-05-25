@@ -14,7 +14,7 @@ export default function Level({ navigation, route }) {
 
     <SafeAreaView style={styles.container}>
 
-      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Category")} />
+      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Category")} />
 
       <Text style={styles.main_text}>
         Choose Level

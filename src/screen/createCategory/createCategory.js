@@ -44,7 +44,7 @@ export default function CreateCategory({ navigation }) {
   return (
     <View style={styles.container}>
 
-      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
+      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
 
       <Text style={styles.label}>Category Title:</Text>
 

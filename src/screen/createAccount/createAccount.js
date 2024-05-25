@@ -113,7 +113,7 @@ export default function CreateAccount({ navigation }) {
     <SafeAreaView style={styles.container}>
 
 
-      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Auth")} />
+      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Auth")} />
 
       <Text style={styles.auth_text}>Create Account</Text>
 

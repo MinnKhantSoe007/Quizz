@@ -387,7 +387,7 @@ export default function QuizTest({ navigation, route }) {
       <LinearGradient colors={["#fff", "#5E60CE"]} style={{ flex: 1 }}>
         <View style={styles.quiz_container}>
 
-          <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => setBackModal(true)} />
+          <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => setBackModal(true)} />
 
           <View style={styles.timerContainer}>
             <TimerComponent reRenderOccur={reRenderOccur} intialTime={timeLimit} isOptionDisabled={isOptionDisabled} handleNext={handleNext} />

@@ -94,7 +94,7 @@ export default function QuizCategory({ navigation, route }) {
   return (
     <View style={styles.container}>
 
-      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
+      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
 
       <Text style={styles.categoryTitle}>Category: {category.title} </Text>
 

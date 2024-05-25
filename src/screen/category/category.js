@@ -45,7 +45,7 @@ export default function Category({ navigation }) {
   return (
 
     <SafeAreaView style={styles.container}>
-      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Home")} />
+      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Home")} />
       <Text style={styles.main_text}>
         Choose Category
       </Text>

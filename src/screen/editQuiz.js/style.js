@@ -107,13 +107,13 @@ export const styles = StyleSheet.create({
 
   back: {
     position: 'absolute',
-    top: 30,
-    left: 10,
+    top: "8%",
+    left: "5%",
     color: '#000',
   },
 
   inputs: {
-    marginTop: 50
+    marginTop: 30
   }
   
 

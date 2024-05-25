@@ -6,6 +6,7 @@ import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from "@react-native-picker/picker";
 import { TouchableRipple } from "react-native-paper"
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function EditQuiz({ route, navigation }) {
   const { category, quiz } = route.params;
@@ -104,9 +105,9 @@ export default function EditQuiz({ route, navigation }) {
 
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
 
-      <Ionicons name="ios-chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
+      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
 
       <ScrollView style={styles.inputs} showsVerticalScrollIndicator={false}>
 
@@ -159,6 +160,6 @@ export default function EditQuiz({ route, navigation }) {
         </TouchableRipple>
 
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
