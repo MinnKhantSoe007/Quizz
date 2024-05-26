@@ -14,6 +14,9 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 50,
     textAlign: 'center',
+    // backgroundColor: "blue",
+    marginLeft: "7%",
+    marginRight: "14%"
   },
 
   list: {
@@ -44,6 +47,8 @@ export const styles = StyleSheet.create({
     top: "8%",
     left: "5%",
     color: '#000',
+    marginRight: "10%",
+    zIndex: 2
   },
 
   centeredView: {

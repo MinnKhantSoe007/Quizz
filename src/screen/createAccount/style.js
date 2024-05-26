@@ -113,4 +113,9 @@ modalView: {
     alignSelf: 'center'
   },
 
+  photoContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  }
+
 })

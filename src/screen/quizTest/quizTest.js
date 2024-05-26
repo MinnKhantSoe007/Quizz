@@ -14,7 +14,7 @@ import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
 
 export default function QuizTest({ navigation, route }) {
 
-  const { questionCount, timeLimit, category, difficultyLevel } = route.params;
+  const { timeLimit, category, difficultyLevel } = route.params;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentOptionSelected, setCurrentOptionSelected] = useState(null);
   const [correctOption, setCorrectOption] = useState(null);
@@ -44,7 +44,7 @@ export default function QuizTest({ navigation, route }) {
       try {
         return onSnapshot(quizzesQuery, (snapshot) => {
           const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-          const selectedQuestions = data.sort(() => 0.5 - Math.random()).slice(0, questionCount);
+          const selectedQuestions = data.sort(() => 0.5 - Math.random());
           setQuestions(selectedQuestions);
         });
 
@@ -54,7 +54,7 @@ export default function QuizTest({ navigation, route }) {
     };
 
     fetchData();
-  }, [category, difficultyLevel, questionCount]);
+  }, [category, difficultyLevel]);
 
   // useEffect(() => {
 

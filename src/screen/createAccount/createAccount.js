@@ -117,15 +117,19 @@ export default function CreateAccount({ navigation }) {
 
       <Text style={styles.auth_text}>Create Account</Text>
 
-      <TouchableRipple style={styles.photoButton} onPress={handleSelectProfilePicture}><Text style={styles.photoButtonText}>Select Picture</Text></TouchableRipple>
+      <View style={styles.photoContainer}>
+
+        <TouchableRipple style={styles.photoButton} onPress={handleSelectProfilePicture}><Text style={styles.photoButtonText}>Select Picture</Text></TouchableRipple>
+
+        {selectedProfilePicture ? <Image source={{ uri: selectedProfilePicture }} style={styles.selectedPic} /> : null}
+
+      </View>
 
       <TextInput style={styles.create_input} placeholder="Name" onChangeText={handleOnChangeName} />
 
-      <TextInput style={styles.create_input} placeholder="Email" onChangeText={handleOnChangeEmail} />
+      <TextInput style={styles.create_input} placeholder="Email" onChangeText={handleOnChangeEmail} keyboardType="email-address" autoCapitalize="none" autoComplete="email"/>
 
       <TextInput style={styles.create_input} secureTextEntry={true} placeholder="Password" onChangeText={handleOnChangePassword} />
-
-      {selectedProfilePicture ? <Image source={{ uri: selectedProfilePicture }} style={styles.selectedPic} /> : null}
 
       {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
         <View>

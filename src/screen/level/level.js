@@ -1,14 +1,57 @@
-import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, Text, TouchableOpacity, View, FlatList } from "react-native";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useState } from "react";
+import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
+import { collection, getDocs, doc, onSnapshot } from 'firebase/firestore';
+import { ActivityIndicator } from 'react-native-paper';
 
 export default function Level({ navigation, route }) {
 
   const { category } = route.params;
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
 
-  const handleLevel = (difficultyLevel, questionCount, timeLimit) => {
-    navigation.navigate("QuizTest", { difficultyLevel, questionCount, timeLimit, category })
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true)
+      const quizzesRef = collection(doc(firestore, "categories", category.id), 'quizzes');
+  
+      try {
+        return onSnapshot(quizzesRef, (snapshot) => {
+          const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          console.log("Data::", data);
+  
+          // Extract unique 'level' values
+          const uniqueLevels = new Set(data.map(item => item.level));
+          const uniqueLevelsArray = Array.from(uniqueLevels);
+  
+          setCategories(uniqueLevelsArray);
+          setLoading(false)
+        });
+      } catch (error) {
+        console.log("Error fetching data:", error);
+        setLoading(false)
+      }
+    };
+  
+    fetchData();
+  }, [category.id]);
+  
+
+  const handleLevel = (difficultyLevel, timeLimit) => {
+    navigation.navigate("QuizTest", { difficultyLevel, timeLimit, category })
   };
+
+  const renderCategoryItems = ({ item }) => {
+    return (
+      <View style={styles.level_container}>
+        <TouchableOpacity onPress={() => handleLevel(item, 50)}>
+          <Text style={styles.level}>{item}</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
 
   return (
 
@@ -20,26 +63,14 @@ export default function Level({ navigation, route }) {
         Choose Level
       </Text>
 
-      <View style={styles.level_container}>
-        <TouchableOpacity style={styles.level_text} onPress={() => handleLevel("Easy", 10, 50)}>
-          <Text style={styles.level}>Easy</Text>
-          <Text style={{ color: '#80FFDB', fontFamily: 'RobotoRegular' }}>Contains 10 questions each with 50seconds time limit.</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.level_container}>
-        <TouchableOpacity style={styles.level_text} onPress={() => handleLevel("Medium", 15, 40)}>
-          <Text style={styles.level}>Medium</Text>
-          <Text style={{ color: '#80FFDB', fontFamily: 'RobotoRegular' }}>Contains 15 questions each with 40seconds time limit.</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.level_container}>
-        <TouchableOpacity style={styles.level_text} onPress={() => handleLevel("Hard", 20, 30)}>
-          <Text style={styles.level}>Hard</Text>
-          <Text style={{ color: '#80FFDB', fontFamily: 'RobotoRegular' }}>Contains 20 questions each with 30seconds time limit.</Text>
-        </TouchableOpacity>
-      </View>
+      { loading ? <ActivityIndicator animating={true} size="large" color="black" /> : 
+      <FlatList
+      data={categories}
+      renderItem={renderCategoryItems}
+      keyExtractor={(item) => item}
+      showsVerticalScrollIndicator={false}
+    />
+      }
 
     </SafeAreaView>
   )

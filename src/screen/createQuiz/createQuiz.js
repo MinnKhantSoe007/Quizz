@@ -112,7 +112,7 @@ export default function CreateQuiz({ route, navigation }) {
         />
 
         <Text style={styles.label}>Level:</Text>
-        <Picker
+        {/* <Picker
           selectedValue={level}
           onValueChange={(itemValue, itemIndex) =>
             setLevel(itemValue)
@@ -120,7 +120,14 @@ export default function CreateQuiz({ route, navigation }) {
           <Picker.Item label="Easy" value="Easy" />
           <Picker.Item label="Medium" value="Medium" />
           <Picker.Item label="Hard" value="Hard" />
-        </Picker>
+        </Picker> */}
+
+<TextInput
+          style={styles.input}
+          value={level}
+          onChangeText={setLevel}
+          placeholder="Enter Level"
+        />
 
         {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
           <TouchableRipple style={styles.createButton} onPress={handleCreateQuiz}>
