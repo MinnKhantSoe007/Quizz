@@ -20,7 +20,6 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#5E60CE",
     borderRadius: 5,
-    padding: 10,
     marginBottom: 20,
     fontFamily: 'RobotoRegular',
   },
@@ -44,4 +43,5 @@ export const styles = StyleSheet.create({
     left: "5%",
     color: '#000',
   }
+
 });

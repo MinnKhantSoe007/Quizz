@@ -4,7 +4,7 @@ import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
-import { Picker } from "@react-native-picker/picker";
+import { ActivityIndicator } from "react-native-paper";
 import { TouchableRipple } from "react-native-paper"
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -15,6 +15,7 @@ export default function EditQuiz({ route, navigation }) {
   const [correctOption, setCorrectOption] = useState(quiz.correct_option);
   const [level, setLevel] = useState(quiz.level);
   const [modal, setModal] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const handleOptionChange = (index, text) => {
     const updatedOptions = [...options];
@@ -23,12 +24,14 @@ export default function EditQuiz({ route, navigation }) {
   };
 
   const handleUpdateQuiz = async () => {
+    setLoading(true)
     if (
       question.trim() === "" ||
       options.some((option) => option.trim() === "") ||
       correctOption.trim() === "" ||
       level.trim() === ""
     ) {
+      setLoading(false)
       alert("Please fill all fields.");
       return;
     }
@@ -41,8 +44,10 @@ export default function EditQuiz({ route, navigation }) {
         correct_option: correctOption,
         level: level,
       });
+      setLoading(false)
       navigation.goBack();
     } catch (error) {
+      setLoading(false)
       console.log("Error updating quiz:", error);
       alert("Error updating quiz. Please try again.");
     }
@@ -139,25 +144,28 @@ export default function EditQuiz({ route, navigation }) {
         />
 
         <Text style={styles.label}>Level:</Text>
-        <Picker
-          selectedValue={level}
-          onValueChange={(itemValue, itemIndex) =>
-            setLevel(itemValue)
-          }>
-          <Picker.Item label="Easy" value="Easy" />
-          <Picker.Item label="Medium" value="Medium" />
-          <Picker.Item label="Hard" value="Hard" />
-        </Picker>
+        <TextInput
+          style={styles.input}
+          value={level}
+          onChangeText={setLevel}
+          placeholder="Enter Level"
+        />
 
         {renderModal()}
 
-        <TouchableRipple style={styles.updateButton} onPress={handleUpdateQuiz}>
-          <Text style={styles.updateButtonText}>Update Quiz</Text>
-        </TouchableRipple>
+        {
+          loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
+            <View>
+              <TouchableRipple style={styles.updateButton} onPress={handleUpdateQuiz}>
+                <Text style={styles.updateButtonText}>Update Quiz</Text>
+              </TouchableRipple>
 
-        <TouchableRipple style={styles.deleteButton} onPress={deleteQuiz}>
-          <Text style={styles.deleteButtonText}>Delete Quiz</Text>
-        </TouchableRipple>
+              <TouchableRipple style={styles.deleteButton} onPress={deleteQuiz}>
+                <Text style={styles.deleteButtonText}>Delete Quiz</Text>
+              </TouchableRipple>
+            </View>
+
+        }
 
       </ScrollView>
     </SafeAreaView>

@@ -19,6 +19,10 @@ service cloud.firestore {
       allow update, delete: if request.auth != null && request.auth.uid == resource.data.creatorUid;
     }
 
+      match /categoryNameList/{categoryName} {
+      allow read;
+    }
+
     match /categories/{category}/quizzes/{quizz} {
       allow create;
       allow read;
