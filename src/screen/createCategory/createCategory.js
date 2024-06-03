@@ -26,6 +26,7 @@ export default function CreateCategory({ navigation }) {
         const querySnapshot = await getDocs(collection(firestore, 'categoryNameList'));
         const categoriesData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         setCategoryNameList(categoriesData);
+        setCategoryTitle(categoriesData[0].title)
         setLoading(false);
       } catch (error) {
         console.log('Error fetching categorieNameList:', error);
