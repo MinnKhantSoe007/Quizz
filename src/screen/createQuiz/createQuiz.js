@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, ScrollView, Modal } from "react-native";
 import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { ActivityIndicator } from "react-native-paper";
-import { Picker } from "@react-native-picker/picker";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableRipple } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Picker } from "@react-native-picker/picker";
 
 export default function CreateQuiz({ route, navigation }) {
   const { categoryId } = route.params;
@@ -19,17 +20,36 @@ export default function CreateQuiz({ route, navigation }) {
   const [option4, setOption4] = useState("");
   const [correctOption, setCorrectOption] = useState("");
   const [level, setLevel] = useState("");
+  const [score, setScore] = useState("");
+  const [duration, setDuration] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [startTempTime, setStartTempTime] = useState(new Date());
+  const [endTime, setEndTime] = useState("");
+  const [endTempTime, setEndTempTime] = useState(new Date());
   const [loading, setLoading] = useState(false);
+  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    setOptions([option1, option2, option3, option4].filter(option => option.trim() !== ""));
+    setCorrectOption(option1)
+  }, [option1, option2, option3, option4]);
 
   const handleCreateQuiz = async () => {
-
     const auth = getAuth();
     const user = auth.currentUser;
     const userId = user ? user.uid : null;
 
-    if (question.trim() === "" || option1.trim() === "" || option2.trim() === "" || option3.trim() === "" || option4.trim() === "" || correctOption.trim() === "" || level.trim() === "") {
-      alert("Please fill in all fields.");
+    if (question.trim() === "" || option1.trim() === "" || correctOption.trim() === "" || level.trim() === "" || score.trim() === "") {
+      alert("Please fill in related fields.");
       return;
+    }
+    if (endTime && startTime) {
+      if (endTime <= startTime) {
+        alert("End time must be greater than start time.");
+        return;
+      }
     }
 
     const quizzesCollectionRef = collection(firestore, "categories", categoryId, "quizzes");
@@ -39,6 +59,10 @@ export default function CreateQuiz({ route, navigation }) {
       options: [option1, option2, option3, option4],
       correct_option: correctOption,
       level,
+      score: parseInt(score),
+      duration,
+      startTime: startTime.toLocaleString(),
+      endTime: endTime.toLocaleString(),
       creatorUid: userId,
     })
       .then(() => {
@@ -49,6 +73,10 @@ export default function CreateQuiz({ route, navigation }) {
         setOption4("");
         setCorrectOption("");
         setLevel("");
+        setScore("");
+        setDuration("");
+        setStartTime(new Date());
+        setEndTime(new Date());
         setLoading(false);
         navigation.goBack();
       })
@@ -58,14 +86,62 @@ export default function CreateQuiz({ route, navigation }) {
       });
   };
 
+  const handleConfirmDate = (type) => {
+    if (type === "start") {
+      setStartTime(startTempTime);
+    } else {
+      setEndTime(endTempTime);
+    }
+    setShowStartTimePicker(false);
+    setShowEndTimePicker(false);
+  };
+
+  const renderModal = (type) => {
+    return (
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={type === "start" ? showStartTimePicker : showEndTimePicker}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <DateTimePicker
+                value={type === "start" ? startTempTime : endTempTime}
+                mode="datetime"
+                display="default"
+                onChange={(event, selectedDate) => {
+                  if (selectedDate) {
+                    type === "start" ? setStartTempTime(selectedDate) : setEndTempTime(selectedDate);
+                  }
+                }}
+              />
+              <TouchableRipple onPress={() => handleConfirmDate(type)}>
+                <Text style={styles.ok}>
+                  Okay
+                </Text>
+              </TouchableRipple>
+              <TouchableRipple onPress={() => type === "start" ? setShowStartTimePicker(false) : setShowEndTimePicker(false)}>
+                <Text style={styles.no}>
+                  No
+                </Text>
+              </TouchableRipple>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    );
+  };
+
+  const manageOption1 = (text) => {
+    setOption1(text);
+  };
+
   return (
-
     <SafeAreaView style={styles.container}>
-
       <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
 
       <ScrollView style={styles.inputs} showsVerticalScrollIndicator={false}>
-
         <Text style={styles.label}>Question:</Text>
         <TextInput
           style={styles.input}
@@ -78,24 +154,21 @@ export default function CreateQuiz({ route, navigation }) {
         <TextInput
           style={styles.input}
           value={option1}
-          onChangeText={setOption1}
+          onChangeText={manageOption1}
           placeholder="Enter option 1"
         />
-
         <TextInput
           style={styles.input}
           value={option2}
           onChangeText={setOption2}
           placeholder="Enter option 2"
         />
-
         <TextInput
           style={styles.input}
           value={option3}
           onChangeText={setOption3}
           placeholder="Enter option 3"
         />
-
         <TextInput
           style={styles.input}
           value={option4}
@@ -104,29 +177,58 @@ export default function CreateQuiz({ route, navigation }) {
         />
 
         <Text style={styles.label}>Correct Option:</Text>
-        <TextInput
+        <Picker
           style={styles.input}
-          value={correctOption}
-          onChangeText={setCorrectOption}
-          placeholder="Enter the correct option"
-        />
+          selectedValue={correctOption}
+          onValueChange={(itemValue, itemIndex) => setCorrectOption(itemValue)}
+        >
+          {options.map((option) => (
+            <Picker.Item key={option} label={option} value={option} />
+          ))}
+        </Picker>
 
         <Text style={styles.label}>Level:</Text>
-        {/* <Picker
-          selectedValue={level}
-          onValueChange={(itemValue, itemIndex) =>
-            setLevel(itemValue)
-          }>
-          <Picker.Item label="Easy" value="Easy" />
-          <Picker.Item label="Medium" value="Medium" />
-          <Picker.Item label="Hard" value="Hard" />
-        </Picker> */}
-
-<TextInput
+        <TextInput
           style={styles.input}
           value={level}
           onChangeText={setLevel}
           placeholder="Enter Level"
+        />
+
+        <Text style={styles.label}>Score:</Text>
+        <TextInput
+          style={styles.input}
+          value={score}
+          onChangeText={setScore}
+          placeholder="Enter Score"
+          keyboardType="numeric"
+        />
+
+        <Text style={styles.label}>Duration (in minutes):</Text>
+        <TextInput
+          style={styles.input}
+          value={duration}
+          placeholder="Enter Duration in minutes"
+          onChangeText={setDuration}
+          keyboardType="numeric"
+        />
+
+        <Text style={styles.label}>Start Time:</Text>
+        <TextInput
+          style={styles.input}
+          value={startTime ? startTime.toLocaleString() : ""}
+          editable={false}
+          placeholder="Select Start Time"
+          onPress={() => setShowStartTimePicker(true)}
+        />
+
+        <Text style={styles.label}>End Time:</Text>
+        <TextInput
+          style={styles.input}
+          value={endTime ? endTime.toLocaleString() : ""}
+          editable={false}
+          placeholder="Select End Time"
+          onPress={() => setShowEndTimePicker(true)}
         />
 
         {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
@@ -134,8 +236,13 @@ export default function CreateQuiz({ route, navigation }) {
             <Text style={styles.createButtonText}>Create Quiz</Text>
           </TouchableRipple>
         }
-
       </ScrollView>
+
+      {/* Start Time Picker Modal */}
+      {renderModal("start")}
+
+      {/* End Time Picker Modal */}
+      {renderModal("end")}
     </SafeAreaView>
   );
 }

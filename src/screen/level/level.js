@@ -20,8 +20,7 @@ export default function Level({ navigation, route }) {
       try {
         return onSnapshot(quizzesRef, (snapshot) => {
           const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-          console.log("Data::", data);
-  
+          
           // Extract unique 'level' values
           const uniqueLevels = new Set(data.map(item => item.level));
           const uniqueLevelsArray = Array.from(uniqueLevels);

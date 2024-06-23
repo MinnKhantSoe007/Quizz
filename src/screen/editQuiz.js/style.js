@@ -113,7 +113,7 @@ export const styles = StyleSheet.create({
   },
 
   inputs: {
-    marginTop: 30
+    marginTop: "10%"
   }
   
 

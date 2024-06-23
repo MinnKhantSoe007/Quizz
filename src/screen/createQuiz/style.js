@@ -46,6 +46,42 @@ export const styles = StyleSheet.create({
 
   inputs: {
     marginTop: 30
-  }
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  modalView: {
+    marginTop: 30,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 40,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 7,
+    elevation: 9,
+  },
+
+  ok: {
+    fontFamily: 'RobotoRegular',
+    color: '#E5383B',
+    fontSize: 20,
+    marginTop: 10
+  },
+
+  no: {
+    fontFamily: 'RobotoRegular',
+    color: '#5E60CE',
+    fontSize: 20,
+    marginTop: 10
+  },
 
 });
