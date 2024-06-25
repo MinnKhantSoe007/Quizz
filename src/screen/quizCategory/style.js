@@ -14,7 +14,6 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 50,
     textAlign: 'center',
-    // backgroundColor: "blue",
     marginLeft: "7%",
     marginRight: "14%"
   },

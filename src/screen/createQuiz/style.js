@@ -14,6 +14,11 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
+  Radiolabel: {
+    fontFamily: 'RobotoRegular',
+    fontSize: 18,
+  },
+
   input: {
     borderWidth: 1,
     borderColor: "#5E60CE",
