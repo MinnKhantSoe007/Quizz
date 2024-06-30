@@ -94,6 +94,7 @@ export default function CreateAccount({ navigation }) {
       await addDoc(usersCollection, {
         name: name,
         email: email,
+        creatorUid: user.uid
       });
 
       await sendEmailVerification(user);

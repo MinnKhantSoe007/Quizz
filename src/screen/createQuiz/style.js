@@ -43,9 +43,9 @@ export const styles = StyleSheet.create({
   },
 
   back: {
-    position: 'absolute',
-    top: "8%",
-    left: "5%",
+    position: 'relative',
+    // top: "4%",
+    // left: "5%",
     color: '#000',
   },
 

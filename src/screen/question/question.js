@@ -235,7 +235,7 @@ export default function Question({ navigation }) {
 
       <TouchableRipple onPress={handleSortModal} style={styles.sortBtnWrapper} rippleColor='#ffffff88' borderless={true}>
         <View style={styles.sortButton}>
-          <AntDesign name="arrowdown" size={24} style={styles.sortButtonText} />
+          <Ionicons name="funnel-outline" size={24} style={styles.sortButtonText} />
         </View>
       </TouchableRipple>
 

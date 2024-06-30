@@ -36,40 +36,22 @@ export const styles = StyleSheet.create({
     marginBottom: 5,
   },
 
-  quizLevel: {
+  quizScore: {
     fontFamily: 'RobotoRegular',
     fontSize: 16,
   },
 
   back: {
-    position: 'absolute',
-    top: "8%",
-    left: "5%",
+    position: 'relative',
+    top: "4%",
+    // left: "5%",
     color: '#000',
-    marginRight: "10%",
-    zIndex: 2
   },
 
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-
-  modalView: {
-    marginTop: 30,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 40,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 7,
-    elevation: 9,
   },
 
   success: {
@@ -122,11 +104,89 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: 30,
     borderRadius: 30,
-    top: "7%"
+    top: "6%"
   },
 
   deleteBtn:{
     color:'#fff',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F3F4',
+    borderRadius: 10,
+    marginVertical: 10,
+    paddingHorizontal: 10,
+    marginTop: "2%"
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+  },
+  sortBtnWrapper: {
+    backgroundColor: '#000',
+    position: 'absolute',
+    bottom: 30,
+    left: 30,
+    borderRadius: 30,
+  },
+  sortButton: {
+    backgroundColor: '#808080',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sortButtonText: {
+    color: '#fff',
+  },
+  modalView: {
+    marginTop: 30,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 40,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 7,
+    elevation: 9,
+  },
+
+  modalTitle: {
+    fontSize: 20,
+    marginBottom: 20,
+    fontFamily: 'RobotoBold',
+  },
+  modalOption: {
+    fontSize: 18,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalButton: {
+    backgroundColor: '#5E60CE',
+    width: 100,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  modalButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontFamily: 'RobotoBold',
+  },
+  noCategoryText: {
+    fontFamily: 'RobotoBold',
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 50,
   },
 
 });

@@ -24,6 +24,7 @@ export default function EditQuiz({ route, navigation }) {
   const [endTime, setEndTime] = useState(quiz.endTime);
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false)
+  const [loading1, setLoading1] = useState(false)
   const [current, setCurrent] = useState("2")
   const [availableLevels, setAvailableLevels] = useState([])
   const [quizData, setQuizData] = useState([])
@@ -43,8 +44,6 @@ export default function EditQuiz({ route, navigation }) {
         setAvailableLevels(uniqueLevelsArray)
         // current === "2" ? setLevel(uniqueLevelsArray[0]) : console.log("");
         setLoading(false);
-
-        console.log("Times::", typeof (startTime), " ", startTime);
       });
 
   }, [current]);
@@ -72,8 +71,6 @@ export default function EditQuiz({ route, navigation }) {
     updatedOptions[index] = text;
     setOptions(updatedOptions);
     setCorrectOption(updatedOptions[0])
-
-    console.log("Score::", typeof (score));
   };
 
   const handleUpdateQuiz = async () => {
@@ -90,7 +87,7 @@ export default function EditQuiz({ route, navigation }) {
       alert("Please fill related fields.");
       return;
     }
-    if (endTime && startTime) {
+    if (endTime && startTime && current == "1") {
       if (endTime <= startTime) {
         alert("End time must be greater than start time.");
         return;
@@ -103,7 +100,7 @@ export default function EditQuiz({ route, navigation }) {
 
     try {
       const quizRef = doc(firestore, "categories", category.id, "quizzes", quiz.id);
-      setLoading(true)
+      setLoading1(true)
       await updateDoc(quizRef, {
         question: question,
         options: options,
@@ -115,10 +112,10 @@ export default function EditQuiz({ route, navigation }) {
         startTime: startTime.toLocaleString(),
         endTime: endTime.toLocaleString()
       });
-      setLoading(false)
+      setLoading1(false)
       navigation.goBack();
     } catch (error) {
-      setLoading(false)
+      setLoading1(false)
       console.log("Error updating quiz:", error);
       alert("Error updating quiz. Please try again.");
     }
@@ -379,7 +376,7 @@ export default function EditQuiz({ route, navigation }) {
         {renderModal("end")}
 
         {
-          loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
+          loading || loading1 ? <ActivityIndicator animating={true} size="large" color="black" /> :
             <View>
               <TouchableRipple style={styles.updateButton} onPress={handleUpdateQuiz}>
                 <Text style={styles.updateButtonText}>Update Quiz</Text>
