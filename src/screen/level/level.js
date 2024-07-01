@@ -17,29 +17,46 @@ export default function Level({ navigation, route }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true)
+      setLoading(true);
       const quizzesRef = collection(doc(firestore, "categories", category.id), 'quizzes');
 
       try {
         return onSnapshot(quizzesRef, (snapshot) => {
           const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-          console.log("Data::", data);
+          const currentTime = new Date().toLocaleString();
           // Extract unique 'level' values
           const uniqueLevels = Array.from(new Set(data.map(item => item.level)));
 
-          // Map each unique level to include score and duration
+          // Map each unique level to include score, duration, startTime, and endTime
           const formattedCategories = uniqueLevels.map(level => {
             const items = data.filter(item => item.level === level);
-            // Assuming all items for a level have the same score and duration
+            // Assuming all items for a level have the same score, duration, startTime, and endTime
+            const item = items[0];
             return {
               level,
-              score: parseInt(items[0].score), // Convert score to integer
-              duration: items[0].duration
+              score: parseInt(item.score), // Convert score to integer
+              duration: item.duration,
+              startTime: item.startTime ?? null, // Parse string to Date
+              endTime: item.endTime ?? null // Parse string to Date
             };
           });
 
-          setCategories(formattedCategories);
-          setFilteredCategories(formattedCategories);
+          // Filter levels based on startTime and endTime
+          const filteredLevels = formattedCategories.filter(level => {
+            const { startTime, endTime } = level;
+            if (startTime && endTime) {
+              return currentTime >= startTime && currentTime <= endTime;
+            } else if (startTime) {
+              return currentTime >= startTime;
+            } else if (endTime) {
+              return currentTime <= endTime;
+            } else {
+              return true; // No time restrictions
+            }
+          });
+
+          setCategories(filteredLevels);
+          setFilteredCategories(filteredLevels);
           setLoading(false);
         });
       } catch (error) {
