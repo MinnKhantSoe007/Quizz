@@ -122,12 +122,15 @@ export default function EditQuiz({ route, navigation }) {
   };
 
   const handleDeleteQuiz = async () => {
+    setLoading(true);
     try {
       const quizRef = doc(firestore, "categories", category.id, "quizzes", quiz.id);
       await deleteDoc(quizRef);
       navigation.goBack();
+      setLoading(false)
     } catch (error) {
       console.log("Error deleting quiz:", error);
+      setLoading(false)
       alert("Error deleting quiz. Please try again.");
     }
   };

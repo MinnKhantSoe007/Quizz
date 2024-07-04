@@ -15,42 +15,45 @@ export default function Category({ navigation }) {
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [sortModalVisible, setSortModalVisible] = useState(false);
   const [modal, setModal] = useState(false);
+  const [refreshing, setRefreshing] = useState(false)
 
   useEffect(() => {
-
-    const fetchCategories = async () => {
-      setLoading(true);
-      try {
-        const querySnapshot = await getDocs(collection(firestore, 'categories'));
-        const categoriesData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setCategories(categoriesData);
-        setFilteredCategories(categoriesData);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-      }
-    };
-
+    fetchUsers();
     fetchCategories();
   }, []);
 
-  useEffect(() => {
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
+      const querySnapshot = await getDocs(collection(firestore, 'categories'));
+      const categoriesData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setCategories(categoriesData);
+      setFilteredCategories(categoriesData);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
 
-    const fetchUsers = async () => {
-      setLoading(true);
-      try {
-        const querySnapshot = await getDocs(collection(firestore, 'users'));
-        const usersData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setUsers(usersData);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log('Error fetching Users:', error);
-      }
-    };
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const querySnapshot = await getDocs(collection(firestore, 'users'));
+      const usersData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setUsers(usersData);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log('Error fetching Users:', error);
+    }
+  };
 
+  const handleRefresh = async() => {
+    setRefreshing(true);
+    await fetchCategories();
     fetchUsers();
-  }, []);
+    setRefreshing(false);
+  }
 
   const handleCategory = (category) => {
     navigation.navigate("Level", { category });
@@ -159,6 +162,8 @@ export default function Category({ navigation }) {
             renderItem={renderCategoryItems}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
           />
         </View>
       }

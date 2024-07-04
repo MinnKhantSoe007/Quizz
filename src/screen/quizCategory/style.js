@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
 
   back: {
     position: 'relative',
-    top: "4%",
+    top: "6%",
     // left: "5%",
     color: '#000',
   },
@@ -104,7 +104,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: 30,
     borderRadius: 30,
-    top: "6%"
+    top: "7.5%"
   },
 
   deleteBtn:{

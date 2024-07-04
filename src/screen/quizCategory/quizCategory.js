@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
@@ -17,8 +17,14 @@ export default function QuizCategory({ navigation, route }) {
   const [modal, setModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortModalVisible, setSortModalVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
+    const unsubscribe = fetchQuizzes();
+    return () => unsubscribe();
+  }, [fetchQuizzes]);
+
+  const fetchQuizzes = useCallback(() => {
     setLoading(true);
     const unsubscribe = onSnapshot(
       collection(doc(firestore, "categories", category.id), 'quizzes'),
@@ -30,7 +36,15 @@ export default function QuizCategory({ navigation, route }) {
       }
     );
     return unsubscribe;
-  }, [category]);
+  }, [category.id]);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    const unsubscribe = fetchQuizzes();
+    setRefreshing(false);
+    return () => unsubscribe();
+  };
+
 
   const deleteCategory = () => {
     setModal(true);
@@ -72,8 +86,6 @@ export default function QuizCategory({ navigation, route }) {
     setFilteredQuizzes(sortedQuizzes);
     setSortModalVisible(false);
   };
-
-
 
   const clearSort = () => {
     setFilteredQuizzes(quizzes);
@@ -129,6 +141,8 @@ export default function QuizCategory({ navigation, route }) {
               renderItem={renderQuizItem}
               keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
             />
           </View>
       )}

@@ -25,10 +25,10 @@ export default function NavigationStack() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
 
         <Stack.Screen name="Splash" component={Splash} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="QuizTest" component={QuizTest} />
+        <Stack.Screen name="Home" component={Home} options={{gestureEnabled: false}} />
+        <Stack.Screen name="QuizTest" component={QuizTest} options={{gestureEnabled: false}} />
         <Stack.Screen name="Level" component={Level} />
-        <Stack.Screen name="Question" component={Question} />
+        <Stack.Screen name="Question" component={Question} options={{gestureEnabled: false}} />
         <Stack.Screen name="QuizCategory" component={QuizCategory} />
         <Stack.Screen name="CreateCategory" component={CreateCategory} />
         <Stack.Screen name="EditQuiz" component={EditQuiz} />

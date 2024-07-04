@@ -17,34 +17,10 @@ export default function Question({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [userProfilePicture, setUserProfilePicture] = useState(null);
   const [sortModalVisible, setSortModalVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const auth = getAuth();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const user = auth.currentUser;
-      const userId = user.uid;
-
-      if (user.photoURL) {
-        setUserProfilePicture(user.photoURL);
-      }
-
-      if (user) {
-        setLoading(true);
-
-        const categoriesQuery = query(
-          collection(firestore, "categories"),
-          where("creatorUid", "==", userId)
-        );
-
-        return onSnapshot(categoriesQuery, (snapshot) => {
-          const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-          setCategories(data);
-          setFilteredCategories(data);
-          setLoading(false);
-        });
-      }
-    };
-
     const unsubscribeAuthStateChange = onAuthStateChanged(auth, (user) => {
       if (!user) {
         setCategories([]);
@@ -57,6 +33,38 @@ export default function Question({ navigation }) {
 
     return () => unsubscribeAuthStateChange();
   }, []);
+
+  const fetchUserData = async () => {
+    const user = auth.currentUser;
+    const userId = user.uid;
+
+    if (user.photoURL) {
+      setUserProfilePicture(user.photoURL);
+    }
+
+    if (user) {
+      setLoading(true);
+
+      const categoriesQuery = query(
+        collection(firestore, "categories"),
+        where("creatorUid", "==", userId)
+      );
+
+      return onSnapshot(categoriesQuery, (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setCategories(data);
+        setFilteredCategories(data);
+        setLoading(false);
+      });
+    }
+  };
+
+  const handleRefresh = async () => { // Add this function
+    setRefreshing(true);
+    await fetchUserData();
+    setRefreshing(false);
+  };
+
 
   // Function to perform binary search on an array of categories
   const binarySearch = (arr, x) => {
@@ -223,6 +231,8 @@ export default function Question({ navigation }) {
               renderItem={renderCategoryItem}
               keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
             />
           )}
       </View>
