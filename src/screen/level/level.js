@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { collection, getDocs, doc, onSnapshot } from 'firebase/firestore';
 import { ActivityIndicator, TouchableRipple } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Level({ navigation, route }) {
 
@@ -15,10 +16,27 @@ export default function Level({ navigation, route }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortModalVisible, setSortModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [studentName, setStudentName] = useState("guest");
 
   useEffect(() => {
-    fetchData();
+    const initialize = async () => {
+      await fetchStudentName();
+      fetchData();
+    };
+    initialize();
   }, [category.id]);
+
+  const fetchStudentName = async () => {
+    setLoading(true);
+    try {
+      const name = await AsyncStorage.getItem('studentName');
+      setStudentName(name);
+      setLoading(false)
+    } catch (error) {
+      console.error('Error fetching student name from AsyncStorage:', error);
+      setLoading(false)
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -45,10 +63,13 @@ export default function Level({ navigation, route }) {
           };
         });
 
-        // Filter levels based on startTime and endTime
+        // Filter levels based on startTime, endTime, and studentName
         const filteredLevels = formattedCategories.filter(level => {
           const { startTime, endTime } = level;
-          if (startTime && endTime) {
+          console.log(studentName);
+          if (studentName === "guest" && endTime) {
+            return false; // Hide levels with endTime for guest users
+          } else if (startTime && endTime) {
             return currentTime >= startTime && currentTime <= endTime;
           } else if (startTime) {
             return currentTime >= startTime;
@@ -81,7 +102,7 @@ export default function Level({ navigation, route }) {
 
   const renderCategoryItems = ({ item }) => {
     return (
-      <View style={styles.level_container}>
+      <View style={item.endTime ? styles.level_containered : styles.level_container}>
         <TouchableOpacity onPress={() => handleLevel(item.level, item.duration)}>
           <Text style={styles.level}>Level: {item.level}</Text>
           <View style={styles.score_container}>

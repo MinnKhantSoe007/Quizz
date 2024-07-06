@@ -49,6 +49,16 @@ export const styles = StyleSheet.create({
     top: "4%",
     left: "5%",
     color: '#000',
+    zIndex: 2
+  },
+
+  welcome: {
+    position: 'relative',
+    top: "1%",
+    textAlign: "right",
+    color: '#5E60CE',
+    fontFamily: 'RobotoBold',
+    fontSize: 17,
   },
 
   searchContainer: {

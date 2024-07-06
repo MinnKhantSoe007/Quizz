@@ -25,6 +25,16 @@ export const styles = StyleSheet.create({
     borderRadius: 15
   },
 
+  level_containered: {
+    marginTop: 40,
+    marginLeft: 10,
+    marginHorizontal: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    backgroundColor: '#A00000',
+    borderRadius: 15
+  },
+
   level: {
     fontFamily: 'RobotoRegular',
     fontSize: 25,

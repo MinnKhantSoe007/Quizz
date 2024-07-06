@@ -21,8 +21,8 @@ export default function Category({ navigation }) {
   const [studentYear, setStudentYear] = useState("")
 
   useEffect(() => {
-    AsyncStorage.getItem('studentYear').then((data)=>setStudentYear(data))
-    AsyncStorage.getItem('studentName').then((data)=>setStudentName(data))
+    AsyncStorage.getItem('studentYear').then((data) => setStudentYear(data))
+    AsyncStorage.getItem('studentName').then((data) => setStudentName(data))
     fetchUsers();
     fetchCategories();
   }, []);
@@ -53,7 +53,7 @@ export default function Category({ navigation }) {
     }
   };
 
-  const handleRefresh = async() => {
+  const handleRefresh = async () => {
     setRefreshing(true);
     await fetchCategories();
     fetchUsers();
@@ -136,7 +136,8 @@ export default function Category({ navigation }) {
 
   const handleBackButton = async () => {
     if (studentName || studentYear) {
-      await AsyncStorage.clear()
+      await AsyncStorage.setItem("studentName", "guest")
+      await AsyncStorage.setItem("studentYear", "guest")
     }
     navigation.navigate("Home")
   }
@@ -144,7 +145,7 @@ export default function Category({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={handleBackButton} />
-
+      <Text style={styles.welcome}> Welcome {studentName}!</Text>
       <TouchableRipple onPress={() => setSortModalVisible(true)} style={styles.sortBtnWrapper} rippleColor='#ffffff88' borderless={true}>
         <View style={styles.sortButton}>
           <Ionicons name="funnel-outline" size={24} style={styles.sortButtonText} />

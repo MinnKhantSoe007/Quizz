@@ -52,7 +52,8 @@ export default function StudentAuth({ navigation }) {
     }, [year]);
 
     const guestLogin = async () => {
-        await AsyncStorage.clear();
+        await AsyncStorage.setItem("studentName", "guest")
+        await AsyncStorage.setItem("studentYear", "guest")
         navigation.navigate("Category")
     }
 
@@ -110,27 +111,27 @@ export default function StudentAuth({ navigation }) {
             <Text style={styles.auth_text}>Log in to player account</Text>
             <ScrollView>
 
-            <KeyboardAvoidingView behavior="padding">
-                <Picker selectedValue={year} onValueChange={(itemValue) => setYear(itemValue)} style={styles.picker}>
-                    {years.map((year) => (
-                        <Picker.Item key={year} label={year} value={year} />
-                    ))}
-                </Picker>
-            </KeyboardAvoidingView>
+                <KeyboardAvoidingView behavior="padding">
+                    <Picker selectedValue={year} onValueChange={(itemValue) => setYear(itemValue)} style={styles.picker}>
+                        {years.map((year) => (
+                            <Picker.Item key={year} label={year} value={year} />
+                        ))}
+                    </Picker>
+                </KeyboardAvoidingView>
 
-            {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
-                <>
-                    {renderNamePicker()}
+                {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
+                    <>
+                        {renderNamePicker()}
 
-                    <TextInput style={styles.create_input} secureTextEntry={true} placeholder="password" onChangeText={handleOnChangePassword} autoCapitalize="none" autoComplete="password" keyboardType='numeric'/>
+                        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="password" onChangeText={handleOnChangePassword} autoCapitalize="none" autoComplete="password" keyboardType='numeric' />
 
-                    <View>
-                        <TouchableRipple style={styles.login_button} onPress={login}><Text style={styles.login_button_text}>Login</Text></TouchableRipple>
-                        <TouchableRipple style={styles.login_button} onPress={() => navigation.navigate("UpdateStudentAccount")}><Text style={styles.login_button_text}>Change Password</Text></TouchableRipple>
-                    </View>
-                </>
-            }
-            <TouchableRipple style={styles.guest_button} onPress={guestLogin}><Text style={styles.login_button_text}>Use as Guest</Text></TouchableRipple>
+                        <View>
+                            <TouchableRipple style={styles.login_button} onPress={login}><Text style={styles.login_button_text}>Login</Text></TouchableRipple>
+                            <TouchableRipple style={styles.login_button} onPress={() => navigation.navigate("UpdateStudentAccount")}><Text style={styles.login_button_text}>Change Password</Text></TouchableRipple>
+                        </View>
+                    </>
+                }
+                <TouchableRipple style={styles.guest_button} onPress={guestLogin}><Text style={styles.login_button_text}>Use as Guest</Text></TouchableRipple>
             </ScrollView>
         </SafeAreaView>
     );

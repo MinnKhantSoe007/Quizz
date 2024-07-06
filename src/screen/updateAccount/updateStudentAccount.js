@@ -33,7 +33,7 @@ export default function UpdateStudentAccount({ navigation }) {
                         const playerId = playerDoc.id;
                         const yearsCollectionRef = collection(doc(firestore, 'players', playerId), year);
                         const yearsSnapshot = await getDocs(yearsCollectionRef);
-                        
+
                         yearsSnapshot.forEach((yearDoc) => {
                             const { name, password } = yearDoc.data();
                             namesData.push({ playerId, name, password, id: yearDoc.id });
@@ -57,7 +57,7 @@ export default function UpdateStudentAccount({ navigation }) {
         if (password.length === 0 || userName?.length === 0 || newPassword.length === 0 || confirmNewPassword.length === 0) {
             return Alert.alert('Error', 'Fields cannot be empty');
         }
-    
+
         setLoading(true);
         try {
             const userData = names.find(user => user.name === userName);
@@ -66,8 +66,9 @@ export default function UpdateStudentAccount({ navigation }) {
                 if (newPassword === confirmNewPassword) {
                     const playerDocRef = doc(firestore, 'players', userData.playerId, year, userData.id);
                     await updateDoc(playerDocRef, { password: newPassword });
-                    await AsyncStorage.clear();
-    
+                    await AsyncStorage.setItem("studentName", "guest")
+                    await AsyncStorage.setItem("studentYear", "guest")
+
                     Alert.alert('Success', 'Update Successful');
                     navigation.navigate("StudentAuth");
                 } else {
@@ -83,9 +84,9 @@ export default function UpdateStudentAccount({ navigation }) {
             setLoading(false);
         }
     };
-    
-    
-    
+
+
+
 
     const handleOnChangePassword = text => {
         setPassword(text);
@@ -136,9 +137,9 @@ export default function UpdateStudentAccount({ navigation }) {
                     <>
                         {renderNamePicker()}
 
-                        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="Current Password" onChangeText={handleOnChangePassword} autoCapitalize="none" autoComplete="password" keyboardType='numeric'/>
-                        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="New Password" onChangeText={handleOnChangeNewPassword} autoCapitalize="none" autoComplete="password" keyboardType='numeric'/>
-                        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="Confirm New Password" onChangeText={handleOnChangeConfirmNewPassword} autoCapitalize="none" autoComplete="password" keyboardType='numeric'/>
+                        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="Current Password" onChangeText={handleOnChangePassword} autoCapitalize="none" autoComplete="password" keyboardType='numeric' />
+                        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="New Password" onChangeText={handleOnChangeNewPassword} autoCapitalize="none" autoComplete="password" keyboardType='numeric' />
+                        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="Confirm New Password" onChangeText={handleOnChangeConfirmNewPassword} autoCapitalize="none" autoComplete="password" keyboardType='numeric' />
                         <View>
                             <TouchableRipple style={styles.login_button} onPress={updateAccount}><Text style={styles.login_button_text}>Confirm</Text></TouchableRipple>
                         </View>
