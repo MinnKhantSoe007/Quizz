@@ -13,15 +13,6 @@ export default function Auth({ navigation }) {
   const [loading, setLoading] = useState(false);
   const auth = FIREBASE_AUTH;
 
-  // AsyncStorage
-  // .getItem('userToken')
-  // .then((token) => {
-  //   if (token) {
-  //     signInWithCustomToken(auth, token);
-  //   }
-  // })
-  //   .catch((error) => console.log('Error loading user token:', error));
-
   const handleOnChangeEmail = text => {
     setEmail(text);
   };
@@ -56,7 +47,7 @@ export default function Auth({ navigation }) {
 
       <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Home")} />
 
-      <Text style={styles.auth_text}>Enter your email and password</Text>
+      <Text style={styles.auth_text}>Log in to quizzer account</Text>
 
       <KeyboardAvoidingView behavior="padding">
 

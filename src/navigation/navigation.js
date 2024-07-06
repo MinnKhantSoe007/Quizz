@@ -14,6 +14,8 @@ import CreateQuiz from "../screen/createQuiz/createQuiz";
 import EditQuiz from "../screen/editQuiz.js/editQuiz";
 import DetailAccount from "../screen/detailAccount/detailAccount";
 import UpdateAccount from "../screen/updateAccount/updateAccount";
+import StudentAuth from "../screen/auth/studentAuth";
+import UpdateStudentAccount from "../screen/updateAccount/updateStudentAccount";
 
 const Stack = createStackNavigator();
 
@@ -32,12 +34,14 @@ export default function NavigationStack() {
         <Stack.Screen name="QuizCategory" component={QuizCategory} />
         <Stack.Screen name="CreateCategory" component={CreateCategory} />
         <Stack.Screen name="EditQuiz" component={EditQuiz} />
-        <Stack.Screen name="Category" component={Category} />
+        <Stack.Screen name="Category" component={Category} options={{gestureEnabled: false}} />
         <Stack.Screen name="Auth" component={Auth} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen name="CreateQuiz" component={CreateQuiz} />
         <Stack.Screen name="DetailAccount" component={DetailAccount} />
         <Stack.Screen name="UpdateAccount" component={UpdateAccount} />
+        <Stack.Screen name="StudentAuth" component={StudentAuth} />
+        <Stack.Screen name="UpdateStudentAccount" component={UpdateStudentAccount} />
 
       </Stack.Navigator>
     </NavigationContainer>

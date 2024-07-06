@@ -19,17 +19,21 @@ export default function CreateCategory({ navigation }) {
   const userId = user ? user.uid : null;
 
   useEffect(() => {
-
     const fetchCategoryNameLists = async () => {
       setLoading(true);
       try {
         const querySnapshot = await getDocs(collection(firestore, 'categoryNameList'));
-        const categoriesData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        let categoriesData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        categoriesData.sort((a, b) => a.title.localeCompare(b.title));
+
         setCategoryNameList(categoriesData);
-        setCategoryTitle(categoriesData[0].title)
+        if (categoriesData.length > 0) {
+          setCategoryTitle(categoriesData[0].title);
+        }
         setLoading(false);
       } catch (error) {
-        console.log('Error fetching categorieNameList:', error);
+        console.log('Error fetching categoryNameList:', error);
+        setLoading(false);
       }
     };
 

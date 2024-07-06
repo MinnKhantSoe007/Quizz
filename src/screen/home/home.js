@@ -30,7 +30,7 @@ export default function Home({ navigation }) {
             </Text>
           </TouchableRipple>
 
-          <TouchableRipple onPress={() => navigation.navigate("Category")} style={styles.start_btn_container}>
+          <TouchableRipple onPress={() => navigation.navigate("StudentAuth")} style={styles.start_btn_container}>
             <Text style={styles.start_btn}>
               Let's Play
             </Text>

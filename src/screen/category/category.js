@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { ActivityIndicator, TouchableRipple } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Category({ navigation }) {
 
@@ -16,8 +17,12 @@ export default function Category({ navigation }) {
   const [sortModalVisible, setSortModalVisible] = useState(false);
   const [modal, setModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false)
+  const [studentName, setStudentName] = useState("")
+  const [studentYear, setStudentYear] = useState("")
 
   useEffect(() => {
+    AsyncStorage.getItem('studentYear').then((data)=>setStudentYear(data))
+    AsyncStorage.getItem('studentName').then((data)=>setStudentName(data))
     fetchUsers();
     fetchCategories();
   }, []);
@@ -129,9 +134,16 @@ export default function Category({ navigation }) {
     </Modal>
   );
 
+  const handleBackButton = async () => {
+    if (studentName || studentYear) {
+      await AsyncStorage.clear()
+    }
+    navigation.navigate("Home")
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Home")} />
+      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={handleBackButton} />
 
       <TouchableRipple onPress={() => setSortModalVisible(true)} style={styles.sortBtnWrapper} rippleColor='#ffffff88' borderless={true}>
         <View style={styles.sortButton}>
