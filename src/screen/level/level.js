@@ -66,7 +66,7 @@ export default function Level({ navigation, route }) {
         // Filter levels based on startTime, endTime, and studentName
         const filteredLevels = formattedCategories.filter(level => {
           const { startTime, endTime } = level;
-          console.log(studentName);
+          
           if (studentName === "guest" && endTime) {
             return false; // Hide levels with endTime for guest users
           } else if (startTime && endTime) {

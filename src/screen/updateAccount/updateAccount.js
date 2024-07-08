@@ -42,7 +42,6 @@ export default function UpdateAccount({ navigation }) {
     if (!result.canceled) {
       setProfilePicture(result.assets[0].uri);
       setSelectedProfilePicture(result.assets[0].uri);
-      console.log(selectedProfilePicture);
     }
   };
 

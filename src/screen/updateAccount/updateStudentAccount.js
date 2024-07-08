@@ -61,7 +61,7 @@ export default function UpdateStudentAccount({ navigation }) {
         setLoading(true);
         try {
             const userData = names.find(user => user.name === userName);
-            console.log(userData.playerId, year, userData.id);
+            
             if (userData && userData.password == password) {
                 if (newPassword === confirmNewPassword) {
                     const playerDocRef = doc(firestore, 'players', userData.playerId, year, userData.id);

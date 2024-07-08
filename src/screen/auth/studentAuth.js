@@ -65,7 +65,6 @@ export default function StudentAuth({ navigation }) {
         setLoading(true);
         try {
             const userData = names.find(user => user.name === userName);
-            console.log("UserData::", userData);
             if (userData && userData.password == password) {
                 await AsyncStorage.setItem('studentYear', year);
                 await AsyncStorage.setItem('studentName', userName);

@@ -7,9 +7,9 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   back: {
-    position: 'absolute',
-    top: "8%",
-    left: "5%",
+    position: 'relative',
+    // top: "8%",
+    // left: "5%",
     color: '#000',
   },
   picker: {
