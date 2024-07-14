@@ -101,13 +101,14 @@ export default function Level({ navigation, route }) {
   };
 
   const renderCategoryItems = ({ item }) => {
+    {console.log("Items::", item)}
     return (
       <View style={item.endTime ? styles.level_containered : styles.level_container}>
         <TouchableOpacity onPress={() => handleLevel(item.level, item.duration)}>
           <Text style={styles.level}>Level: {item.level}</Text>
           <View style={styles.score_container}>
-            <Text style={styles.score}>Score: {item.score}</Text>
-            <Text style={styles.score}>Duration: {item.duration}</Text>
+            {/* <Text style={styles.score}>Score: {item.score}</Text> */}
+            <Text style={styles.score}>Duration: {item.duration} minutes</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -150,9 +151,9 @@ export default function Level({ navigation, route }) {
           <TouchableOpacity onPress={() => handleSort("level")}>
             <Text style={styles.modalOption}>Level</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleSort("score")}>
+          {/* <TouchableOpacity onPress={() => handleSort("score")}>
             <Text style={styles.modalOption}>Score</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity onPress={() => handleSort("duration")}>
             <Text style={styles.modalOption}>Duration</Text>
           </TouchableOpacity>

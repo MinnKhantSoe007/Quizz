@@ -41,6 +41,14 @@ export const styles = StyleSheet.create({
         borderColor: '#00000015',
     },
 
+    selected_option_container: {
+        padding: 10,
+        backgroundColor: '#338BA8',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#338BA8',
+    },
+
     correct_answer_container: {
 
         padding: 10,
@@ -162,7 +170,7 @@ export const styles = StyleSheet.create({
             justifyContent: 'center',
             borderWidth: 1,
             borderColor: '#5E60CE55',
-            backgroundColor: isActive ? '#fff' : '#5E60CE'
+            backgroundColor: isActive ? '#5E60CE' : '#fff'
 
         }
     },
@@ -171,7 +179,7 @@ export const styles = StyleSheet.create({
     indicatorText: (isActive) => {
         return {
             fontSize:12,
-            color: isActive ? '#5E60CE' : '#fff',
+            color: isActive ? '#fff' : '#5E60CE',
             textAlign: 'center',
             fontWeight: 'bold'
         }
@@ -201,7 +209,8 @@ export const styles = StyleSheet.create({
     loose_text: {
         fontFamily: 'RobotoRegular',
         fontSize: 16,
-        marginBottom: 10
+        marginBottom: 10,
+        textAlign: "center"
     },
 
     yes: {
