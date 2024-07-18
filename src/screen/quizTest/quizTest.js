@@ -10,7 +10,9 @@ import { Audio } from "expo-av";
 import { Music } from "../../resource/music";
 import { Entypo } from '@expo/vector-icons';
 import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
-import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
+import { collection, query, where, onSnapshot, doc, addDoc } from "firebase/firestore";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function QuizTest({ navigation, route }) {
   const { timeLimit, category, difficultyLevel } = route.params;
@@ -31,8 +33,12 @@ export default function QuizTest({ navigation, route }) {
   const carouselRef = useRef(null);
   const currentQuestion = questions[activeIndex];
   const [timeOver, setTimeOver] = useState(false)
+  const [currentBatch, setCurrentBatch] = useState(0);
+  const batchSize = 5;
+
 
   useEffect(() => {
+    console.log("category::", category);
     const fetchData = async () => {
       const quizzesRef = collection(doc(firestore, "categories", category.id), 'quizzes');
       const quizzesQuery = query(quizzesRef, where("level", "==", difficultyLevel));
@@ -152,6 +158,11 @@ export default function QuizTest({ navigation, route }) {
     ({ option, index, questionId, selectedOption, correctOption, isOptionDisabled, onPress }) => {
       const isSelected = selectedOption[questionId] === option;
       const isCorrect = correctOption === option;
+  
+      if (!option) {
+        return null; // Do not render the option if it is empty
+      }
+  
       return (
         <TouchableRipple
           onPress={() => onPress(option, questionId)}
@@ -179,6 +190,8 @@ export default function QuizTest({ navigation, route }) {
       );
     }
   );
+  
+  
 
   const validateAnswer = useCallback((selectedOption, questionId) => {
     if (quizEnded) return; // Do not allow changes after the quiz ends
@@ -207,13 +220,13 @@ export default function QuizTest({ navigation, route }) {
   }, [questions, quizEnded]);
 
 
-  const endQuiz = useCallback(() => {
+  const endQuiz = useCallback(async () => {
     if (quizEnded) return; // Ensure endQuiz is only called once
-
+  
     setIsOptionDisabled(true);
     setQuizEnded(true);
     setScoreModal(true);
-
+  
     // Calculate the score
     let totalScore = 0;
     questions.forEach((question) => {
@@ -223,7 +236,39 @@ export default function QuizTest({ navigation, route }) {
       }
     });
     setScore(totalScore);
-  }, [questions, currentOptionSelected, quizEnded]);
+  
+    // Retrieve user information from AsyncStorage
+    const studentYear = await AsyncStorage.getItem('studentYear');
+    const studentName = await AsyncStorage.getItem('studentName');
+  
+    // Calculate percent score
+    const totalPossibleScore = questions.reduce((total, question) => total + question.score, 0);
+    const percentScore = Math.round((totalScore / totalPossibleScore) * 100);
+  
+    // Get current date
+    const currentDate = new Date().toLocaleString();
+  
+    // Prepare the history data
+    const historyData = {
+      studentName,
+      studentYear,
+      date: currentDate,
+      categoryName: category?.title,
+      categoryId: category?.id, // Assuming category has a name property
+      difficultyLevel,
+      percent: percentScore,
+    };
+  
+    try {
+      // Add the history data to Firestore
+      const historyRef = collection(firestore, 'history');
+      await addDoc(historyRef, historyData);
+      console.log('History data added:', historyData);
+    } catch (error) {
+      console.error('Error adding history data:', error);
+    }
+  }, [questions, currentOptionSelected, quizEnded, category.name, difficultyLevel]);
+  
 
 
 
@@ -268,28 +313,44 @@ export default function QuizTest({ navigation, route }) {
 
   const renderIndicators = () => {
     const numQuestions = questions.length;
+    const start = currentBatch * batchSize;
+    const end = Math.min(start + batchSize, numQuestions);
 
-    return Array.from({ length: numQuestions }, (_, i) => (
-      <View key={i} style={styles.indicatorStyle(i === activeIndex)}>
-        <Text style={styles.indicatorText(i === activeIndex)}>{i + 1}</Text>
-      </View>
-    ));
+    const indicators = Array.from({ length: end - start }, (_, i) => {
+      const index = start + i;
+      return (
+        <View key={index} style={styles.indicatorStyle(index === activeIndex)}>
+          <Text style={styles.indicatorText(index === activeIndex)}>{index + 1}</Text>
+        </View>
+      );
+    });
+
+    if (end < numQuestions) {
+      indicators.push(
+        <View key="more" style={styles.indicatorStyle(false)}>
+          <Text style={styles.indicatorText(false)}>...</Text>
+        </View>
+      );
+    }
+
+    return indicators;
   };
+
 
   const renderItem = useCallback(
     ({ item, index }) => {
       if (!currentQuestion) {
         return null;
       }
-
+  
       return (
         <View style={{ height: Dimensions.get("window").height * 0.7, borderRadius: 10, backgroundColor: "#fff" }}>
           <View style={{ minHeight: 100 }}>
             <Text style={styles.number}>{item.question}</Text>
           </View>
-
+  
           <View>
-            {item.options.map((option, index) => (
+            {item.options.filter(Boolean).map((option, index) => ( // Filter out empty options
               <AnswerOption
                 key={index}
                 option={option}
@@ -302,13 +363,13 @@ export default function QuizTest({ navigation, route }) {
               />
             ))}
           </View>
-
+  
           {quizEnded && (
             <View>
               <Text style={styles.continue_btn}>{item.reason}</Text>
             </View>
           )}
-
+  
           {activeIndex === questions.length - 1 && !quizEnded && (
             <TouchableOpacity style={styles.next_button} onPress={endQuiz}>
               <Text style={styles.continue_btn}>End Quiz</Text>
@@ -319,6 +380,8 @@ export default function QuizTest({ navigation, route }) {
     },
     [currentQuestion, currentOptionSelected, correctOption, isOptionDisabled, quizEnded]
   );
+  
+  
 
   const renderBackModal = () => {
 
@@ -389,9 +452,14 @@ export default function QuizTest({ navigation, route }) {
               sliderWidth={Dimensions.get('window').width}
               itemWidth={Math.round(Dimensions.get('window').width * 0.8)}
               containerCustomStyle={{ borderRadius: 10 }}
-              onSnapToItem={(idx) => setActiveIndex(idx)}
+              onSnapToItem={(idx) => {
+                setActiveIndex(idx);
+                setCurrentBatch(Math.floor(idx / batchSize));
+              }}
               scrollEnabled={true}
             />
+
+
           </View>
         </View>
       </LinearGradient>
