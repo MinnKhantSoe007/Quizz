@@ -26,6 +26,13 @@ export default function Level({ navigation, route }) {
     initialize();
   }, [category.id]);
 
+  useEffect(() => {
+    const initialize = async () => {
+      await fetchStudentName();
+    };
+    initialize();
+  },[]);
+
   const fetchStudentName = async () => {
     setLoading(true);
     try {
@@ -168,6 +175,12 @@ export default function Level({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Category")} />
+      {console.log("Name::", studentName)}
+      <TouchableRipple onPress={() => navigation.navigate("History")} style={styles.historyBtnWrapper} rippleColor='#ffffff88' borderless={true}>
+        <View style={styles.historyButton}>
+          <Ionicons name="podium-outline" size={24} style={styles.historyButtonText} />
+        </View>
+      </TouchableRipple>
 
       <Text style={styles.main_text}>
         Choose Level

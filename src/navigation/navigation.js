@@ -16,6 +16,7 @@ import DetailAccount from "../screen/detailAccount/detailAccount";
 import UpdateAccount from "../screen/updateAccount/updateAccount";
 import StudentAuth from "../screen/auth/studentAuth";
 import UpdateStudentAccount from "../screen/updateAccount/updateStudentAccount";
+import History from "../screen/history/history";
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,7 @@ export default function NavigationStack() {
         <Stack.Screen name="UpdateAccount" component={UpdateAccount} />
         <Stack.Screen name="StudentAuth" component={StudentAuth} />
         <Stack.Screen name="UpdateStudentAccount" component={UpdateStudentAccount} />
+        <Stack.Screen name="History" component={History} />
 
       </Stack.Navigator>
     </NavigationContainer>
