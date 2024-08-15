@@ -206,6 +206,7 @@ return (
       value={question}
       onChangeText={setQuestion}
       placeholder="Enter the question"
+      multiline={true}
     />
 
     <Text style={styles.label}>Options:</Text>

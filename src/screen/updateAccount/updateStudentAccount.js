@@ -70,7 +70,7 @@ export default function UpdateStudentAccount({ navigation }) {
                     await AsyncStorage.setItem("studentYear", "guest")
 
                     Alert.alert('Success', 'Update Successful');
-                    navigation.navigate("StudentAuth");
+                    navigation.navigate("Home");
                 } else {
                     Alert.alert('Error', 'New passwords do not match');
                 }
@@ -134,7 +134,7 @@ export default function UpdateStudentAccount({ navigation }) {
                 </KeyboardAvoidingView>
 
                 {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
-                    <>
+                    <KeyboardAvoidingView behavior="padding">
                         {renderNamePicker()}
 
                         <TextInput style={styles.create_input} secureTextEntry={true} placeholder="Current Password" onChangeText={handleOnChangePassword} autoCapitalize="none" autoComplete="password" keyboardType='numeric' />
@@ -143,7 +143,7 @@ export default function UpdateStudentAccount({ navigation }) {
                         <View>
                             <TouchableRipple style={styles.login_button} onPress={updateAccount}><Text style={styles.login_button_text}>Confirm</Text></TouchableRipple>
                         </View>
-                    </>
+                        </KeyboardAvoidingView>
                 }
             </ScrollView>
         </SafeAreaView>

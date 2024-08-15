@@ -10,6 +10,7 @@ import { TouchableRipple } from "react-native-paper"
 export default function Auth({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [secureCode, setSecureCode] = useState('');
   const [loading, setLoading] = useState(false);
   const auth = FIREBASE_AUTH;
 
@@ -21,9 +22,14 @@ export default function Auth({ navigation }) {
     setPassword(text);
   };
 
-  const login = async () => {
+  const handleOnChangeSecureCode = text => {
+    setSecureCode(text);
+  };
 
-    setLoading(true);
+  const login = async () => {
+    if (secureCode == 999999) {
+      setLoading(true);
+    
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
 
@@ -39,6 +45,10 @@ export default function Auth({ navigation }) {
     } finally {
       setLoading(false);
     }
+    } else {
+      alert("Please enter correct and valid secure code.");
+    }
+    
   };
 
 
@@ -54,6 +64,8 @@ export default function Auth({ navigation }) {
         <TextInput style={styles.create_input} placeholder="email" onChangeText={handleOnChangeEmail} keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
 
         <TextInput style={styles.create_input} secureTextEntry={true} placeholder="password" onChangeText={handleOnChangePassword} autoCapitalize="none" autoComplete="password" />
+
+        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="Secure Code" onChangeText={handleOnChangeSecureCode} autoCapitalize="none" autoComplete="password" />
 
       </KeyboardAvoidingView>
 

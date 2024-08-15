@@ -256,6 +256,7 @@ export default function EditQuiz({ route, navigation }) {
           value={question}
           onChangeText={setQuestion}
           placeholder="Enter question"
+          multiline={true}
         />
 
         <Text style={styles.label}>Options:</Text>

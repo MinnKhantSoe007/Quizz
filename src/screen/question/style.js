@@ -71,7 +71,7 @@ icon_logo: {
   overflow: 'hidden',
 },
 logo_container: {
-  marginLeft: "51%",
+  marginLeft: "45%",
   marginTop: 8,
 },
 profile_icon_logo: {

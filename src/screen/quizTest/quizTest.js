@@ -38,7 +38,6 @@ export default function QuizTest({ navigation, route }) {
 
 
   useEffect(() => {
-    console.log("category::", category);
     const fetchData = async () => {
       const quizzesRef = collection(doc(firestore, "categories", category.id), 'quizzes');
       const quizzesQuery = query(quizzesRef, where("level", "==", difficultyLevel));
@@ -232,7 +231,6 @@ export default function QuizTest({ navigation, route }) {
     questions.forEach((question) => {
       if (question.correct_option == currentOptionSelected[question.id]) {
         totalScore += question.score;
-        console.log("UserTotalScore::", totalScore);
       }
     });
     setScore(totalScore);
@@ -269,9 +267,6 @@ export default function QuizTest({ navigation, route }) {
     }
   }, [questions, currentOptionSelected, quizEnded, category.name, difficultyLevel]);
   
-
-
-
   const goHome = () => {
     setScoreModal(false);
   };
@@ -279,7 +274,6 @@ export default function QuizTest({ navigation, route }) {
   const renderModal = () => {
     // Calculate the total score
     const totalScore = questions.reduce((total, question) => total + question.score, 0);
-    console.log("TotalScore::", totalScore);
     return (
       <View>
         <Modal animationType="slide" transparent={true} visible={scoreModal}>

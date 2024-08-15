@@ -61,7 +61,7 @@ export default function Category({ navigation }) {
   }
 
   const handleCategory = (category) => {
-    navigation.navigate("Level", { category });
+    navigation.navigate("Level", { category, studentName, studentYear });
   };
 
   const findUserNameByCreatorUid = (creatorUid) => {

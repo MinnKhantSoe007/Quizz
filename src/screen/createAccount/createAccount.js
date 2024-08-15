@@ -2,13 +2,14 @@ import { SafeAreaView, TextInput, TouchableOpacity, Text, View, Modal, Image } f
 import { styles } from "./style";
 import { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
-import { FIREBASE_AUTH as auth } from "../../../firebaseConfig";
+import { FIREBASE_AUTH as auth, FIREBASE_STORAGE as storage } from "../../../firebaseConfig";
 import { ActivityIndicator } from "react-native-paper";
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
 import * as ImagePicker from "expo-image-picker";
 import { collection, addDoc } from "firebase/firestore"
 import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
 import { TouchableRipple } from "react-native-paper"
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function CreateAccount({ navigation }) {
   const [email, setEmail] = useState();
@@ -84,30 +85,46 @@ export default function CreateAccount({ navigation }) {
     try {
       const response = await createUserWithEmailAndPassword(auth, email, password);
       const user = response.user;
-
+  
+      let photoURL = "";
+      if (profilePicture) {
+        // Generate a unique filename
+        const responseUserId = user.uid;
+        const imageName = `profilePictures/${responseUserId}.jpg`;
+        const response = await fetch(profilePicture);
+        const blob = await response.blob();
+        const storageRef = ref(storage, imageName);
+        const uploadTask = await uploadBytes(storageRef, blob);
+        // Get the download URL of the uploaded image
+        photoURL = await getDownloadURL(uploadTask.ref);
+      }
+  
       await updateProfile(user, {
         displayName: name,
-        photoURL: profilePicture
+        photoURL: photoURL
       });
-
+  
       const usersCollection = collection(firestore, "users");
       await addDoc(usersCollection, {
         name: name,
         email: email,
-        creatorUid: user.uid
+        creatorUid: user.uid,
+        photoURL: photoURL
       });
-
+  
       await sendEmailVerification(user);
-
+  
       setAccModal(true);
-
+  
     } catch (error) {
-      console.log(error);
+      console.error("Error creating account:", error);
       alert(error.message);
     } finally {
       setLoading(false);
     }
   };
+  
+
 
 
   return (

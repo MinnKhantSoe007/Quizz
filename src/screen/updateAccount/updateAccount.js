@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
-import { FIREBASE_AUTH as auth } from "../../../firebaseConfig";
+import { FIREBASE_AUTH as auth, FIREBASE_STORAGE as storage } from "../../../firebaseConfig";
 import { updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import * as ImagePicker from "expo-image-picker";
 import { ActivityIndicator } from "react-native-paper";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function UpdateAccount({ navigation }) {
   const [name, setName] = useState("");
@@ -46,31 +47,42 @@ export default function UpdateAccount({ navigation }) {
   };
 
   const handleUpdateProfile = async () => {
-
     setLoading(true);
     try {
       const user = auth.currentUser;
-
+      let photoURL = user.photoURL;
+  
       if (currentPassword.trim() !== "") {
         const credential = EmailAuthProvider.credential(user.email, currentPassword);
         await reauthenticateWithCredential(user, credential);
         await updatePassword(user, newPassword);
       }
-
+  
+      // Upload the selected profile picture to Firebase Storage
+      if (selectedProfilePicture) {
+        const response = await fetch(selectedProfilePicture);
+        const blob = await response.blob();
+        const storageRef = ref(storage, `profilePictures/${user.uid}.jpg`);
+        const uploadTask = await uploadBytes(storageRef, blob);
+        photoURL = await getDownloadURL(uploadTask.ref);
+      }
+  
+      // Update the user's profile with the new name and photoURL
       await updateProfile(user, {
         displayName: name,
-        photoURL: profilePicture,
+        photoURL: photoURL,
       });
-
+  
       alert("Profile updated successfully.");
-
-      setLoading(false);
       navigation.navigate("Home");
-
+  
     } catch (error) {
-      console.error("Error updating::", error);
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile.");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -79,11 +91,17 @@ export default function UpdateAccount({ navigation }) {
 
       <Text style={styles.text}>Update Account</Text>
 
-      <TouchableOpacity style={styles.photoButton} onPress={handleSelectProfilePicture}>
+      <View style={styles.photoContainer}>
+        <TouchableOpacity style={styles.photoButton} onPress={handleSelectProfilePicture}>
 
-        <Text style={styles.photoButtonText}>Select Picture</Text>
+          <Text style={styles.photoButtonText}>Select Picture</Text>
 
-      </TouchableOpacity>
+        </TouchableOpacity>
+
+        {selectedProfilePicture ? <Image source={{ uri: selectedProfilePicture }} style={styles.selectedPic} /> : null}
+      </View>
+
+
 
       <TextInput
         style={styles.input}
@@ -107,8 +125,6 @@ export default function UpdateAccount({ navigation }) {
         value={newPassword}
         onChangeText={setNewPassword}
       />
-
-      {selectedProfilePicture ? <Image source={{ uri: selectedProfilePicture }} style={styles.selectedPic} /> : null}
 
       {loading ? (
         <ActivityIndicator animating={true} size="large" color="black" />

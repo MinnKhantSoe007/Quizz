@@ -69,6 +69,10 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 20
   },
+  photoContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  }
 
 
 

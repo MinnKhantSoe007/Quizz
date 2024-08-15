@@ -1,47 +1,84 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, View, FlatList, TextInput, Modal } from "react-native";
+import { SafeAreaView, Text, TouchableOpacity, View, FlatList, TextInput, Modal, Alert } from "react-native";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { collection, getDocs, doc, onSnapshot } from 'firebase/firestore';
 import { ActivityIndicator, TouchableRipple } from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 export default function Level({ navigation, route }) {
 
-  const { category } = route.params;
+  const { category, studentName, studentYear } = route.params;
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortModalVisible, setSortModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [studentName, setStudentName] = useState("guest");
+  const [biometricsSupported, setBiometricsSupported] = useState(false);
+  const [biometricsEnrolled, setBiometricsEnrolled] = useState(false);
 
   useEffect(() => {
     const initialize = async () => {
-      await fetchStudentName();
-      fetchData();
+      await fetchData();
+      checkBiometricSupport();
     };
     initialize();
   }, [category.id]);
 
-  useEffect(() => {
-    const initialize = async () => {
-      await fetchStudentName();
-    };
-    initialize();
-  },[]);
+  const checkBiometricSupport = async () => {
+    const compatible = await LocalAuthentication.hasHardwareAsync();
+    const enrolled = await LocalAuthentication.isEnrolledAsync();
+    console.log("Compatible::", compatible, enrolled);
+    setBiometricsSupported(compatible);
+    setBiometricsEnrolled(enrolled);
+  };
 
-  const fetchStudentName = async () => {
-    setLoading(true);
-    try {
-      const name = await AsyncStorage.getItem('studentName');
-      setStudentName(name);
-      setLoading(false)
-    } catch (error) {
-      console.error('Error fetching student name from AsyncStorage:', error);
-      setLoading(false)
+  const authenticateUser = async () => {
+    const supportedBiometrics = await LocalAuthentication.supportedAuthenticationTypesAsync();
+  
+    // Check for Face ID/Touch ID availability
+    const isFaceIDAvailable = supportedBiometrics.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
+    const isTouchIDAvailable = supportedBiometrics.includes(LocalAuthentication.AuthenticationType.FINGERPRINT);
+    const isIrisIDAvailable = supportedBiometrics.includes(LocalAuthentication.AuthenticationType.IRIS);
+  
+    let options = {
+      promptMessage: 'Authenticate to play',
+    };
+  // console.log(isTouchIDAvailable);
+    // Prioritize Face ID/Touch ID if available
+    // if (isFaceIDAvailable) {
+    //   options.cancelLabel = 'Use Passcode';
+    //   options.authenticationType = LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
+    // } else if (isTouchIDAvailable) {
+    //   options.cancelLabel = 'Use Passcode';
+    //   options.authenticationType = LocalAuthentication.AuthenticationType.FINGERPRINT
+    // }
+  
+    const result = await LocalAuthentication.authenticateAsync(options);
+  
+    if (result.success) {
+      return true;
+    } else {
+      // Handle authentication failure or cancellation
+      if (result.error === 'LAErrorUserFallback') {
+        console.log('User cancelled authentication and chose passcode.');
+      }
+      return false;
+    }
+  };
+
+  const handleLevel = async (difficultyLevel, timeLimit) => {
+    if (studentName != "guest") {
+      const authenticated = await authenticateUser();
+    if (authenticated) {
+      navigation.navigate("QuizTest", { difficultyLevel, timeLimit, category });
+    } else {
+      Alert.alert('Authentication Failed', 'You need to authenticate to play.');
+    }
+    } else {
+      navigation.navigate("QuizTest", { difficultyLevel, timeLimit, category });
     }
   };
 
@@ -103,12 +140,7 @@ export default function Level({ navigation, route }) {
     setRefreshing(false);
   }
 
-  const handleLevel = (difficultyLevel, timeLimit) => {
-    navigation.navigate("QuizTest", { difficultyLevel, timeLimit, category })
-  };
-
   const renderCategoryItems = ({ item }) => {
-    {console.log("Items::", item)}
     return (
       <View style={item.endTime ? styles.level_containered : styles.level_container}>
         <TouchableOpacity onPress={() => handleLevel(item.level, item.duration)}>
@@ -175,7 +207,6 @@ export default function Level({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Category")} />
-      {console.log("Name::", studentName)}
       <TouchableRipple onPress={() => navigation.navigate("History")} style={styles.historyBtnWrapper} rippleColor='#ffffff88' borderless={true}>
         <View style={styles.historyButton}>
           <Ionicons name="podium-outline" size={24} style={styles.historyButtonText} />
