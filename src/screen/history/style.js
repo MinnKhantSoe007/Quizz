@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
 
   container: {
     backgroundColor: '#fff',
-    flex: 1
+    flex: 1,
   },
 
   main_text: {
@@ -37,9 +37,10 @@ export const styles = StyleSheet.create({
 
   level: {
     fontFamily: 'RobotoRegular',
-    fontSize: 25,
+    fontSize: 20,
     marginBottom: 10,
-    color: '#ffff'
+    color: '#000',
+    textAlign: "center"
   },
 
   score: {
@@ -123,54 +124,25 @@ export const styles = StyleSheet.create({
     color: '#fff',
   },
 
-  modalView: {
+  no_data_text: {
+    fontFamily: 'RobotoBold',
+    textAlign: 'center',
+    fontSize: 20,
     marginTop: 30,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 40,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 7,
-    elevation: 9,
+    marginBottom: 30,
   },
 
-  modalTitle: {
+  picker: {
+    fontFamily: 'RobotoRegular',
+    borderColor: '#5E60CE',
+    borderWidth: 1,
     fontSize: 20,
-    marginBottom: 20,
-    fontFamily: 'RobotoBold',
-  },
-  modalOption: {
-    fontSize: 18,
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  modalButton: {
-    backgroundColor: '#5E60CE',
-    width: 100,
+    paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 10,
-    marginTop: 20,
-  },
-  modalButtonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontFamily: 'RobotoBold',
-  },
-  noCategoryText: {
-    fontFamily: 'RobotoBold',
-    fontSize: 20,
-    textAlign: 'center',
-    marginTop: 50,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginBottom: 20,
+    marginHorizontal: 15,
+    color: '#000',
   },
 
 })

@@ -18,6 +18,7 @@ export default function QuizCategory({ navigation, route }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortModalVisible, setSortModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [filteredCategories, setFilteredCategories] = useState([])
 
   useEffect(() => {
     const unsubscribe = fetchQuizzes();
@@ -30,6 +31,8 @@ export default function QuizCategory({ navigation, route }) {
       collection(doc(firestore, "categories", category.id), 'quizzes'),
       (snapshot) => {
         const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        const uniqueLevels = Array.from(new Set(data.map(item => item.level)));
+        setFilteredCategories(uniqueLevels)
         setQuizzes(data);
         setFilteredQuizzes(data);
         setLoading(false);
@@ -153,6 +156,11 @@ export default function QuizCategory({ navigation, route }) {
       <TouchableRipple onPress={() => navigation.navigate("CreateQuiz", { categoryId: category.id })} style={styles.createBtnWrapper} rippleColor='#ffffff88' borderless={true}>
         <View style={styles.createButton}>
           <AntDesign name="plus" size={30} style={styles.plusBtn} />
+        </View>
+      </TouchableRipple>
+      <TouchableRipple onPress={() => navigation.navigate("History", {studentName: "guest", studentYear: "guest", category: category, filteredCategories: filteredCategories})} style={styles.historyBtnWrapper} rippleColor='#ffffff88' borderless={true}>
+        <View style={styles.historyButton}>
+        <Ionicons name="podium-outline" size={24} style={styles.historyButtonText} />
         </View>
       </TouchableRipple>
       <TouchableRipple onPress={() => setSortModalVisible(true)} style={styles.sortBtnWrapper} rippleColor='#ffffff88' borderless={true}>

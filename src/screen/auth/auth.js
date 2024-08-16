@@ -63,9 +63,9 @@ export default function Auth({ navigation }) {
 
         <TextInput style={styles.create_input} placeholder="email" onChangeText={handleOnChangeEmail} keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
 
-        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="password" onChangeText={handleOnChangePassword} autoCapitalize="none" autoComplete="password" />
+        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="password" onChangeText={handleOnChangePassword} autoCapitalize="none" />
 
-        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="Secure Code" onChangeText={handleOnChangeSecureCode} autoCapitalize="none" autoComplete="password" />
+        <TextInput style={styles.create_input} secureTextEntry={true} placeholder="Secure Code" onChangeText={handleOnChangeSecureCode} autoCapitalize="none" />
 
       </KeyboardAvoidingView>
 

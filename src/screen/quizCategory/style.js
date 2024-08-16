@@ -188,5 +188,23 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 50,
   },
+  historyButton: {
+    backgroundColor: '#088F8F',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  historyButtonText: {
+    color: '#fff',
+  },
+  historyBtnWrapper: {
+    backgroundColor: '#000',
+    position: 'absolute',
+    bottom: 30,
+    alignSelf: "center",
+    borderRadius: 30
+  },
 
 });

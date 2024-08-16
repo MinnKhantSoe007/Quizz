@@ -30,7 +30,6 @@ export default function Level({ navigation, route }) {
   const checkBiometricSupport = async () => {
     const compatible = await LocalAuthentication.hasHardwareAsync();
     const enrolled = await LocalAuthentication.isEnrolledAsync();
-    console.log("Compatible::", compatible, enrolled);
     setBiometricsSupported(compatible);
     setBiometricsEnrolled(enrolled);
   };
@@ -207,11 +206,13 @@ export default function Level({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Category")} />
-      <TouchableRipple onPress={() => navigation.navigate("History")} style={styles.historyBtnWrapper} rippleColor='#ffffff88' borderless={true}>
+
+        {studentName != "guest" &&
+          <TouchableRipple onPress={() => navigation.navigate("History", {studentName, studentYear, category, filteredCategories})} style={styles.historyBtnWrapper} rippleColor='#ffffff88' borderless={true}>
         <View style={styles.historyButton}>
           <Ionicons name="podium-outline" size={24} style={styles.historyButtonText} />
         </View>
-      </TouchableRipple>
+      </TouchableRipple>}
 
       <Text style={styles.main_text}>
         Choose Level
