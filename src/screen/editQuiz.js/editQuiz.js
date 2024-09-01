@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator } from "react-native-paper";
 import { TouchableRipple } from "react-native-paper"
 import { SafeAreaView } from 'react-native-safe-area-context';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from 'react-native-date-picker';
 import { Picker } from "@react-native-picker/picker";
 import RadioButtonGroup, { RadioButtonItem } from "expo-radio-button";
 
@@ -20,8 +20,8 @@ export default function EditQuiz({ route, navigation }) {
   const [score, setScore] = useState(quiz.score.toString())
   const [level, setLevel] = useState(quiz.level);
   const [duration, setDuration] = useState(quiz.duration);
-  const [startTime, setStartTime] = useState(quiz.startTime);
-  const [endTime, setEndTime] = useState(quiz.endTime);
+  const [startTime, setStartTime] = useState(quiz?.startTime);
+  const [endTime, setEndTime] = useState(quiz?.endTime);
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false)
   const [loading1, setLoading1] = useState(false)
@@ -205,43 +205,6 @@ export default function EditQuiz({ route, navigation }) {
     }
   }
 
-  const renderModal = (type) => {
-    return (
-      <View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={type === "start" ? showStartTimePicker : showEndTimePicker}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <DateTimePicker
-                value={type === "start" ? startTempTime : endTempTime}
-                mode="datetime"
-                display="default"
-                onChange={(event, selectedDate) => {
-                  if (selectedDate) {
-                    type === "start" ? setStartTempTime(selectedDate) : setEndTempTime(selectedDate);
-                  }
-                }}
-              />
-              <TouchableRipple onPress={() => handleConfirmDate(type)}>
-                <Text style={styles.ok}>
-                  Okay
-                </Text>
-              </TouchableRipple>
-              <TouchableRipple onPress={() => type === "start" ? setShowStartTimePicker(false) : setShowEndTimePicker(false)}>
-                <Text style={styles.no}>
-                  No
-                </Text>
-              </TouchableRipple>
-            </View>
-          </View>
-        </Modal>
-      </View>
-    );
-  };
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -249,6 +212,32 @@ export default function EditQuiz({ route, navigation }) {
       <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
 
       <ScrollView style={styles.inputs} showsVerticalScrollIndicator={false}>
+        
+      <DatePicker
+          modal
+          open={showStartTimePicker}
+          date={startTempTime}
+          onDateChange={setStartTempTime}
+          mode="datetime"
+          onCancel={() => setShowStartTimePicker(false)}
+          onConfirm={(date) => {
+            setStartTime(date);
+            setShowStartTimePicker(false);
+          }}
+        />
+
+        <DatePicker
+          modal
+          open={showEndTimePicker}
+          date={endTempTime}
+          onDateChange={setEndTempTime}
+          mode="datetime"
+          onCancel={() => setShowEndTimePicker(false)}
+          onConfirm={(date) => {
+            setEndTime(date);
+            setShowEndTimePicker(false);
+          }}
+        />
 
         <Text style={styles.label}>Question:</Text>
         <TextInput
@@ -373,11 +362,6 @@ export default function EditQuiz({ route, navigation }) {
         />
 
         {renderDeleteModal()}
-        {/* Start Time Picker Modal */}
-        {renderModal("start")}
-
-        {/* End Time Picker Modal */}
-        {renderModal("end")}
 
         {
           loading || loading1 ? <ActivityIndicator animating={true} size="large" color="black" /> :
