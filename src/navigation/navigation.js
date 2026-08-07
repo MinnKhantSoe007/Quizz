@@ -25,7 +25,7 @@ export default function NavigationStack() {
   return (
 
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Question">
 
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Home" component={Home} options={{gestureEnabled: false}} />

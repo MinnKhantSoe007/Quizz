@@ -1,161 +1,253 @@
 import { StyleSheet } from "react-native";
+import { Colors, FontFamily, FontSize, Radius, Spacing } from "../../theme/theme";
 
 export const styles = StyleSheet.create({
-container: {
-  flex: 1,
-  backgroundColor: '#fff',
-  padding: 20,
-},
-searchContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  backgroundColor: '#F5F3F4',
-  borderRadius: 10,
-  marginVertical: 10,
-  paddingHorizontal: 10,
-  marginTop: "10%"
-},
-searchIcon: {
-  marginRight: 10,
-},
-searchInput: {
-  flex: 1,
-  height: 40,
-},
-categoryItem: {
-  flex: 1,
-  marginTop: 10,
-  marginBottom: 50,
-},
-categoryTitle: {
-  color: '#333',
-  fontFamily: 'RobotoRegular',
-  fontSize: 20,
-  textAlign: 'center',
-  paddingVertical: 10,
-  borderRadius: 5,
-},
-itemWrapper: {
-  marginVertical: 10,
-  backgroundColor: '#F5F3F4',
-  borderRadius: 10,
-},
-createBtnWrapper: {
-  backgroundColor: '#000',
-  position: 'absolute',
-  bottom: 30,
-  right: 30,
-  borderRadius: 30,
-},
-createButton: {
-  backgroundColor: '#000',
-  width: 60,
-  height: 60,
-  borderRadius: 30,
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-plusBtn: {
-  color: '#fff',
-},
-back: {
-  position: 'relative',
-  top: "4%",
-  // left: "5%",
-  flexDirection: "row",
-},
-icon_logo: {
-  width: 50,
-  height: 50,
-  borderRadius: 50,
-  overflow: 'hidden',
-},
-logo_container: {
-  marginLeft: "45%",
-  marginTop: 8,
-},
-profile_icon_logo: {
-  width: 40,
-  height: 40,
-  borderRadius: 50,
-  overflow: 'hidden',
-},
-icon_text: {
-  fontFamily: 'RobotoBold',
-  fontSize: 23,
-  marginTop: 5,
-  marginLeft: 10,
-},
-text: {
-  fontFamily: 'RobotoBold',
-  fontSize: 20,
-  marginBottom: 10,
-  textAlign: 'center',
-},
-noCategoryText: {
-  fontFamily: 'RobotoBold',
-  fontSize: 20,
-  textAlign: 'center',
-  marginTop: 50,
-},
-sortBtnWrapper: {
-  backgroundColor: '#000',
-  position: 'absolute',
-  bottom: 30,
-  left: 30,
-  borderRadius: 30,
-},
-sortButton: {
-  backgroundColor: '#808080',
-  width: 60,
-  height: 60,
-  borderRadius: 30,
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-sortButtonText: {
-  color: '#fff',
-},
-modalView: {
-  marginTop: 30,
-  backgroundColor: '#fff',
-  borderRadius: 10,
-  padding: 40,
-  alignItems: 'center',
-  shadowColor: '#000',
-  shadowOffset: {
-    width: 0,
-    height: 2,
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background,
+    paddingHorizontal: Spacing.lg,
   },
-  shadowOpacity: 0.3,
-  shadowRadius: 7,
-  elevation: 9,
-},
-centeredView: {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-modalTitle: {
-  fontSize: 20,
-  marginBottom: 20,
-  fontFamily: 'RobotoBold',
-},
-modalOption: {
-  fontSize: 18,
-  marginBottom: 15,
-  textAlign: 'center',
-},
-modalButton: {
-  backgroundColor: '#5E60CE',
-  width: 100,
-  paddingVertical: 10,
-  borderRadius: 10,
-  marginTop: 20,
-},
-modalButtonText: {
-  color: '#fff',
-  textAlign: 'center',
-  fontFamily: 'RobotoBold',
-},
+
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.lg,
+  },
+
+  welcomeText: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.xl,
+    color: Colors.primary,
+  },
+
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: Radius.full,
+  },
+
+  searchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+    gap: Spacing.sm,
+  },
+
+  searchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: Radius.md,
+    paddingHorizontal: Spacing.md,
+    height: 48,
+    borderWidth: 1,
+    borderColor: Colors.border
+  },
+
+  searchIcon: {
+    marginRight: Spacing.sm,
+  },
+
+  searchInput: {
+    flex: 1,
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+    height: '100%',
+  },
+
+  filterButton: {
+    width: 48,
+    height: 48,
+    borderRadius: Radius.md,
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  listContainer: {
+    flex: 1,
+    marginBottom: Spacing.xxl,
+  },
+
+  listContent: {
+    paddingBottom: Spacing.xxl,
+  },
+
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderRadius: Radius.lg,
+    padding: Spacing.md,
+    marginBottom: Spacing.md,
+    shadowColor: Colors.cardShadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    elevation: 3,
+  },
+
+  cardBadge: {
+    width: 48,
+    height: 48,
+    borderRadius: Radius.md,
+    backgroundColor: Colors.primaryHighlight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: Spacing.md,
+  },
+
+  cardBadgeText: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.sm,
+    color: Colors.primary,
+  },
+
+  cardContent: {
+    flex: 1,
+    marginRight: Spacing.sm,
+  },
+
+  cardTitle: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.xs,
+  },
+
+  cardSubtitle: {
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+  },
+
+  cardTag: {
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.xs,
+    color: Colors.primary,
+    maxWidth: 90,
+    textAlign: 'right',
+  },
+
+  fab: {
+    position: 'absolute',
+    bottom: Spacing.xl,
+    right: Spacing.lg,
+    width: 60,
+    height: 60,
+    borderRadius: Radius.full,
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+
+  loader: {
+    marginTop: Spacing.xxl,
+  },
+
+  emptyText: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.lg,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    marginTop: Spacing.xxl,
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: Colors.overlay,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+  },
+
+  modalCard: {
+    width: '100%',
+    backgroundColor: Colors.white,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
+    alignItems: 'center',
+  },
+
+  modalTitle: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.lg,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.lg,
+  },
+
+  modalOption: {
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.md,
+    textAlign: 'center',
+  },
+
+  modalButton: {
+    width: '100%',
+    marginTop: Spacing.sm,
+  },
+
+  addModalCard: {
+    width: '100%',
+    maxHeight: '85%',
+    backgroundColor: Colors.white,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
+  },
+
+  addModalTitle: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.lg,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: Spacing.lg,
+  },
+
+  listLabel: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.sm,
+  },
+
+  categoryList: {
+    maxHeight: 180,
+    marginBottom: Spacing.lg,
+  },
+
+  categoryOption: {
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Radius.md,
+    marginBottom: Spacing.xs,
+  },
+
+  categoryOptionSelected: {
+    backgroundColor: Colors.primaryHighlight,
+  },
+
+  categoryOptionText: {
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+  },
+
+  categoryOptionTextSelected: {
+    fontFamily: FontFamily.bold,
+    color: Colors.primary,
+  },
+
+  modalActionButton: {
+    width: '100%',
+    marginBottom: Spacing.sm,
+  },
 });

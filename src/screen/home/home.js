@@ -1,45 +1,58 @@
-import { View, Text, SafeAreaView, Image } from "react-native"
-import { styles } from "./style"
-import { ImageResource } from "../../resource/imageResource"
-import { TouchableRipple } from "react-native-paper"
+import React from 'react';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  SafeAreaView,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
+import { ImageResource } from '../../resource/imageResource';
+import AppButton from '../../components/AppButton';
+import { Colors, FontFamily, FontSize, Spacing } from '../../theme/theme';
+import { DIMENSIONS } from '../../utils/constant';
+import { styles } from './style';
 
 export default function Home({ navigation }) {
-
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-
-        <View style={styles.image_container}>
-          <Image source={ImageResource.logo.home_logo}
-            style={styles.image}
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        bounces={true}
+      >
+        <View style={styles.illustrationWrapper}>
+          <Image
+            source={ImageResource.logo.home_logo}
+            style={styles.illustration}
             resizeMode="contain"
           />
         </View>
 
-        <View style={styles.title_container}>
-          <Text style={styles.title}>
-            Create and play quizes whenever and wherever you want
+        <View style={styles.textBlock}>
+          <Text style={styles.headline}>Welcome To Quiz App!</Text>
+          <Text style={styles.subheadline}>
+            Create and play quizzes whenever and wherever you want
           </Text>
         </View>
 
-        <View>
+        <View style={styles.buttonBlock}>
+          <AppButton
+            label="Add Quiz"
+            onPress={() => navigation.navigate('Auth')}
+            variant="filled"
+          />
 
-          <TouchableRipple onPress={() => navigation.navigate("Auth")} style={styles.add_btn_container}>
-            <Text style={styles.add_btn}>
-              Add Quiz
-            </Text>
-          </TouchableRipple>
+          <View style={styles.btnSpacer} />
 
-          <TouchableRipple onPress={() => navigation.navigate("StudentAuth")} style={styles.start_btn_container}>
-            <Text style={styles.start_btn}>
-              Let's Play
-            </Text>
-          </TouchableRipple>
-
+          <AppButton
+            label="Let's Play"
+            onPress={() => navigation.navigate('StudentAuth')}
+            variant="filled"
+          />
         </View>
-      </SafeAreaView>
-    </>
-
-
-  )
+      </ScrollView>
+    </SafeAreaView>
+  );
 }

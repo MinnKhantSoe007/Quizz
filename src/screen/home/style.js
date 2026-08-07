@@ -1,67 +1,62 @@
 import { StyleSheet } from "react-native";
+import { Colors, FontFamily, FontSize, Spacing } from "../../theme/theme";
+import { DIMENSIONS } from "../../utils/constant";
 
 export const styles = StyleSheet.create({
-
-  container: {
-    backgroundColor: '#fff',
-    flex: 1
+  safeArea: {
+    flex: 1,
+    backgroundColor: Colors.background,
   },
 
-  image: {
-    height: 300,
-    width: 300,
-  },
-
-  image_container: {
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.xl,
+    paddingBottom: Spacing.xxl,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 110
   },
 
-  title_container: {
-    marginTop: 20
+  illustrationWrapper: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: Spacing.lg,
   },
 
-  title: {
-    fontFamily: 'RobotoBold',
-    fontSize: 20,
-    color:'#00000088',
-    paddingHorizontal:20,
-    letterSpacing:2,
+  illustration: {
+    width: DIMENSIONS.width * 0.85,
+    height: DIMENSIONS.width * 0.75,
+  },
+
+  textBlock: {
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: Spacing.xxl,
+  },
+
+  headline: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.xl,
+    color: Colors.primary,
     textAlign: 'center',
+    marginBottom: Spacing.md,
   },
 
-  add_btn_container: {
-    marginTop: 70,
-    marginHorizontal: 15
-  },
-
-  add_btn: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 20,
-    backgroundColor: '#5E60CE',
-    paddingVertical: 13,
-    paddingHorizontal: 10,
-    borderRadius: 10,
+  subheadline: {
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
     textAlign: 'center',
-    color:'#fff'
+    lineHeight: FontSize.md * 1.6,
+    paddingHorizontal: Spacing.md,
   },
 
-  start_btn_container: {
-    marginTop: 30,
-    marginHorizontal: 15,
-    marginBottom: 70
+  buttonBlock: {
+    width: '100%',
   },
 
-  start_btn: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 20,
-    backgroundColor: '#5E60CE',
-    paddingVertical: 13,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    textAlign: 'center',
-    color:'#fff'
-  }
-
-})
+  btnSpacer: {
+    height: Spacing.md,
+  },
+});
