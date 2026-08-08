@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, View, FlatList, TextInput, Modal, Alert } from "react-native";
+import { Text, TouchableOpacity, FlatList, Alert, View } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
-import { collection, getDocs, doc, onSnapshot } from 'firebase/firestore';
-import { ActivityIndicator, TouchableRipple } from 'react-native-paper';
+import { collection, doc, onSnapshot } from 'firebase/firestore';
 import * as LocalAuthentication from 'expo-local-authentication';
+import BackButton from '../../components/BackButton';
+import CategoryCard from '../../components/CategoryCard';
+import SortSheet from '../../components/SortSheet';
+import SearchBar from '../../components/SearchBar';
+import Loader from '../../components/Loader';
+import { Colors } from '../../theme/theme';
 
 export default function Level({ navigation, route }) {
 
@@ -16,51 +22,19 @@ export default function Level({ navigation, route }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortModalVisible, setSortModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [biometricsSupported, setBiometricsSupported] = useState(false);
-  const [biometricsEnrolled, setBiometricsEnrolled] = useState(false);
 
   useEffect(() => {
-    const initialize = async () => {
-      await fetchData();
-      checkBiometricSupport();
-    };
-    initialize();
+    fetchData();
   }, [category.id]);
 
-  const checkBiometricSupport = async () => {
-    const compatible = await LocalAuthentication.hasHardwareAsync();
-    const enrolled = await LocalAuthentication.isEnrolledAsync();
-    setBiometricsSupported(compatible);
-    setBiometricsEnrolled(enrolled);
-  };
-
   const authenticateUser = async () => {
-    const supportedBiometrics = await LocalAuthentication.supportedAuthenticationTypesAsync();
-  
-    // Check for Face ID/Touch ID availability
-    const isFaceIDAvailable = supportedBiometrics.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
-    const isTouchIDAvailable = supportedBiometrics.includes(LocalAuthentication.AuthenticationType.FINGERPRINT);
-    const isIrisIDAvailable = supportedBiometrics.includes(LocalAuthentication.AuthenticationType.IRIS);
-  
-    let options = {
+    const result = await LocalAuthentication.authenticateAsync({
       promptMessage: 'Authenticate to play',
-    };
-  // console.log(isTouchIDAvailable);
-    // Prioritize Face ID/Touch ID if available
-    // if (isFaceIDAvailable) {
-    //   options.cancelLabel = 'Use Passcode';
-    //   options.authenticationType = LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
-    // } else if (isTouchIDAvailable) {
-    //   options.cancelLabel = 'Use Passcode';
-    //   options.authenticationType = LocalAuthentication.AuthenticationType.FINGERPRINT
-    // }
-  
-    const result = await LocalAuthentication.authenticateAsync(options);
-  
+    });
+
     if (result.success) {
       return true;
     } else {
-      // Handle authentication failure or cancellation
       if (result.error === 'LAErrorUserFallback') {
         console.log('User cancelled authentication and chose passcode.');
       }
@@ -109,7 +83,7 @@ export default function Level({ navigation, route }) {
         // Filter levels based on startTime, endTime, and studentName
         const filteredLevels = formattedCategories.filter(level => {
           const { startTime, endTime } = level;
-          
+
           if (studentName === "guest" && endTime) {
             return false; // Hide levels with endTime for guest users
           } else if (startTime && endTime) {
@@ -139,34 +113,27 @@ export default function Level({ navigation, route }) {
     setRefreshing(false);
   }
 
-  const renderCategoryItems = ({ item }) => {
-    return (
-      <View style={item.endTime ? styles.level_containered : styles.level_container}>
-        <TouchableOpacity onPress={() => handleLevel(item.level, item.duration)}>
-          <Text style={styles.level}>Level: {item.level}</Text>
-          <View style={styles.score_container}>
-            {/* <Text style={styles.score}>Score: {item.score}</Text> */}
-            <Text style={styles.score}>Duration: {item.duration} minutes</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    )
-  };
+  const renderCategoryItem = ({ item }) => (
+    <CategoryCard
+      title={`Level: ${item.level}`}
+      subtitle={`Duration: ${item.duration} minutes`}
+      tag={item.endTime ? 'Closed' : undefined}
+      onPress={() => handleLevel(item.level, item.duration)}
+    />
+  );
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    const filteredCategories = categories.filter((category) =>
+    const filtered = categories.filter((category) =>
       category.level.toLowerCase().includes(query.toLowerCase())
     );
-    setFilteredCategories(filteredCategories);
+    setFilteredCategories(filtered);
   };
 
   const handleSort = (sortKey) => {
     const sortedCategories = [...categories].sort((a, b) => {
       if (sortKey === "level") {
         return a.level.localeCompare(b.level); // Sort by level
-      } else if (sortKey === "score") {
-        return a.score - b.score; // Sort by score (ascending)
       } else if (sortKey === "duration") {
         return parseInt(a.duration) - parseInt(b.duration); // Sort by duration (ascending)
       }
@@ -181,72 +148,57 @@ export default function Level({ navigation, route }) {
     setSortModalVisible(false);
   };
 
-  const renderModal = () => (
-    <Modal animationType="slide" transparent={true} visible={sortModalVisible} onRequestClose={() => setSortModalVisible(false)}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalTitle}>Sort By</Text>
-          <TouchableOpacity onPress={() => handleSort("level")}>
-            <Text style={styles.modalOption}>Level</Text>
-          </TouchableOpacity>
-          {/* <TouchableOpacity onPress={() => handleSort("score")}>
-            <Text style={styles.modalOption}>Score</Text>
-          </TouchableOpacity> */}
-          <TouchableOpacity onPress={() => handleSort("duration")}>
-            <Text style={styles.modalOption}>Duration</Text>
-          </TouchableOpacity>
-          <TouchableRipple onPress={clearSort} style={styles.modalButton} rippleColor='#ffffff88' borderless={true}>
-            <Text style={styles.modalButtonText}>Clear</Text>
-          </TouchableRipple>
-        </View>
-      </View>
-    </Modal>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
-      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Category")} />
-
-        {studentName != "guest" &&
-          <TouchableRipple onPress={() => navigation.navigate("History", {studentName, studentYear, category, filteredCategories})} style={styles.historyBtnWrapper} rippleColor='#ffffff88' borderless={true}>
-        <View style={styles.historyButton}>
-          <Ionicons name="podium-outline" size={24} style={styles.historyButtonText} />
-        </View>
-      </TouchableRipple>}
-
-      <Text style={styles.main_text}>
-        Choose Level
-      </Text>
-
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color='#5E60CE' style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search levels..."
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
+      <View style={styles.header}>
+        <BackButton onPress={() => navigation.navigate("Category")} style={{ position: 'absolute', left: 0, paddingHorizontal: 0 }} />
+        <Text style={styles.headerTitle}>Choose Level</Text>
       </View>
 
-      <TouchableRipple onPress={() => setSortModalVisible(true)} style={styles.sortBtnWrapper} rippleColor='#ffffff88' borderless={true}>
-        <View style={styles.sortButton}>
-          <Ionicons name="funnel-outline" size={24} style={styles.sortButtonText} />
-        </View>
-      </TouchableRipple>
+      <SearchBar
+        value={searchQuery}
+        onChangeText={handleSearch}
+        onFilterPress={() => setSortModalVisible(true)}
+      />
 
-      {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
-        <FlatList
-          data={filteredCategories}
-          renderItem={renderCategoryItems}
-          keyExtractor={(item) => item.level}
-          showsVerticalScrollIndicator={false}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-        />
-      }
+      <View style={styles.listContainer}>
+        {loading ? (
+          <Loader style={styles.loader} />
+        ) : filteredCategories.length === 0 ? (
+          <Text style={styles.emptyText}>There is no level right now!</Text>
+        ) : (
+          <FlatList
+            data={filteredCategories}
+            renderItem={renderCategoryItem}
+            keyExtractor={(item) => item.level}
+            showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            contentContainerStyle={styles.listContent}
+          />
+        )}
+      </View>
 
-      {renderModal()}
+      {studentName != "guest" && (
+        <TouchableOpacity
+          style={styles.historyFab}
+          onPress={() => navigation.navigate("History", { studentName, studentYear, category, filteredCategories })}
+          activeOpacity={0.85}
+        >
+          <Ionicons name="podium-outline" size={24} color={Colors.white} />
+        </TouchableOpacity>
+      )}
 
+      <SortSheet
+        visible={sortModalVisible}
+        onClose={() => setSortModalVisible(false)}
+        options={[
+          { label: 'Level', value: 'level' },
+          { label: 'Duration', value: 'duration' },
+        ]}
+        onSelect={handleSort}
+        onClear={clearSort}
+      />
     </SafeAreaView>
   );
 }

@@ -1,176 +1,62 @@
 import { StyleSheet } from "react-native";
+import { Colors, FontFamily, FontSize, Radius, Spacing } from "../../theme/theme";
 
 export const styles = StyleSheet.create({
-
   container: {
-    backgroundColor: '#fff',
-    flex: 1
+    flex: 1,
+    backgroundColor: Colors.background,
+    paddingHorizontal: Spacing.lg,
   },
 
-  main_text: {
-    fontFamily: 'RobotoBold',
-    textAlign: 'center',
-    fontSize: 30,
-    marginTop: 30,
-    marginBottom: 30
-  },
-
-  level_container: {
-    marginTop: 40,
-    marginLeft: 10,
-    marginHorizontal: 10,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    backgroundColor: '#5E60CE',
-    borderRadius: 15
-  },
-
-  level_containered: {
-    marginTop: 40,
-    marginLeft: 10,
-    marginHorizontal: 10,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    backgroundColor: '#A00000',
-    borderRadius: 15
-  },
-
-  level: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 25,
-    marginBottom: 10,
-    color: '#ffff'
-  },
-
-  score: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 18,
-    marginBottom: 10,
-    color: "#66cc91"
-  },
-
-  back: {
-    position: 'relative',
-    top: "4%",
-    left: "5%",
-    color: '#000',
-  },
-
-  flatList: {
-    position: 'relative',
-    marginBottom: "40%"
-  },
-
-  score_container: {
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-
-  searchContainer: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F3F4',
-    borderRadius: 10,
-    marginVertical: 10,
-    marginHorizontal: 10,
-    marginTop: "1%"
-  },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
+    justifyContent: 'center',
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.lg,
   },
 
-  sortBtnWrapper: {
-    backgroundColor: '#000',
-    position: 'absolute',
-    bottom: "2%",
-    right: "5%",
-    borderRadius: 30,
-    zIndex: 2,
+  headerTitle: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.xl,
+    color: Colors.primary,
   },
-  sortButton: {
-    backgroundColor: '#808080',
+
+  listContainer: {
+    flex: 1,
+    marginBottom: Spacing.xxl,
+  },
+
+  listContent: {
+    paddingBottom: Spacing.xxl,
+  },
+
+  loader: {
+    marginTop: Spacing.xxl,
+  },
+
+  emptyText: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.lg,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    marginTop: Spacing.xxl,
+  },
+
+  historyFab: {
+    position: 'absolute',
+    bottom: Spacing.xl,
+    left: Spacing.lg,
     width: 60,
     height: 60,
-    borderRadius: 30,
+    borderRadius: Radius.full,
+    backgroundColor: Colors.secondary,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  sortButtonText: {
-    color: '#fff',
-  },
-
-  historyBtnWrapper: {
-    backgroundColor: '#000',
-    position: 'absolute',
-    bottom: "2%",
-    left: "5%",
-    borderRadius: 30,
-    zIndex: 2,
-  },
-  historyButton: {
-    backgroundColor: '#088F8F',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  historyButtonText: {
-    color: '#fff',
-  },
-
-  modalView: {
-    marginTop: 30,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 40,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 7,
-    elevation: 9,
-  },
-
-  modalTitle: {
-    fontSize: 20,
-    marginBottom: 20,
-    fontFamily: 'RobotoBold',
-  },
-  modalOption: {
-    fontSize: 18,
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  modalButton: {
-    backgroundColor: '#5E60CE',
-    width: 100,
-    paddingVertical: 10,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-  modalButtonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontFamily: 'RobotoBold',
-  },
-  noCategoryText: {
-    fontFamily: 'RobotoBold',
-    fontSize: 20,
-    textAlign: 'center',
-    marginTop: 50,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-})
+});

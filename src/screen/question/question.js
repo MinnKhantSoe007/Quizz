@@ -4,12 +4,10 @@ import {
   Text,
   FlatList,
   Image,
-  TextInput,
   Modal,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
@@ -25,6 +23,11 @@ import {
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import AppButton from '../../components/AppButton';
 import InputField from '../../components/InputField';
+import CategoryCard from '../../components/CategoryCard';
+import SortSheet from '../../components/SortSheet';
+import SearchBar from '../../components/SearchBar';
+import Loader from '../../components/Loader';
+import { getInitials } from '../../utils/getInitials';
 import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/theme';
 import { styles } from './style';
 
@@ -225,36 +228,14 @@ export default function Question({ navigation }) {
     }
   };
 
-  const getInitials = (title) => {
-    if (!title) return '?';
-    const words = title.trim().split(/\s+/);
-    if (words.length >= 2) {
-      return (words[0][0] + words[1][0]).toUpperCase();
-    }
-    return title.slice(0, 2).toUpperCase();
-  };
-
   const renderCategoryItem = ({ item }) => (
-    <TouchableOpacity
+    <CategoryCard
+      badge={item.title}
+      title={item.title}
+      subtitle={`${item.quizCount ?? 0} Quiz${(item.quizCount ?? 0) === 1 ? '' : 's'}`}
+      tag={item.title}
       onPress={() => handleCategoryPress(item)}
-      style={styles.card}
-      activeOpacity={0.75}
-    >
-      <View style={styles.cardBadge}>
-        <Text style={styles.cardBadgeText}>{getInitials(item.title)}</Text>
-      </View>
-
-      <View style={styles.cardContent}>
-        <Text style={styles.cardTitle}>{item.title}</Text>
-        <Text style={styles.cardSubtitle}>
-          {item.quizCount ?? 0} Quiz{(item.quizCount ?? 0) === 1 ? '' : 's'}
-        </Text>
-      </View>
-
-      <Text style={styles.cardTag} numberOfLines={1}>
-        {item.title}
-      </Text>
-    </TouchableOpacity>
+    />
   );
 
   return (
@@ -270,30 +251,15 @@ export default function Question({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.searchRow}>
-        <View style={styles.searchContainer}>
-          <Ionicons name="search" size={20} color={Colors.black} style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search Catagories"
-            placeholderTextColor={Colors.textPlaceholder}
-            value={searchQuery}
-            onChangeText={handleSearch}
-          />
-        </View>
-
-        <TouchableOpacity
-          style={styles.filterButton}
-          onPress={() => setSortModalVisible(true)}
-          activeOpacity={0.75}
-        >
-          <Ionicons name="options-outline" size={22} color={Colors.white} />
-        </TouchableOpacity>
-      </View>
+      <SearchBar
+        value={searchQuery}
+        onChangeText={handleSearch}
+        onFilterPress={() => setSortModalVisible(true)}
+      />
 
       <View style={styles.listContainer}>
         {loading ? (
-          <ActivityIndicator animating size="large" color={Colors.primary} style={styles.loader} />
+          <Loader style={styles.loader} />
         ) : filteredCategories.length === 0 ? (
           <Text style={styles.emptyText}>There is no category present.</Text>
         ) : (
@@ -317,34 +283,26 @@ export default function Question({ navigation }) {
         <AntDesign name="plus" size={28} color={Colors.white} />
       </TouchableOpacity>
 
-      <Modal
-        animationType="fade"
-        transparent
+      <SortSheet
         visible={sortModalVisible}
-        onRequestClose={() => setSortModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Sort By</Text>
-            <TouchableOpacity onPress={() => handleSort('Ascending Order')}>
-              <Text style={styles.modalOption}>Ascending Order</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSort('Descending Order')}>
-              <Text style={styles.modalOption}>Descending Order</Text>
-            </TouchableOpacity>
-            <AppButton label="Clear" onPress={clearSort} variant="outline" style={styles.modalButton} />
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setSortModalVisible(false)}
+        options={[
+          { label: 'Ascending Order', value: 'Ascending Order' },
+          { label: 'Descending Order', value: 'Descending Order' },
+        ]}
+        onSelect={handleSort}
+        onClear={clearSort}
+      />
 
       <Modal
-        animationType="fade"
+        animationType="slide"
         transparent
         visible={addModalVisible}
         onRequestClose={closeAddModal}
       >
-        <View style={styles.modalOverlay}>
+        <View style={styles.sheetOverlay}>
           <View style={styles.addModalCard}>
+            <View style={styles.sheetHandle} />
             <Text style={styles.addModalTitle}>Add Categories</Text>
 
             <InputField

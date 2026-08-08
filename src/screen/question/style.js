@@ -28,45 +28,6 @@ export const styles = StyleSheet.create({
     borderRadius: Radius.full,
   },
 
-  searchRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: Spacing.md,
-    gap: Spacing.sm,
-  },
-
-  searchContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.md,
-    height: 48,
-    borderWidth: 1,
-    borderColor: Colors.border
-  },
-
-  searchIcon: {
-    marginRight: Spacing.sm,
-  },
-
-  searchInput: {
-    flex: 1,
-    fontFamily: FontFamily.regular,
-    fontSize: FontSize.md,
-    color: Colors.textPrimary,
-    height: '100%',
-  },
-
-  filterButton: {
-    width: 48,
-    height: 48,
-    borderRadius: Radius.md,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
   listContainer: {
     flex: 1,
     marginBottom: Spacing.xxl,
@@ -74,61 +35,6 @@ export const styles = StyleSheet.create({
 
   listContent: {
     paddingBottom: Spacing.xxl,
-  },
-
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.white,
-    borderRadius: Radius.lg,
-    padding: Spacing.md,
-    marginBottom: Spacing.md,
-    shadowColor: Colors.cardShadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    elevation: 3,
-  },
-
-  cardBadge: {
-    width: 48,
-    height: 48,
-    borderRadius: Radius.md,
-    backgroundColor: Colors.primaryHighlight,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: Spacing.md,
-  },
-
-  cardBadgeText: {
-    fontFamily: FontFamily.bold,
-    fontSize: FontSize.sm,
-    color: Colors.primary,
-  },
-
-  cardContent: {
-    flex: 1,
-    marginRight: Spacing.sm,
-  },
-
-  cardTitle: {
-    fontFamily: FontFamily.bold,
-    fontSize: FontSize.md,
-    color: Colors.textPrimary,
-    marginBottom: Spacing.xs,
-  },
-
-  cardSubtitle: {
-    fontFamily: FontFamily.regular,
-    fontSize: FontSize.sm,
-    color: Colors.textSecondary,
-  },
-
-  cardTag: {
-    fontFamily: FontFamily.regular,
-    fontSize: FontSize.xs,
-    color: Colors.primary,
-    maxWidth: 90,
-    textAlign: 'right',
   },
 
   fab: {
@@ -160,47 +66,27 @@ export const styles = StyleSheet.create({
     marginTop: Spacing.xxl,
   },
 
-  modalOverlay: {
+  sheetOverlay: {
     flex: 1,
     backgroundColor: Colors.overlay,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
+    justifyContent: 'flex-end',
   },
 
-  modalCard: {
-    width: '100%',
-    backgroundColor: Colors.white,
-    borderRadius: Radius.lg,
-    padding: Spacing.lg,
-    alignItems: 'center',
-  },
-
-  modalTitle: {
-    fontFamily: FontFamily.bold,
-    fontSize: FontSize.lg,
-    color: Colors.textPrimary,
-    marginBottom: Spacing.lg,
-  },
-
-  modalOption: {
-    fontFamily: FontFamily.regular,
-    fontSize: FontSize.md,
-    color: Colors.textPrimary,
+  sheetHandle: {
+    width: 40,
+    height: 4,
+    borderRadius: Radius.full,
+    backgroundColor: Colors.border,
+    alignSelf: 'center',
     marginBottom: Spacing.md,
-    textAlign: 'center',
-  },
-
-  modalButton: {
-    width: '100%',
-    marginTop: Spacing.sm,
   },
 
   addModalCard: {
     width: '100%',
     maxHeight: '85%',
     backgroundColor: Colors.white,
-    borderRadius: Radius.lg,
+    borderTopLeftRadius: Radius.lg,
+    borderTopRightRadius: Radius.lg,
     padding: Spacing.lg,
   },
 

@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, View, FlatList, TextInput, Modal } from "react-native";
+import { View, Text, FlatList } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-import { ActivityIndicator, TouchableRipple } from 'react-native-paper';
+import { collection, getDocs } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BackButton from '../../components/BackButton';
+import CategoryCard from '../../components/CategoryCard';
+import SortSheet from '../../components/SortSheet';
+import SearchBar from '../../components/SearchBar';
+import Loader from '../../components/Loader';
+import { Colors } from '../../theme/theme';
 
 export default function Category({ navigation }) {
 
@@ -15,7 +21,6 @@ export default function Category({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [sortModalVisible, setSortModalVisible] = useState(false);
-  const [modal, setModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false)
   const [studentName, setStudentName] = useState("")
   const [studentYear, setStudentYear] = useState("")
@@ -96,43 +101,23 @@ export default function Category({ navigation }) {
     setSortModalVisible(false);
   };
 
-
   const clearSort = () => {
     setFilteredCategories(categories);
     setSortModalVisible(false);
   };
 
-  const renderCategoryItems = ({ item }) => {
+  const renderCategoryItem = ({ item }) => {
     const creatorName = findUserNameByCreatorUid(item.creatorUid);
 
     return (
-      <View style={styles.level_container}>
-        <TouchableOpacity onPress={() => handleCategory(item)}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.name}>Created by: {creatorName}</Text>
-        </TouchableOpacity>
-      </View>
+      <CategoryCard
+        badge={item.title}
+        title={item.title}
+        subtitle={`Created by ${creatorName}`}
+        onPress={() => handleCategory(item)}
+      />
     );
   };
-
-  const renderModal = () => (
-    <Modal animationType="slide" transparent={true} visible={sortModalVisible} onRequestClose={() => setSortModalVisible(false)}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalTitle}>Sort By</Text>
-          <TouchableOpacity onPress={() => handleSort("category")}>
-            <Text style={styles.modalOption}>Category</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleSort("name")}>
-            <Text style={styles.modalOption}>Name</Text>
-          </TouchableOpacity>
-          <TouchableRipple onPress={clearSort} style={styles.modalButton} rippleColor='#ffffff88' borderless={true}>
-            <Text style={styles.modalButtonText}>Clear</Text>
-          </TouchableRipple>
-        </View>
-      </View>
-    </Modal>
-  );
 
   const handleBackButton = async () => {
     if (studentName || studentYear) {
@@ -144,42 +129,47 @@ export default function Category({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={handleBackButton} />
-      <Text style={styles.welcome}> Welcome {studentName}!</Text>
-      <TouchableRipple onPress={() => setSortModalVisible(true)} style={styles.sortBtnWrapper} rippleColor='#ffffff88' borderless={true}>
-        <View style={styles.sortButton}>
-          <Ionicons name="funnel-outline" size={24} style={styles.sortButtonText} />
-        </View>
-      </TouchableRipple>
+      <BackButton onPress={handleBackButton} style={{ paddingHorizontal: 0 }} />
 
-      <Text style={styles.main_text}>
-        Choose Category
-      </Text>
-
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color='#5E60CE' style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search categories..."
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
+      <View style={styles.header}>
+        <Text style={styles.welcomeText}>Welcome{studentName ? ` ${studentName}` : ''}!</Text>
+        <Ionicons name="person-circle-sharp" size={40} color={Colors.primary} />
       </View>
 
-      {renderModal()}
+      <SearchBar
+        value={searchQuery}
+        onChangeText={handleSearch}
+        onFilterPress={() => setSortModalVisible(true)}
+      />
 
-      {loading ? <ActivityIndicator animating={true} size="large" color="black" /> :
-        <View style={styles.flatList}>
+      <View style={styles.listContainer}>
+        {loading ? (
+          <Loader style={styles.loader} />
+        ) : filteredCategories.length === 0 ? (
+          <Text style={styles.emptyText}>There is no category present.</Text>
+        ) : (
           <FlatList
             data={filteredCategories}
-            renderItem={renderCategoryItems}
+            renderItem={renderCategoryItem}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             refreshing={refreshing}
             onRefresh={handleRefresh}
+            contentContainerStyle={styles.listContent}
           />
-        </View>
-      }
+        )}
+      </View>
+
+      <SortSheet
+        visible={sortModalVisible}
+        onClose={() => setSortModalVisible(false)}
+        options={[
+          { label: 'Category', value: 'category' },
+          { label: 'Name', value: 'name' },
+        ]}
+        onSelect={handleSort}
+        onClear={clearSort}
+      />
     </SafeAreaView>
   );
 }
