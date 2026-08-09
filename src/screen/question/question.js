@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut, deleteUser } from 'firebase/auth';
 import {
   collection,
   onSnapshot,
@@ -19,6 +19,7 @@ import {
   query,
   getDocs,
   addDoc,
+  writeBatch,
 } from 'firebase/firestore';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import AppButton from '../../components/AppButton';
@@ -27,8 +28,10 @@ import CategoryCard from '../../components/CategoryCard';
 import SortSheet from '../../components/SortSheet';
 import SearchBar from '../../components/SearchBar';
 import Loader from '../../components/Loader';
-import { getInitials } from '../../utils/getInitials';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/theme';
+import ConfirmDialog from '../../components/ConfirmDialog';
+import Toast from '../../components/Toast';
+import { useToast } from '../../hooks/useToast';
+import { Colors } from '../../theme/theme';
 import { styles } from './style';
 
 export default function Question({ navigation }) {
@@ -38,13 +41,18 @@ export default function Question({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [userProfilePicture, setUserProfilePicture] = useState(null);
   const [sortModalVisible, setSortModalVisible] = useState(false);
+  const [sortOption, setSortOption] = useState('');
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [deckName, setDeckName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categoryNameList, setCategoryNameList] = useState([]);
   const [creating, setCreating] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [signOutModalVisible, setSignOutModalVisible] = useState(false);
   const auth = getAuth();
+  const { toastMessage, showToast } = useToast();
 
   const fetchCategoriesWithCounts = useCallback(async (userId) => {
     const categoriesQuery = query(
@@ -139,8 +147,53 @@ export default function Question({ navigation }) {
     navigation.navigate('QuizCategory', { category });
   };
 
-  const navigateToOtherScreen = () => {
-    navigation.navigate('DetailAccount');
+  const closeMenu = () => setMenuVisible(false);
+
+  const handleUpdateProfile = () => {
+    closeMenu();
+    navigation.navigate('UpdateAccount');
+  };
+
+  const handleSignOutPress = () => {
+    closeMenu();
+    setSignOutModalVisible(true);
+  };
+
+  const handleConfirmSignOut = async () => {
+    setSignOutModalVisible(false);
+    try {
+      await signOut(auth);
+      navigation.navigate('Home');
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleDeleteProfilePress = () => {
+    closeMenu();
+    setDeleteModalVisible(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      const user = auth.currentUser;
+      const categoriesQuery = query(
+        collection(firestore, 'categories'),
+        where('creatorUid', '==', user.uid)
+      );
+      const categoriesSnapshot = await getDocs(categoriesQuery);
+
+      const batch = writeBatch(firestore);
+      categoriesSnapshot.forEach((docSnap) => batch.delete(docSnap.ref));
+      await batch.commit();
+      await deleteUser(user);
+
+      setDeleteModalVisible(false);
+      navigation.navigate('Home');
+    } catch (error) {
+      setDeleteModalVisible(false);
+      showToast(error.message);
+    }
   };
 
   const mergeSort = (arr, sortOrder) => {
@@ -181,11 +234,13 @@ export default function Question({ navigation }) {
     }
 
     setFilteredCategories(sortedCategories);
+    setSortOption(option);
     setSortModalVisible(false);
   };
 
   const clearSort = () => {
     setFilteredCategories(categories);
+    setSortOption('');
     setSortModalVisible(false);
   };
 
@@ -206,7 +261,7 @@ export default function Question({ navigation }) {
     const title = deckName.trim() || selectedCategory;
 
     if (!title) {
-      alert('Please enter a deck name or select a category.');
+      showToast('Please enter a deck name or select a category.');
       return;
     }
 
@@ -221,7 +276,7 @@ export default function Question({ navigation }) {
       });
       closeAddModal();
     } catch (error) {
-      alert('Error creating category.');
+      showToast('Error creating category.');
       console.log(error);
     } finally {
       setCreating(false);
@@ -242,7 +297,7 @@ export default function Question({ navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.welcomeText}>Welcome!</Text>
-        <TouchableOpacity onPress={navigateToOtherScreen} activeOpacity={0.75}>
+        <TouchableOpacity onPress={() => setMenuVisible(true)} activeOpacity={0.75}>
           {userProfilePicture ? (
             <Image source={{ uri: userProfilePicture }} style={styles.avatar} />
           ) : (
@@ -290,6 +345,7 @@ export default function Question({ navigation }) {
           { label: 'Ascending Order', value: 'Ascending Order' },
           { label: 'Descending Order', value: 'Descending Order' },
         ]}
+        value={sortOption}
         onSelect={handleSort}
         onClear={clearSort}
       />
@@ -353,6 +409,40 @@ export default function Question({ navigation }) {
           </View>
         </View>
       </Modal>
+
+      <Modal animationType="fade" transparent visible={menuVisible} onRequestClose={closeMenu}>
+        <TouchableOpacity style={styles.menuBackdrop} activeOpacity={1} onPress={closeMenu} />
+        <View style={styles.menuCard}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleUpdateProfile} activeOpacity={0.75}>
+            <Text style={styles.menuItemText}>Update Profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={handleSignOutPress} activeOpacity={0.75}>
+            <Text style={styles.menuItemText}>Sign Out</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={handleDeleteProfilePress} activeOpacity={0.75}>
+            <Text style={[styles.menuItemText, styles.menuItemDanger]}>Delete Profile</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <ConfirmDialog
+        visible={deleteModalVisible}
+        message="All data including your account will be deleted."
+        confirmLabel="Delete"
+        destructive
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteModalVisible(false)}
+      />
+
+      <ConfirmDialog
+        visible={signOutModalVisible}
+        message="You will be logged out of your account."
+        confirmLabel="Sign Out"
+        onConfirm={handleConfirmSignOut}
+        onCancel={() => setSignOutModalVisible(false)}
+      />
+
+      <Toast message={toastMessage} />
     </SafeAreaView>
   );
 }

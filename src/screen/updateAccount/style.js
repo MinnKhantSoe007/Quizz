@@ -1,80 +1,33 @@
 import { StyleSheet } from "react-native";
+import { Colors, FontFamily, FontSize, Spacing } from "../../theme/theme";
 
 export const styles = StyleSheet.create({
-
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    padding: 20,
-    justifyContent: 'center'
+    backgroundColor: Colors.background,
   },
 
-  back: {
-    position: 'absolute',
-    top: "8%",
-    left: "5%",
-    color: '#000',
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.xxl,
   },
 
-  text: {
-    fontFamily: 'RobotoBold',
-    fontSize: 20,
+  avatarSection: {
+    alignItems: 'center',
+    marginBottom: Spacing.xl,
+    marginTop: Spacing.md,
+  },
+
+  title: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.xl,
+    color: Colors.primary,
     textAlign: 'center',
   },
 
-  input: {
-    borderWidth: 1,
-    borderColor: "#5E60CE",
-    borderRadius: 5,
-    padding: 10,
-    marginTop: 20,
-    fontFamily: 'RobotoRegular',
+  actionButton: {
+    width: '100%',
+    marginTop: Spacing.md,
   },
-
-  createButton: {
-    backgroundColor: "#5E60CE",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 20,
-  },
-
-  createButtonText: {
-    fontFamily: 'RobotoRegular',
-    color: "#000",
-    fontSize: 20,
-  },
-
-  selectedPic: {
-    width: 100,
-    height: 100,
-    marginTop: 20,
-    borderRadius: 10,
-    alignSelf: 'center'
-  },
-
-  photoButton: {
-    backgroundColor: "#5E60CE",
-    width: 100,
-    height: 100,
-    marginTop: 30,
-    borderRadius: 10,
-    alignSelf: 'center'
-  },
-
-  photoButtonText: {
-    fontFamily: 'RobotoRegular',
-    color: "#000",
-    fontSize: 20,
-    textAlign: 'center',
-    paddingTop: 20
-  },
-  photoContainer: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-  }
-
-
-
-  
 });

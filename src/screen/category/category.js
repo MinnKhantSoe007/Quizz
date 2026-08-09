@@ -21,6 +21,7 @@ export default function Category({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [sortModalVisible, setSortModalVisible] = useState(false);
+  const [sortOption, setSortOption] = useState('');
   const [refreshing, setRefreshing] = useState(false)
   const [studentName, setStudentName] = useState("")
   const [studentYear, setStudentYear] = useState("")
@@ -98,11 +99,13 @@ export default function Category({ navigation }) {
       return 0;
     });
     setFilteredCategories(sortedCategories);
+    setSortOption(sortKey);
     setSortModalVisible(false);
   };
 
   const clearSort = () => {
     setFilteredCategories(categories);
+    setSortOption('');
     setSortModalVisible(false);
   };
 
@@ -167,6 +170,7 @@ export default function Category({ navigation }) {
           { label: 'Category', value: 'category' },
           { label: 'Name', value: 'name' },
         ]}
+        value={sortOption}
         onSelect={handleSort}
         onClear={clearSort}
       />

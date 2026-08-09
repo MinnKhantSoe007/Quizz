@@ -21,6 +21,7 @@ export default function Level({ navigation, route }) {
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortModalVisible, setSortModalVisible] = useState(false);
+  const [sortOption, setSortOption] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -140,11 +141,13 @@ export default function Level({ navigation, route }) {
       return 0;
     });
     setFilteredCategories(sortedCategories);
+    setSortOption(sortKey);
     setSortModalVisible(false);
   };
 
   const clearSort = () => {
     setFilteredCategories(categories);
+    setSortOption('');
     setSortModalVisible(false);
   };
 
@@ -196,6 +199,7 @@ export default function Level({ navigation, route }) {
           { label: 'Level', value: 'level' },
           { label: 'Duration', value: 'duration' },
         ]}
+        value={sortOption}
         onSelect={handleSort}
         onClear={clearSort}
       />

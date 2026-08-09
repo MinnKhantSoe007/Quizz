@@ -15,6 +15,8 @@ import { ImageResource } from '../../resource/imageResource';
 import AppButton from '../../components/AppButton';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
+import Toast from '../../components/Toast';
+import { useToast } from '../../hooks/useToast';
 import { Colors, FontFamily, FontSize, Spacing } from '../../theme/theme';
 import { DIMENSIONS } from '../../utils/constant';
 import { styles } from './authStyle';
@@ -24,6 +26,7 @@ export default function Auth({ navigation }) {
   const [password, setPassword] = useState('');
   const [secureCode, setSecureCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const { toastMessage, showToast } = useToast();
 
   const login = async () => {
     if (secureCode == 999999 && !!email && !!password) {
@@ -36,16 +39,16 @@ export default function Auth({ navigation }) {
           navigation.navigate('Question');
         } else {
           setLoading(false);
-          alert('Please verify your email address before logging in.');
+          showToast('Please verify your email address before logging in.');
         }
       } catch (error) {
         console.log(error);
-        alert(error.message);
+        showToast(error.message);
       } finally {
         setLoading(false);
       }
     } else {
-      alert('Please enter all fields correctly.');
+      showToast('Please enter all fields correctly.');
     }
   };
 
@@ -108,10 +111,12 @@ export default function Auth({ navigation }) {
             label="Create Account"
             onPress={() => navigation.navigate('CreateAccount')}
             variant="outline"
-            loading={loading}
+            disabled={loading}
           />
         </KeyboardAvoidingView>
       </ScrollView>
+
+      <Toast message={toastMessage} />
     </SafeAreaView>
   );
 }

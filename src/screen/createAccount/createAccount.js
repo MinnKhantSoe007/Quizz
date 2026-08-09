@@ -1,17 +1,5 @@
 import React, { useState } from 'react';
-import {
-  SafeAreaView,
-  Text,
-  View,
-  Modal,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
+import { SafeAreaView, Text, View, Modal } from 'react-native';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -19,7 +7,10 @@ import { FIREBASE_AUTH as auth, FIREBASE_STORAGE as storage, FIREBASE_FIRESTORE 
 import AppButton from '../../components/AppButton';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/theme';
+import AvatarPicker from '../../components/AvatarPicker';
+import Toast from '../../components/Toast';
+import { useImagePicker } from '../../hooks/useImagePicker';
+import { useToast } from '../../hooks/useToast';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { styles } from './style';
 
@@ -29,34 +20,18 @@ export default function CreateAccount({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
-  const [profilePicture, setProfilePicture] = useState('');
-  const [selectedProfilePicture, setSelectedProfilePicture] = useState('');
   const [accModal, setAccModal] = useState(false);
-
-  const handleSelectProfilePicture = async () => {
-    if (loading) return;
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setProfilePicture(result.assets[0].uri);
-      setSelectedProfilePicture(result.assets[0].uri);
-    }
-  };
+  const { uri: profilePicture, pickImage } = useImagePicker();
+  const { toastMessage, showToast } = useToast();
 
   const createAccount = async () => {
     if (!name.trim() || !email.trim() || !password.trim()) {
-      Alert.alert('Error', 'Please fill in all required fields.');
+      showToast('Please fill in all required fields.');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match.');
+      showToast('Passwords do not match.');
       return;
     }
 
@@ -93,7 +68,7 @@ export default function CreateAccount({ navigation }) {
       setAccModal(true);
     } catch (error) {
       console.error('Error creating account:', error);
-      Alert.alert('Error', error.message);
+      showToast(error.message);
     } finally {
       setLoading(false);
     }
@@ -109,25 +84,7 @@ export default function CreateAccount({ navigation }) {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.avatarSection}>
-          <View style={styles.avatarWrapper}>
-            {selectedProfilePicture ? (
-              <Image source={{ uri: selectedProfilePicture }} style={styles.avatar} />
-            ) : (
-              <View style={styles.avatarPlaceholder}>
-                <Ionicons name="person" size={48} color={Colors.textPlaceholder} />
-              </View>
-            )}
-
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={handleSelectProfilePicture}
-              disabled={loading}
-              activeOpacity={0.75}
-            >
-              <Ionicons name="pencil" size={16} color={Colors.white} />
-            </TouchableOpacity>
-          </View>
-
+          <AvatarPicker uri={profilePicture} onPress={pickImage} disabled={loading} />
           <Text style={styles.title}>Create Account</Text>
         </View>
 
@@ -191,10 +148,13 @@ export default function CreateAccount({ navigation }) {
               }}
               variant="filled"
               style={styles.modalButton}
+              loading={loading}
             />
           </View>
         </View>
       </Modal>
+
+      <Toast message={toastMessage} />
     </SafeAreaView>
   );
 }

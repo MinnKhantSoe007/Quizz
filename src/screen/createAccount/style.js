@@ -19,40 +19,6 @@ export const styles = StyleSheet.create({
     marginTop: Spacing.md,
   },
 
-  avatarWrapper: {
-    position: 'relative',
-    marginBottom: Spacing.lg,
-  },
-
-  avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: Radius.full,
-  },
-
-  avatarPlaceholder: {
-    width: 120,
-    height: 120,
-    borderRadius: Radius.full,
-    backgroundColor: Colors.searchBackground,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  editButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 36,
-    height: 36,
-    borderRadius: Radius.full,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: Colors.white,
-  },
-
   title: {
     fontFamily: FontFamily.bold,
     fontSize: FontSize.xl,

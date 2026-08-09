@@ -11,10 +11,11 @@ import AppButton from './AppButton';
  *  onClose   {func}    – backdrop / hardware-back dismiss handler
  *  title     {string}  – sheet heading (default: 'Sort By')
  *  options   {Array<{ label: string, value: any }>} – tappable sort options
+ *  value     {any}     – currently active option's value, shown with a filled radio
  *  onSelect  {func}    – called with the selected option's value
  *  onClear   {func}    – called when "Clear" is pressed
  */
-export default function SortSheet({ visible, onClose, title = 'Sort By', options, onSelect, onClear }) {
+export default function SortSheet({ visible, onClose, title = 'Sort By', options, value, onSelect, onClear }) {
   return (
     <Modal animationType="slide" transparent visible={visible} onRequestClose={onClose}>
       <View style={styles.overlay}>
@@ -22,11 +23,20 @@ export default function SortSheet({ visible, onClose, title = 'Sort By', options
           <View style={styles.handle} />
           <Text style={styles.title}>{title}</Text>
 
-          {options.map((option) => (
-            <TouchableOpacity key={option.value} onPress={() => onSelect(option.value)}>
-              <Text style={styles.option}>{option.label}</Text>
-            </TouchableOpacity>
-          ))}
+          {options.map((option) => {
+            const selected = option.value === value;
+            return (
+              <TouchableOpacity
+                key={option.value}
+                style={styles.option}
+                onPress={() => onSelect(option.value)}
+                activeOpacity={0.75}
+              >
+                <Text style={styles.optionLabel}>{option.label}</Text>
+                <View style={styles.radioOuter}>{selected ? <View style={styles.radioInner} /> : null}</View>
+              </TouchableOpacity>
+            );
+          })}
 
           <AppButton label="Clear" onPress={onClear} variant="outline" style={styles.clearButton} />
         </View>
@@ -48,7 +58,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: Radius.lg,
     borderTopRightRadius: Radius.lg,
     padding: Spacing.lg,
-    alignItems: 'center',
   },
 
   handle: {
@@ -61,22 +70,45 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontFamily: FontFamily.bold,
+    fontFamily: FontFamily.regular,
     fontSize: FontSize.lg,
-    color: Colors.textPrimary,
+    color: Colors.textSecondary,
     marginBottom: Spacing.lg,
   },
 
   option: {
-    fontFamily: FontFamily.regular,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+
+  optionLabel: {
+    fontFamily: FontFamily.bold,
     fontSize: FontSize.md,
     color: Colors.textPrimary,
-    marginBottom: Spacing.md,
-    textAlign: 'center',
+  },
+
+  radioOuter: {
+    width: 22,
+    height: 22,
+    borderRadius: Radius.full,
+    borderWidth: 2,
+    borderColor: Colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  radioInner: {
+    width: 12,
+    height: 12,
+    borderRadius: Radius.full,
+    backgroundColor: Colors.primary,
   },
 
   clearButton: {
     width: '100%',
-    marginTop: Spacing.sm,
+    marginTop: Spacing.md,
   },
 });
