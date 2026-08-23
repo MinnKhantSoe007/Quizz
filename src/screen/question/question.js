@@ -54,7 +54,7 @@ export default function Question({ navigation }) {
   const auth = getAuth();
   const { toastMessage, showToast } = useToast();
 
-  const fetchCategoriesWithCounts = useCallback(async (userId) => {
+  const fetchCategoriesWithCounts = useCallback((userId) => {
     const categoriesQuery = query(
       collection(firestore, 'categories'),
       where('creatorUid', '==', userId)

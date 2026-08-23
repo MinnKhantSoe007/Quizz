@@ -44,7 +44,8 @@
           "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID",
           "NSFaceIDUsageDescription": "Allow $(PRODUCT_NAME) to use Face ID"
         }
-      ]
+      ],
+      "expo-audio"
     ]
   }
 }

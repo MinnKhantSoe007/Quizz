@@ -1,99 +1,145 @@
 import { StyleSheet } from "react-native";
+import { Colors, FontFamily, FontSize, Radius, Spacing } from "../../theme/theme";
 
 export const styles = StyleSheet.create({
 
     container: {
         flex: 1,
+        backgroundColor: Colors.background,
+        paddingHorizontal: Spacing.lg,
     },
 
-    quiz_container: {
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginTop: Spacing.sm,
+        marginBottom: Spacing.lg,
+    },
+
+    headerTitle: {
         flex: 1,
-        marginTop: 60
-    },
-
-    number: {
-        fontFamily: 'RobotoBold',
-        color: 'grey',
+        fontFamily: FontFamily.bold,
+        fontSize: FontSize.xl,
+        color: Colors.primary,
         textAlign: 'center',
-        fontSize: 20,
-        marginBottom: 20,
-        marginTop: 10,
+        marginHorizontal: Spacing.sm,
     },
 
-    question: {
-        textAlign: 'center',
-        fontSize: 25,
-        marginHorizontal: 25,
-        letterSpacing: 2,
+    card: {
+        flex: 1,
+        backgroundColor: Colors.white,
+        borderRadius: Radius.lg,
+        padding: Spacing.lg,
+        shadowColor: Colors.cardShadow,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 1,
+        elevation: 2,
     },
 
-    flatList: {
-        position: 'relative',
-        marginTop: 35,
+    timerText: {
+        fontFamily: FontFamily.bold,
+        fontSize: FontSize.md,
+        color: Colors.warning,
+        textAlign: 'right',
+        marginBottom: Spacing.md,
+    },
+
+    metaRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: Spacing.lg,
+    },
+
+    questionCount: {
+        fontFamily: FontFamily.bold,
+        fontSize: FontSize.sm,
+        color: Colors.primary,
+    },
+
+    levelText: {
+        fontFamily: FontFamily.regular,
+        fontSize: FontSize.sm,
+        color: Colors.textSecondary,
+    },
+
+    questionText: {
+        fontFamily: FontFamily.bold,
+        fontSize: FontSize.lg,
+        color: Colors.textPrimary,
+        marginBottom: Spacing.lg,
+    },
+
+    rippleWrapper: {
+        borderRadius: Radius.md,
     },
 
     answer_container: {
-
-        padding: 10,
-        backgroundColor: '#f3f3f3',
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#00000015',
+        padding: Spacing.md,
+        backgroundColor: Colors.searchBackground,
+        borderRadius: Radius.md,
+        marginBottom: Spacing.md,
     },
 
     selected_option_container: {
-        padding: 10,
-        backgroundColor: '#338BA8',
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#338BA8',
+        padding: Spacing.md,
+        backgroundColor: Colors.primary,
+        borderRadius: Radius.md,
+        marginBottom: Spacing.md,
     },
 
     correct_answer_container: {
-
-        padding: 10,
-        backgroundColor: '#52b788',
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#52b788',
+        padding: Spacing.md,
+        backgroundColor: Colors.primary,
+        borderRadius: Radius.md,
+        marginBottom: Spacing.md,
     },
 
     wrong_answer_container: {
-
-        padding: 10,
-        backgroundColor: '#dc2f02',
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#dc2f02',
+        padding: Spacing.md,
+        backgroundColor: Colors.error,
+        borderRadius: Radius.md,
+        marginBottom: Spacing.md,
     },
 
     answer: {
-        fontFamily: 'RobotoRegular',
-        fontSize: 16,
-        color: '#000',
-        textAlignVertical: 'center',
+        fontFamily: FontFamily.regular,
+        fontSize: FontSize.md,
+        color: Colors.textPrimary,
+    },
+
+    answerSelected: {
+        color: Colors.white,
+    },
+
+    reasonText: {
+        fontFamily: FontFamily.regular,
+        fontSize: FontSize.sm,
+        color: Colors.textSecondary,
+        marginTop: Spacing.sm,
+    },
+
+    navRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: 5
+        paddingVertical: Spacing.lg,
     },
 
-    continue_btn_container: {
-        marginTop: 130
+    navButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.xs,
     },
 
-    continue_btn: {
-        fontFamily: 'RobotoBold',
-        fontSize: 20,
-        color: '#5E60CE',
-        paddingVertical: 13,
-        borderRadius: 10,
-        textAlign: 'center',
+    navButtonText: {
+        fontFamily: FontFamily.bold,
+        fontSize: FontSize.md,
+        color: Colors.textPrimary,
     },
 
-    continue_arrow: {
-        color: '#000',
-        left: 300,
-        bottom: 43,
-        position: 'relative',
+    navButtonTextPrimary: {
+        color: Colors.primary,
     },
 
     centeredView: {
@@ -104,8 +150,8 @@ export const styles = StyleSheet.create({
 
     modalView: {
         marginTop: 30,
-        backgroundColor: '#fff',
-        borderRadius: 10,
+        backgroundColor: Colors.white,
+        borderRadius: Radius.lg,
         padding: 40,
         alignItems: 'center',
         shadowColor: '#000',
@@ -119,26 +165,15 @@ export const styles = StyleSheet.create({
     },
 
     result_text: {
-        fontFamily: 'RobotoBold',
+        fontFamily: FontFamily.bold,
         fontSize: 24,
     },
 
-    result_score: {
-        color: 'grey',
-        fontSize: 22,
-        marginHorizontal: 3
-    },
-
-    bottom_result_score: {
-        color: 'green',
-        fontSize: 22,
-    },
-
     result_button: {
-        fontFamily: 'RobotoBold',
+        fontFamily: FontFamily.bold,
         marginTop: 10,
         fontSize: 20,
-        color: '#5E60CE',
+        color: Colors.primary,
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 10,
@@ -149,65 +184,27 @@ export const styles = StyleSheet.create({
         height: 100,
     },
 
-    img_loose: {
-        width: 100,
-        height: 100,
-    },
-
     img_container: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#fff'
+        backgroundColor: Colors.white,
     },
-
-
-    indicatorStyle: (isActive) => {
-        return {
-            margin: 12,
-            width: 30,
-            height: 30,
-            borderRadius: 20,
-            justifyContent: 'center',
-            borderWidth: 1,
-            borderColor: '#5E60CE55',
-            backgroundColor: isActive ? '#5E60CE' : '#fff'
-
-        }
-    },
-
-
-    indicatorText: (isActive) => {
-        return {
-            fontSize:12,
-            color: isActive ? '#fff' : '#5E60CE',
-            textAlign: 'center',
-            fontWeight: 'bold'
-        }
-    },
-
 
     scoreText: (isPass) => {
         return {
           fontSize: 22,
-          color: isPass ? '#52b788' : '#dc2f02',
+          color: isPass ? Colors.success : Colors.error,
         }
     },
-    
-    back: {
-        position: 'relative',
-        top: "1%",
-        left: "5%",
-        color: '#000',
-      },
-    
+
     sure_text: {
-        fontFamily: 'RobotoBold',
+        fontFamily: FontFamily.bold,
         fontSize: 20,
         marginBottom: 10
     },
 
     loose_text: {
-        fontFamily: 'RobotoRegular',
+        fontFamily: FontFamily.regular,
         fontSize: 16,
         marginBottom: 10,
         textAlign: "center"
@@ -215,38 +212,18 @@ export const styles = StyleSheet.create({
 
     yes: {
         marginTop: 10,
-        fontFamily: 'RobotoBold',
+        fontFamily: FontFamily.bold,
         fontSize: 18,
-        color: '#52b788',
+        color: Colors.success,
         marginHorizontal: 40,
     },
 
     no: {
         marginTop: 10,
-        fontFamily: 'RobotoBold',
+        fontFamily: FontFamily.bold,
         fontSize: 18,
-        color: '#dc2f02',
+        color: Colors.error,
         marginHorizontal: 40,
     },
-
-    timerContainer: {
-        alignSelf: 'center',
-        position: 'absolute',
-        top: -30
-    },
-    
-
-    timerText: {
-        fontFamily: 'RobotoBold',
-        fontSize: 20,
-        color: '#000',
-    },
-    
-    sound_logo: {
-        position: 'relative',
-        left: 345,
-        top: -25
-    }
-
 
 })
