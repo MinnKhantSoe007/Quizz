@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-  SafeAreaView,
   Text,
   KeyboardAvoidingView,
   Alert,
   ScrollView,
   Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { doc, updateDoc } from 'firebase/firestore';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';

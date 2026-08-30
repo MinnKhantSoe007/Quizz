@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { SafeAreaView, Text, View, Modal } from 'react-native';
+import { Text, View, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';

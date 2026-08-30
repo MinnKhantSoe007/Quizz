@@ -4,10 +4,10 @@ import {
   Text,
   Image,
   ScrollView,
-  SafeAreaView,
   StyleSheet,
   Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ImageResource } from '../../resource/imageResource';
 import AppButton from '../../components/AppButton';
 import { Colors, FontFamily, FontSize, Spacing } from '../../theme/theme';

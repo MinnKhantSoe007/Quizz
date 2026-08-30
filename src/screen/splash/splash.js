@@ -1,4 +1,5 @@
-import { Image, View, SafeAreaView, ActivityIndicator } from "react-native";
+import { Image, View, ActivityIndicator } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./style";
 import { useEffect } from "react";
 import { ImageResource } from "../../resource/imageResource";

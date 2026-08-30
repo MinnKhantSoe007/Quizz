@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  SafeAreaView,
   Text,
   View,
   Image,
@@ -9,6 +8,7 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { ImageResource } from '../../resource/imageResource';

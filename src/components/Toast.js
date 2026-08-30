@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     left: Spacing.lg,
     right: Spacing.lg,
     bottom: Spacing.xxl,
-    backgroundColor: Colors.primaryLight,
+    backgroundColor: Colors.white,
     borderRadius: Radius.md,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,

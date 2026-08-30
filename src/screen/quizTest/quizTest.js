@@ -1,4 +1,5 @@
-import { SafeAreaView, Text, View, TouchableOpacity, Modal, Image, Animated } from "react-native";
+import { Text, View, TouchableOpacity, Modal, Image, Animated } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./style";
 import { Colors } from "../../theme/theme";
 import Loader from "../../components/Loader";
