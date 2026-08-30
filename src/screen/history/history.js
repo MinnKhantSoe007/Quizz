@@ -1,130 +1,95 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, ScrollView, KeyboardAvoidingView, View } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
+import { Text, ScrollView, View, Dimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
-import { collection, getDocs, doc } from 'firebase/firestore';
-import { ActivityIndicator } from 'react-native-paper';
-import { Dimensions } from "react-native";
+import { getDocs, collection } from 'firebase/firestore';
 import { LineChart } from 'react-native-chart-kit';
 import { Picker } from '@react-native-picker/picker';
+import BackButton from '../../components/BackButton';
+import Loader from '../../components/Loader';
+import { fetchAllPlayers } from '../../utils/fetchAllPlayers';
+import { Colors } from '../../theme/theme';
 import { styles } from './style';
 
 export default function History({ navigation, route }) {
 
   const screenWidth = Dimensions.get("window").width;
   const { studentName, studentYear, category, filteredCategories } = route?.params;
-  const [categoryTitle, setCategoryTitle] = useState(category?.title);
-  const [levels, setLevels] = useState(studentName != "guest" ? filteredCategories.map(item => item.level) : filteredCategories);
+  const isGuest = studentName === "guest";
+  const [levels] = useState(isGuest ? filteredCategories : filteredCategories.map(item => item.level));
+  const [selectedLevel, setSelectedLevel] = useState(levels[0]);
+  const [players, setPlayers] = useState([]);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedLevel, setSelectedLevel] = useState(levels[0]);
   const [averagePercent, setAveragePercent] = useState(0);
-  const [years, setYears] = useState(["1st year", "2nd year", "3rd year", "4th year", "5th year", "6th year"]);
-  const [year, setYear] = useState('1st year');
-  const [names, setNames] = useState([])
-  const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    const fetchNames = async () => {
-      if (year && studentName === "guest") {
-        setLoading(true);
-        try {
-          const playersSnapshot = await getDocs(collection(firestore, 'players'));
-          const namesData = [];
+    if (!isGuest) return;
 
-          for (const playerDoc of playersSnapshot.docs) {
-            const playerId = playerDoc.id;
-            const yearsCollectionRef = collection(doc(firestore, 'players', playerId), year);
-            const yearsSnapshot = await getDocs(yearsCollectionRef);
-
-            yearsSnapshot.forEach((yearDoc) => {
-              const { name, password } = yearDoc.data();
-              namesData.push({ playerId, name, password, id: yearDoc.id });
-            });
-          };
-          namesData.sort((a, b) => a.name.localeCompare(b.name));
-          setNames(namesData);
-          setUserName(namesData[0].name)
-          setLoading(false);
-        } catch (error) {
-          console.error('Error fetching names:', error);
-          setLoading(false);
-        }
+    const loadPlayers = async () => {
+      setLoading(true);
+      try {
+        const allPlayers = await fetchAllPlayers(firestore);
+        setPlayers(allPlayers);
+        if (allPlayers.length > 0) setSelectedPlayer(allPlayers[0]);
+      } catch (error) {
+        console.error('Error fetching players:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchNames();
-  }, [year]);
+    loadPlayers();
+  }, [isGuest]);
 
   useEffect(() => {
-    fetchHistory();
-  }, [category?.id, selectedLevel, userName, year]);
+    if (isGuest && !selectedPlayer) return;
 
-  const fetchHistory = async () => {
-    setLoading(true);
-    try {
-      const querySnapshot = await getDocs(collection(firestore, 'history'));
-      const historyData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const fetchHistory = async () => {
+      setLoading(true);
+      try {
+        const querySnapshot = await getDocs(collection(firestore, 'history'));
+        const historyData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
-      const filteredData = historyData.filter((item) => {
-        const nameToFilter = studentName === "guest" ? userName : studentName;
-        const yearToFilter = studentName === "guest" ? year : studentYear;
-      
-        return (
+        const nameToFilter = isGuest ? selectedPlayer.name : studentName;
+        const yearToFilter = isGuest ? selectedPlayer.year : studentYear;
+
+        const filteredData = historyData.filter((item) =>
           item.studentName === nameToFilter &&
           item.studentYear === yearToFilter &&
-          item.categoryName === categoryTitle &&
+          item.categoryName === category?.title &&
           item.difficultyLevel === selectedLevel
         );
-      });
-      
 
-      setHistory(filteredData);
+        setHistory(filteredData);
 
-      if (filteredData.length > 0) {
-        const totalPercent = filteredData.reduce((acc, item) => acc + item.percent, 0);
-        const avgPercent = totalPercent / filteredData.length;
-        setAveragePercent(avgPercent.toFixed(2)); // To show up to two decimal places
-      } else {
-        setAveragePercent(0);
+        if (filteredData.length > 0) {
+          const totalPercent = filteredData.reduce((acc, item) => acc + item.percent, 0);
+          setAveragePercent((totalPercent / filteredData.length).toFixed(2));
+        } else {
+          setAveragePercent(0);
+        }
+      } catch (error) {
+        console.error('Error fetching history:', error);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-    }
-  };
-
-  const renderNamePicker = () => {
-    if (names.length === 0 || names.some(item => item.name === undefined || item.password === undefined)) {
-      return (
-        <View>
-          <Text style={styles.level}>There is no player here.</Text>
-        </View>
-      );
-    } else {
-      return (
-        <>
-          <Text style={styles.level}>Choose Player:</Text>
-          <Picker selectedValue={userName} onValueChange={(itemValue) => setUserName(itemValue)} style={styles.picker} enabled={!!year}>
-            {names.map((item) => (
-              <Picker.Item key={item.playerId} label={item.name} value={item.name} />
-            ))}
-          </Picker>
-        </>
-      );
-    }
-  };
+    fetchHistory();
+  }, [category?.id, selectedLevel, selectedPlayer, isGuest, studentName, studentYear]);
 
   const chartConfig = {
-    backgroundGradientFrom: "#5E60CE",
+    backgroundGradientFrom: Colors.white,
     backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: "#5E60CE",
-    backgroundGradientToOpacity: 0.5,
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    backgroundGradientTo: Colors.white,
+    backgroundGradientToOpacity: 0,
+    color: (opacity = 1) => `rgba(127, 17, 224, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
     strokeWidth: 2,
     barPercentage: 0.5,
-    useShadowColorFromDataset: false
+    useShadowColorFromDataset: false,
   };
 
   const chartData = {
@@ -132,125 +97,74 @@ export default function History({ navigation, route }) {
     datasets: [
       {
         data: history.map(item => item.percent),
-        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
-        strokeWidth: 2
-      }
+        color: (opacity = 1) => `rgba(127, 17, 224, ${opacity})`,
+        strokeWidth: 2,
+      },
     ],
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-
-        <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
-
-        <Text style={styles.main_text}>
-          History For {category?.title}
+      <View style={styles.header}>
+        <BackButton style={{ paddingHorizontal: 0 }} />
+        <Text style={styles.headerTitle} numberOfLines={1}>
+          History for {category?.title}
         </Text>
+      </View>
 
-        {studentName === "guest" && 
-        <>
-        <Text style={styles.level}>
-          Choose Year:
-        </Text>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {isGuest && (
+          players.length === 0 && !loading ? (
+            <Text style={styles.emptyText}>There is no player here.</Text>
+          ) : (
+            <View style={styles.selectWrapper}>
+              <Picker
+                selectedValue={selectedPlayer?.id}
+                onValueChange={(id) => setSelectedPlayer(players.find((p) => p.id === id))}
+                style={styles.select}
+              >
+                {players.map((player) => (
+                  <Picker.Item key={player.id} label={`${player.name} (${player.year})`} value={player.id} />
+                ))}
+              </Picker>
+            </View>
+          )
+        )}
 
-        <KeyboardAvoidingView behavior="padding">
-          <Picker selectedValue={year} onValueChange={(itemValue) => setYear(itemValue)} style={styles.picker}>
-            {years.map((year) => (
-              <Picker.Item key={year} label={year} value={year} />
-            ))}
-          </Picker>
+        {(!isGuest || selectedPlayer) && (
+          <View style={styles.selectWrapper}>
+            <Picker
+              selectedValue={selectedLevel}
+              onValueChange={setSelectedLevel}
+              style={styles.select}
+            >
+              {levels.map((level) => (
+                <Picker.Item key={level} label={level} value={level} />
+              ))}
+            </Picker>
+          </View>
+        )}
 
-          {renderNamePicker()}
-          </KeyboardAvoidingView>
-        </>}
-
-            {/* { (userName && year && studentName === "guest") || (studentName != "guest") &&
-            <> 
-             <Text style={styles.level}>
-          Choose Level:
-        </Text>
-
-        <Picker
-          selectedValue={selectedLevel}
-          onValueChange={(itemValue) => setSelectedLevel(itemValue)}
-          style={styles.picker}
-        >
-          {levels.map((level) => (
-            <Picker.Item key={level} label={level} value={level} />
-          ))}
-        </Picker>
-         </>
-} */}
-
-{studentName === "guest" ? userName && year && <> 
-             <Text style={styles.level}>
-          Choose Level:
-        </Text>
-
-        <Picker
-          selectedValue={selectedLevel}
-          onValueChange={(itemValue) => setSelectedLevel(itemValue)}
-          style={styles.picker}
-        >
-          {levels.map((level) => (
-            <Picker.Item key={level} label={level} value={level} />
-          ))}
-        </Picker>
-         </> : <> 
-             <Text style={styles.level}>
-          Choose Level:
-        </Text>
-
-        <Picker
-          selectedValue={selectedLevel}
-          onValueChange={(itemValue) => setSelectedLevel(itemValue)}
-          style={styles.picker}
-        >
-          {levels.map((level) => (
-            <Picker.Item key={level} label={level} value={level} />
-          ))}
-        </Picker>
-         </>}
         {loading ? (
-          <ActivityIndicator animating={true} size="large" color="black" />
+          <Loader style={styles.loader} />
         ) : history.length === 0 ? (
           <Text style={styles.no_data_text}>There is no data</Text>
         ) : (
-          // (year && userName && selectedLevel && studentName === "guest") || studentName != "guest" &&
-          studentName === "guest" ? 
-          year && userName &&
-            <>
-            <Text style={styles.level}>
-              Overall Percentage: {averagePercent}%
-            </Text>
-            <ScrollView horizontal={true}>
+          <View style={styles.card}>
+            <Text style={styles.overallLabel}>Overall Percentage</Text>
+            <Text style={styles.overallPercent}>{averagePercent}%</Text>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <LineChart
                 data={chartData}
-                width={history.length == 1 ? screenWidth * history.length : screenWidth * history.length * 0.5}
-                height={320}
+                width={history.length === 1 ? screenWidth : screenWidth * history.length * 0.5}
+                height={280}
                 verticalLabelRotation={30}
                 chartConfig={chartConfig}
                 bezier
               />
             </ScrollView>
-          </>
-          :
-          <>
-          <Text style={styles.level}>
-            Overall Percentage: {averagePercent}%
-          </Text>
-          <ScrollView horizontal={true}>
-            <LineChart
-              data={chartData}
-              width={history.length == 1 ? screenWidth * history.length : screenWidth * history.length * 0.5}
-              height={320}
-              verticalLabelRotation={30}
-              chartConfig={chartConfig}
-              bezier
-            />
-          </ScrollView>
-        </>
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>

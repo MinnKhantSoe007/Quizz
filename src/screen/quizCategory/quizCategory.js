@@ -1,29 +1,29 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Modal, TextInput } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { collection, doc, onSnapshot, deleteDoc } from 'firebase/firestore';
 import { styles } from './style';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableRipple } from "react-native-paper";
-import { AntDesign } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import BackButton from '../../components/BackButton';
+import CategoryCard from '../../components/CategoryCard';
+import SearchBar from '../../components/SearchBar';
+import SortSheet from '../../components/SortSheet';
+import ConfirmDialog from '../../components/ConfirmDialog';
+import Loader from '../../components/Loader';
+import { Colors } from '../../theme/theme';
 
 export default function QuizCategory({ navigation, route }) {
   const { category } = route.params;
   const [quizzes, setQuizzes] = useState([]);
   const [filteredQuizzes, setFilteredQuizzes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [modal, setModal] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortModalVisible, setSortModalVisible] = useState(false);
+  const [sortOption, setSortOption] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  const [filteredCategories, setFilteredCategories] = useState([])
-
-  useEffect(() => {
-    const unsubscribe = fetchQuizzes();
-    return () => unsubscribe();
-  }, [fetchQuizzes]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
 
   const fetchQuizzes = useCallback(() => {
     setLoading(true);
@@ -32,7 +32,7 @@ export default function QuizCategory({ navigation, route }) {
       (snapshot) => {
         const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         const uniqueLevels = Array.from(new Set(data.map(item => item.level)));
-        setFilteredCategories(uniqueLevels)
+        setFilteredCategories(uniqueLevels);
         setQuizzes(data);
         setFilteredQuizzes(data);
         setLoading(false);
@@ -41,16 +41,15 @@ export default function QuizCategory({ navigation, route }) {
     return unsubscribe;
   }, [category.id]);
 
+  useEffect(() => {
+    const unsubscribe = fetchQuizzes();
+    return () => unsubscribe();
+  }, [fetchQuizzes]);
+
   const handleRefresh = () => {
     setRefreshing(true);
-    const unsubscribe = fetchQuizzes();
+    fetchQuizzes();
     setRefreshing(false);
-    return () => unsubscribe();
-  };
-
-
-  const deleteCategory = () => {
-    setModal(true);
   };
 
   const handleDeleteCategory = async () => {
@@ -58,6 +57,7 @@ export default function QuizCategory({ navigation, route }) {
       await deleteDoc(doc(firestore, 'categories', category.id));
       navigation.goBack();
     } catch (error) {
+      setDeleteModalVisible(false);
       alert('Failed to delete category. Please try again later.');
     }
   };
@@ -82,111 +82,110 @@ export default function QuizCategory({ navigation, route }) {
     const sortedQuizzes = [...filteredQuizzes].sort((a, b) => {
       if (sortKey === "question" || sortKey === "level") {
         return a[sortKey].localeCompare(b[sortKey]);
-      } else if (sortKey === "score") {
-        return a[sortKey] - b[sortKey];
       }
+      return a.score - b.score;
     });
     setFilteredQuizzes(sortedQuizzes);
+    setSortOption(sortKey);
     setSortModalVisible(false);
   };
 
   const clearSort = () => {
     setFilteredQuizzes(quizzes);
+    setSortOption('');
     setSortModalVisible(false);
   };
 
   const renderQuizItem = ({ item }) => (
-    <TouchableOpacity style={styles.quizItem} onPress={() => handleQuizPress(item)}>
-      <Text style={styles.quizQuestion}>Question: {item.question}</Text>
-      <Text style={styles.quizScore}>Level: {item.level}</Text>
-      <Text style={styles.quizScore}>Score: {item.score}</Text>
-    </TouchableOpacity>
-  );
-
-  const renderModal = () => (
-    <Modal animationType="slide" transparent={true} visible={modal}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.success}>Are you sure?</Text>
-          <Text style={styles.check}>All quizzes in this category will be deleted.</Text>
-          <TouchableOpacity onPress={handleDeleteCategory}>
-            <Text style={styles.ok}>Okay</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setModal(false)}>
-            <Text style={styles.no}>No</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
+    <CategoryCard
+      title={`Question: ${item.question}`}
+      subtitle={`Level: ${item.level}`}
+      tag={`${item.score} Marks`}
+      onPress={() => handleQuizPress(item)}
+    />
   );
 
   return (
-    <View style={styles.container}>
-      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
-      <Text style={styles.categoryTitle}>Category: {category.title}</Text>
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color='#5E60CE' style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search questions..."
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <BackButton fallbackRoute="Question" style={{ paddingHorizontal: 0 }} />
+        <Text style={styles.headerTitle} numberOfLines={1}>
+          {category.title}
+        </Text>
+        <TouchableOpacity onPress={() => setDeleteModalVisible(true)} activeOpacity={0.75}>
+          <Ionicons name="trash-outline" size={24} color={Colors.error} />
+        </TouchableOpacity>
       </View>
-      {loading ? (
-        <ActivityIndicator animating={true} size="large" color="black" />
-      ) : (
-        filteredQuizzes.length === 0 ?
-          <Text style={styles.noCategoryText}>There is no question present.</Text> :
-          <View style={styles.list}>
-            <FlatList
-              data={filteredQuizzes}
-              renderItem={renderQuizItem}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-              refreshing={refreshing}
-              onRefresh={handleRefresh}
-            />
-          </View>
-      )}
-      {renderModal()}
-      <TouchableRipple onPress={deleteCategory} style={styles.deleteBtnWrapper} rippleColor='#ffffff88' borderless={true}>
-        <MaterialCommunityIcons name="delete-circle" size={40} style={styles.deleteBtn} />
-      </TouchableRipple>
-      <TouchableRipple onPress={() => navigation.navigate("CreateQuiz", { categoryId: category.id })} style={styles.createBtnWrapper} rippleColor='#ffffff88' borderless={true}>
-        <View style={styles.createButton}>
-          <AntDesign name="plus" size={30} style={styles.plusBtn} />
-        </View>
-      </TouchableRipple>
-      <TouchableRipple onPress={() => navigation.navigate("History", {studentName: "guest", studentYear: "guest", category: category, filteredCategories: filteredCategories})} style={styles.historyBtnWrapper} rippleColor='#ffffff88' borderless={true}>
-        <View style={styles.historyButton}>
-        <Ionicons name="podium-outline" size={24} style={styles.historyButtonText} />
-        </View>
-      </TouchableRipple>
-      <TouchableRipple onPress={() => setSortModalVisible(true)} style={styles.sortBtnWrapper} rippleColor='#ffffff88' borderless={true}>
-        <View style={styles.sortButton}>
-          <Ionicons name="funnel-outline" size={24} style={styles.sortButtonText} />
-        </View>
-      </TouchableRipple>
-      <Modal animationType="slide" transparent={true} visible={sortModalVisible} onRequestClose={() => setSortModalVisible(false)}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Sort By</Text>
-            <TouchableOpacity onPress={() => handleSort("question")}>
-              <Text style={styles.modalOption}>Questions</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSort("score")}>
-              <Text style={styles.modalOption}>Scores</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSort("level")}>
-              <Text style={styles.modalOption}>Levels</Text>
-            </TouchableOpacity>
-            <TouchableRipple onPress={clearSort} style={styles.modalButton} rippleColor='#ffffff88' borderless={true}>
-              <Text style={styles.modalButtonText}>Clear</Text>
-            </TouchableRipple>
-          </View>
-        </View>
-      </Modal>
-    </View>
+
+      <SearchBar
+        value={searchQuery}
+        onChangeText={handleSearch}
+        placeholder="Search questions..."
+        onFilterPress={() => setSortModalVisible(true)}
+      />
+
+      <View style={styles.listContainer}>
+        {loading ? (
+          <Loader style={styles.loader} />
+        ) : filteredQuizzes.length === 0 ? (
+          <Text style={styles.emptyText}>There is no question present.</Text>
+        ) : (
+          <FlatList
+            data={filteredQuizzes}
+            renderItem={renderQuizItem}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            contentContainerStyle={styles.listContent}
+          />
+        )}
+      </View>
+
+      <TouchableOpacity
+        style={styles.historyFab}
+        onPress={() =>
+          navigation.navigate('History', {
+            studentName: 'guest',
+            studentYear: 'guest',
+            category,
+            filteredCategories,
+          })
+        }
+        activeOpacity={0.85}
+      >
+        <Ionicons name="podium-outline" size={24} color={Colors.white} />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate('CreateQuiz', { categoryId: category.id })}
+        activeOpacity={0.85}
+      >
+        <Ionicons name="add" size={28} color={Colors.white} />
+      </TouchableOpacity>
+
+      <SortSheet
+        visible={sortModalVisible}
+        onClose={() => setSortModalVisible(false)}
+        options={[
+          { label: 'Questions', value: 'question' },
+          { label: 'Scores', value: 'score' },
+          { label: 'Levels', value: 'level' },
+        ]}
+        value={sortOption}
+        onSelect={handleSort}
+        onClear={clearSort}
+      />
+
+      <ConfirmDialog
+        visible={deleteModalVisible}
+        message="All quizzes in this category will be deleted."
+        confirmLabel="Delete"
+        destructive
+        onConfirm={handleDeleteCategory}
+        onCancel={() => setDeleteModalVisible(false)}
+      />
+    </SafeAreaView>
   );
 }

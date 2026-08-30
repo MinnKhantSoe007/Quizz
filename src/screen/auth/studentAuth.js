@@ -111,6 +111,7 @@ export default function StudentAuth({ navigation }) {
                 secureTextEntry
                 autoCapitalize="none"
                 autoComplete="password"
+                textContentType="password"
                 keyboardType="numeric"
               />
 

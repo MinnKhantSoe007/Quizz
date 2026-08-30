@@ -136,40 +136,4 @@ export const styles = StyleSheet.create({
     width: '100%',
     marginBottom: Spacing.sm,
   },
-
-  menuBackdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.overlay,
-  },
-
-  menuCard: {
-    position: 'absolute',
-    top: 84,
-    right: Spacing.lg,
-    minWidth: 190,
-    backgroundColor: Colors.white,
-    borderRadius: Radius.lg,
-    paddingVertical: Spacing.xs,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-
-  menuItem: {
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-  },
-
-  menuItemText: {
-    fontFamily: FontFamily.bold,
-    fontSize: FontSize.md,
-    color: Colors.textPrimary,
-    textAlign: 'center',
-  },
-
-  menuItemDanger: {
-    color: Colors.error,
-  },
 });

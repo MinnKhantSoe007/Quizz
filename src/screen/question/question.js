@@ -29,6 +29,7 @@ import SortSheet from '../../components/SortSheet';
 import SearchBar from '../../components/SearchBar';
 import Loader from '../../components/Loader';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import DropdownMenu from '../../components/DropdownMenu';
 import Toast from '../../components/Toast';
 import { useToast } from '../../hooks/useToast';
 import { Colors } from '../../theme/theme';
@@ -410,20 +411,15 @@ export default function Question({ navigation }) {
         </View>
       </Modal>
 
-      <Modal animationType="fade" transparent visible={menuVisible} onRequestClose={closeMenu}>
-        <TouchableOpacity style={styles.menuBackdrop} activeOpacity={1} onPress={closeMenu} />
-        <View style={styles.menuCard}>
-          <TouchableOpacity style={styles.menuItem} onPress={handleUpdateProfile} activeOpacity={0.75}>
-            <Text style={styles.menuItemText}>Update Profile</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={handleSignOutPress} activeOpacity={0.75}>
-            <Text style={styles.menuItemText}>Sign Out</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={handleDeleteProfilePress} activeOpacity={0.75}>
-            <Text style={[styles.menuItemText, styles.menuItemDanger]}>Delete Profile</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+      <DropdownMenu
+        visible={menuVisible}
+        onClose={closeMenu}
+        items={[
+          { label: 'Update Profile', onPress: handleUpdateProfile },
+          { label: 'Sign Out', onPress: handleSignOutPress },
+          { label: 'Delete Profile', onPress: handleDeleteProfilePress, danger: true },
+        ]}
+      />
 
       <ConfirmDialog
         visible={deleteModalVisible}

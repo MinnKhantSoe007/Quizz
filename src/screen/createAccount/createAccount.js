@@ -114,6 +114,8 @@ export default function CreateAccount({ navigation }) {
           onChangeText={setPassword}
           secureTextEntry
           autoCapitalize="none"
+          autoComplete="new-password"
+          textContentType="newPassword"
         />
 
         <InputField
@@ -123,6 +125,8 @@ export default function CreateAccount({ navigation }) {
           onChangeText={setConfirmPassword}
           secureTextEntry
           autoCapitalize="none"
+          autoComplete="new-password"
+          textContentType="newPassword"
         />
 
         <AppButton

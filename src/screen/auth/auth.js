@@ -88,6 +88,8 @@ export default function Auth({ navigation }) {
             onChangeText={setPassword}
             secureTextEntry
             autoCapitalize="none"
+            autoComplete="password"
+            textContentType="password"
           />
 
           <InputField

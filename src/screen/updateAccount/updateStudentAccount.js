@@ -113,6 +113,7 @@ export default function UpdateStudentAccount({ navigation }) {
                 secureTextEntry
                 autoCapitalize="none"
                 autoComplete="password"
+                textContentType="password"
                 keyboardType="numeric"
               />
 
@@ -123,6 +124,8 @@ export default function UpdateStudentAccount({ navigation }) {
                 onChangeText={setNewPassword}
                 secureTextEntry
                 autoCapitalize="none"
+                autoComplete="new-password"
+                textContentType="newPassword"
                 keyboardType="numeric"
               />
 
@@ -133,6 +136,8 @@ export default function UpdateStudentAccount({ navigation }) {
                 onChangeText={setConfirmNewPassword}
                 secureTextEntry
                 autoCapitalize="none"
+                autoComplete="new-password"
+                textContentType="newPassword"
                 keyboardType="numeric"
               />
 

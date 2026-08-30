@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import BackButton from '../../components/BackButton';
 import CategoryCard from '../../components/CategoryCard';
 import SortSheet from '../../components/SortSheet';
 import SearchBar from '../../components/SearchBar';
 import Loader from '../../components/Loader';
+import DropdownMenu from '../../components/DropdownMenu';
+import ConfirmDialog from '../../components/ConfirmDialog';
 import { Colors } from '../../theme/theme';
 
 export default function Category({ navigation }) {
@@ -25,6 +26,8 @@ export default function Category({ navigation }) {
   const [refreshing, setRefreshing] = useState(false)
   const [studentName, setStudentName] = useState("")
   const [studentYear, setStudentYear] = useState("")
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [signOutModalVisible, setSignOutModalVisible] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem('studentYear').then((data) => setStudentYear(data))
@@ -122,7 +125,15 @@ export default function Category({ navigation }) {
     );
   };
 
-  const handleBackButton = async () => {
+  const closeMenu = () => setMenuVisible(false);
+
+  const handleSignOutPress = () => {
+    closeMenu();
+    setSignOutModalVisible(true);
+  };
+
+  const handleConfirmSignOut = async () => {
+    setSignOutModalVisible(false);
     if (studentName || studentYear) {
       await AsyncStorage.setItem("studentName", "guest")
       await AsyncStorage.setItem("studentYear", "guest")
@@ -132,11 +143,11 @@ export default function Category({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BackButton onPress={handleBackButton} style={{ paddingHorizontal: 0 }} />
-
       <View style={styles.header}>
         <Text style={styles.welcomeText}>Welcome{studentName ? ` ${studentName}` : ''}!</Text>
-        <Ionicons name="person-circle-sharp" size={40} color={Colors.primary} />
+        <TouchableOpacity onPress={() => setMenuVisible(true)} activeOpacity={0.75}>
+          <Ionicons name="person-circle-sharp" size={40} color={Colors.primary} />
+        </TouchableOpacity>
       </View>
 
       <SearchBar
@@ -173,6 +184,20 @@ export default function Category({ navigation }) {
         value={sortOption}
         onSelect={handleSort}
         onClear={clearSort}
+      />
+
+      <DropdownMenu
+        visible={menuVisible}
+        onClose={closeMenu}
+        items={[{ label: 'Sign Out', onPress: handleSignOutPress }]}
+      />
+
+      <ConfirmDialog
+        visible={signOutModalVisible}
+        message="You will be logged out of your account."
+        confirmLabel="Sign Out"
+        onConfirm={handleConfirmSignOut}
+        onCancel={() => setSignOutModalVisible(false)}
       />
     </SafeAreaView>
   );

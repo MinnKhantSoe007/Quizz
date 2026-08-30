@@ -99,6 +99,8 @@ export default function UpdateAccount({ navigation }) {
             onChangeText={setCurrentPassword}
             secureTextEntry
             autoCapitalize="none"
+            autoComplete="password"
+            textContentType="password"
           />
 
           <InputField
@@ -108,6 +110,8 @@ export default function UpdateAccount({ navigation }) {
             onChangeText={setNewPassword}
             secureTextEntry
             autoCapitalize="none"
+            autoComplete="new-password"
+            textContentType="newPassword"
           />
 
           <AppButton

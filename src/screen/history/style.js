@@ -1,148 +1,85 @@
 import { StyleSheet } from "react-native";
+import { Colors, FontFamily, FontSize, Radius, Spacing } from "../../theme/theme";
 
 export const styles = StyleSheet.create({
 
   container: {
-    backgroundColor: '#fff',
     flex: 1,
+    backgroundColor: Colors.background,
+    paddingHorizontal: Spacing.lg,
   },
 
-  main_text: {
-    fontFamily: 'RobotoBold',
-    textAlign: 'center',
-    fontSize: 30,
-    marginTop: 30,
-    marginBottom: 30
-  },
-
-  level_container: {
-    marginTop: 40,
-    marginLeft: 10,
-    marginHorizontal: 10,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    backgroundColor: '#5E60CE',
-    borderRadius: 15
-  },
-
-  level_containered: {
-    marginTop: 40,
-    marginLeft: 10,
-    marginHorizontal: 10,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    backgroundColor: '#A00000',
-    borderRadius: 15
-  },
-
-  level: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 20,
-    marginBottom: 10,
-    color: '#000',
-    textAlign: "center"
-  },
-
-  score: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 18,
-    marginBottom: 10,
-    color: "#66cc91"
-  },
-
-  back: {
-    position: 'relative',
-    top: "4%",
-    left: "5%",
-    color: '#000',
-  },
-
-  flatList: {
-    position: 'relative',
-    marginBottom: "40%"
-  },
-
-  score_container: {
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-
-  searchContainer: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F3F4',
-    borderRadius: 10,
-    marginVertical: 10,
-    marginHorizontal: 10,
-    marginTop: "1%"
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.lg,
   },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
+
+  headerTitle: {
     flex: 1,
-    height: 40,
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.xl,
+    color: Colors.primary,
+    textAlign: 'center',
+    marginHorizontal: Spacing.sm,
   },
 
-  sortBtnWrapper: {
-    backgroundColor: '#000',
-    position: 'absolute',
-    bottom: "2%",
-    right: "5%",
-    borderRadius: 30,
-    zIndex: 2,
-  },
-  sortButton: {
-    backgroundColor: '#808080',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sortButtonText: {
-    color: '#fff',
+  selectWrapper: {
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.md,
+    marginBottom: Spacing.md,
+    overflow: 'hidden',
   },
 
-  historyBtnWrapper: {
-    backgroundColor: '#000',
-    position: 'absolute',
-    bottom: "2%",
-    left: "5%",
-    borderRadius: 30,
-    zIndex: 2,
+  select: {
+    color: Colors.textPrimary,
   },
-  historyButton: {
-    backgroundColor: '#088F8F',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
+
+  emptyText: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.md,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: Spacing.md,
   },
-  historyButtonText: {
-    color: '#fff',
+
+  card: {
+    backgroundColor: Colors.white,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
+    marginTop: Spacing.md,
+    shadowColor: Colors.cardShadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    elevation: 2,
+  },
+
+  overallLabel: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.xs,
+  },
+
+  overallPercent: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.hero,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.md,
+  },
+
+  loader: {
+    marginTop: Spacing.xxl,
   },
 
   no_data_text: {
-    fontFamily: 'RobotoBold',
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.lg,
+    color: Colors.textSecondary,
     textAlign: 'center',
-    fontSize: 20,
-    marginTop: 30,
-    marginBottom: 30,
-  },
-
-  picker: {
-    fontFamily: 'RobotoRegular',
-    borderColor: '#5E60CE',
-    borderWidth: 1,
-    fontSize: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderRadius: 10,
-    marginBottom: 20,
-    marginHorizontal: 15,
-    color: '#000',
+    marginTop: Spacing.xxl,
   },
 
 })

@@ -11,6 +11,7 @@ export default function InputField({
   keyboardType,
   autoCapitalize,
   autoComplete,
+  textContentType,
   style,
   inputStyle,
 }) {
@@ -27,6 +28,7 @@ export default function InputField({
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
         autoComplete={autoComplete}
+        textContentType={textContentType}
       />
     </View>
   );
