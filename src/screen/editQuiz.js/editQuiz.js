@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator } from "react-native-paper";
 import { TouchableRipple } from "react-native-paper"
 import { SafeAreaView } from 'react-native-safe-area-context';
-import DatePicker from 'react-native-date-picker';
+import DatePicker from '../../components/DateTimePickerModal';
 import { Picker } from "@react-native-picker/picker";
 import RadioButtonGroup, { RadioButtonItem } from "expo-radio-button";
 

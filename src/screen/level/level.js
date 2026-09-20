@@ -5,7 +5,7 @@ import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { collection, doc, onSnapshot } from 'firebase/firestore';
-import * as LocalAuthentication from 'expo-local-authentication';
+import { authenticateDevice } from '../../utils/localAuth';
 import BackButton from '../../components/BackButton';
 import CategoryCard from '../../components/CategoryCard';
 import SortSheet from '../../components/SortSheet';
@@ -15,7 +15,7 @@ import { Colors } from '../../theme/theme';
 
 export default function Level({ navigation, route }) {
 
-  const { category, studentName, studentYear } = route.params;
+  const { category, studentName, studentUid } = route.params;
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
@@ -28,24 +28,9 @@ export default function Level({ navigation, route }) {
     fetchData();
   }, [category.id]);
 
-  const authenticateUser = async () => {
-    const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: 'Authenticate to play',
-    });
-
-    if (result.success) {
-      return true;
-    } else {
-      if (result.error === 'LAErrorUserFallback') {
-        console.log('User cancelled authentication and chose passcode.');
-      }
-      return false;
-    }
-  };
-
   const handleLevel = async (difficultyLevel, timeLimit) => {
     if (studentName != "guest") {
-      const authenticated = await authenticateUser();
+      const authenticated = await authenticateDevice('Authenticate to play');
     if (authenticated) {
       navigation.navigate("QuizTest", { difficultyLevel, timeLimit, category });
     } else {
@@ -185,7 +170,7 @@ export default function Level({ navigation, route }) {
       {studentName != "guest" && (
         <TouchableOpacity
           style={styles.historyFab}
-          onPress={() => navigation.navigate("History", { studentName, studentYear, category, filteredCategories })}
+          onPress={() => navigation.navigate("History", { studentName, studentUid, category, filteredCategories })}
           activeOpacity={0.85}
         >
           <Ionicons name="podium-outline" size={24} color={Colors.white} />

@@ -6,6 +6,8 @@ import { deleteUser } from "firebase/auth";
 import { TouchableRipple } from "react-native-paper";
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
+import { forgetRole } from '../../utils/session';
+import { authenticateDevice } from '../../utils/localAuth';
 
 export default function DetailAccount({ navigation }) {
 
@@ -14,6 +16,11 @@ export default function DetailAccount({ navigation }) {
 
   const handleDeleteAccount = async () => {
     try {
+      if (!(await authenticateDevice('Authenticate to delete your account'))) {
+        setModal(false);
+        return alert('Authentication failed. Account not deleted.');
+      }
+
       const user = FIREBASE_AUTH.currentUser;
       const userId = user.uid;
 
@@ -29,6 +36,7 @@ export default function DetailAccount({ navigation }) {
 
       await batch.commit();
       await deleteUser(user);
+      await forgetRole();
 
       alert('Account and related data deleted successfully.');
       navigation.navigate("Home");
@@ -42,6 +50,7 @@ export default function DetailAccount({ navigation }) {
   const handleSignOut = async () => {
     try {
       // await AsyncStorage.removeItem('userToken');
+      await forgetRole();
       await FIREBASE_AUTH.signOut();
       navigation.navigate("Home");
     } catch (error) {

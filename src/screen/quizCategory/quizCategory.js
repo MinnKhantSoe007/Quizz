@@ -147,7 +147,7 @@ export default function QuizCategory({ navigation, route }) {
         onPress={() =>
           navigation.navigate('History', {
             studentName: 'guest',
-            studentYear: 'guest',
+            studentUid: 'guest',
             category,
             filteredCategories,
           })

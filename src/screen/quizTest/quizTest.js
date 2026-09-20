@@ -173,7 +173,7 @@ export default function QuizTest({ navigation, route }) {
     setScore(totalScore);
 
     // Retrieve user information from AsyncStorage
-    const studentYear = await AsyncStorage.getItem('studentYear');
+    const studentUid = await AsyncStorage.getItem('studentUid');
     const studentName = await AsyncStorage.getItem('studentName');
 
     // Calculate percent score
@@ -186,7 +186,7 @@ export default function QuizTest({ navigation, route }) {
     // Prepare the history data
     const historyData = {
       studentName,
-      studentYear,
+      studentUid,
       date: currentDate,
       categoryName: category?.title,
       categoryId: category?.id, // Assuming category has a name property

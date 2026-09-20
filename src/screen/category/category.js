@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from "./style";
 import { Ionicons } from '@expo/vector-icons';
-import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
+import { FIREBASE_FIRESTORE as firestore, FIREBASE_AUTH } from '../../../firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CategoryCard from '../../components/CategoryCard';
@@ -13,6 +13,7 @@ import Loader from '../../components/Loader';
 import DropdownMenu from '../../components/DropdownMenu';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import { Colors } from '../../theme/theme';
+import { forgetRole } from '../../utils/session';
 
 export default function Category({ navigation }) {
 
@@ -25,12 +26,12 @@ export default function Category({ navigation }) {
   const [sortOption, setSortOption] = useState('');
   const [refreshing, setRefreshing] = useState(false)
   const [studentName, setStudentName] = useState("")
-  const [studentYear, setStudentYear] = useState("")
+  const [studentUid, setStudentYear] = useState("")
   const [menuVisible, setMenuVisible] = useState(false);
   const [signOutModalVisible, setSignOutModalVisible] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem('studentYear').then((data) => setStudentYear(data))
+    AsyncStorage.getItem('studentUid').then((data) => setStudentYear(data))
     AsyncStorage.getItem('studentName').then((data) => setStudentName(data))
     fetchUsers();
     fetchCategories();
@@ -70,7 +71,7 @@ export default function Category({ navigation }) {
   }
 
   const handleCategory = (category) => {
-    navigation.navigate("Level", { category, studentName, studentYear });
+    navigation.navigate("Level", { category, studentName, studentUid });
   };
 
   const findUserNameByCreatorUid = (creatorUid) => {
@@ -134,10 +135,10 @@ export default function Category({ navigation }) {
 
   const handleConfirmSignOut = async () => {
     setSignOutModalVisible(false);
-    if (studentName || studentYear) {
-      await AsyncStorage.setItem("studentName", "guest")
-      await AsyncStorage.setItem("studentYear", "guest")
-    }
+    await AsyncStorage.setItem("studentName", "guest")
+    await AsyncStorage.setItem("studentUid", "guest")
+    await forgetRole()
+    await FIREBASE_AUTH.signOut()
     navigation.navigate("Home")
   }
 
@@ -189,7 +190,12 @@ export default function Category({ navigation }) {
       <DropdownMenu
         visible={menuVisible}
         onClose={closeMenu}
-        items={[{ label: 'Sign Out', onPress: handleSignOutPress }]}
+        items={[
+          ...(studentName && studentName !== 'guest'
+            ? [{ label: 'Reset Password', onPress: () => { closeMenu(); navigation.navigate('UpdateStudentAccount'); } }]
+            : []),
+          { label: 'Sign Out', onPress: handleSignOutPress },
+        ]}
       />
 
       <ConfirmDialog

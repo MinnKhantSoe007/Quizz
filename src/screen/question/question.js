@@ -33,6 +33,8 @@ import DropdownMenu from '../../components/DropdownMenu';
 import Toast from '../../components/Toast';
 import { useToast } from '../../hooks/useToast';
 import { Colors } from '../../theme/theme';
+import { forgetRole } from '../../utils/session';
+import { authenticateDevice } from '../../utils/localAuth';
 import { styles } from './style';
 
 export default function Question({ navigation }) {
@@ -163,6 +165,7 @@ export default function Question({ navigation }) {
   const handleConfirmSignOut = async () => {
     setSignOutModalVisible(false);
     try {
+      await forgetRole();
       await signOut(auth);
       navigation.navigate('Home');
     } catch (error) {
@@ -177,6 +180,11 @@ export default function Question({ navigation }) {
 
   const handleConfirmDelete = async () => {
     try {
+      if (!(await authenticateDevice('Authenticate to delete your account'))) {
+        setDeleteModalVisible(false);
+        return showToast('Authentication failed. Account not deleted.');
+      }
+
       const user = auth.currentUser;
       const categoriesQuery = query(
         collection(firestore, 'categories'),
@@ -188,6 +196,7 @@ export default function Question({ navigation }) {
       categoriesSnapshot.forEach((docSnap) => batch.delete(docSnap.ref));
       await batch.commit();
       await deleteUser(user);
+      await forgetRole();
 
       setDeleteModalVisible(false);
       navigation.navigate('Home');

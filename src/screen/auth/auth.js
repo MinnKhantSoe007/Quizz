@@ -9,8 +9,10 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, FIREBASE_AUTH } from '../../../firebaseConfig';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth } from '../../../firebaseConfig';
+import { rememberRole } from '../../utils/session';
+import { grantRole, hasRole, isWrongCode } from '../../utils/roles';
 import { ImageResource } from '../../resource/imageResource';
 import AppButton from '../../components/AppButton';
 import BackButton from '../../components/BackButton';
@@ -29,18 +31,34 @@ export default function Auth({ navigation }) {
   const { toastMessage, showToast } = useToast();
 
   const login = async () => {
-    if (secureCode == 999999 && !!email && !!password) {
+    if (!!secureCode && !!email && !!password) {
       setLoading(true);
 
       try {
         const response = await signInWithEmailAndPassword(auth, email, password);
 
-        if (response.user.emailVerified) {
-          navigation.navigate('Question');
-        } else {
-          setLoading(false);
+        if (!response.user.emailVerified) {
+          await signOut(auth);
           showToast('Please verify your email address before logging in.');
+          return;
         }
+
+        if (!(await hasRole(response.user.uid, 'quizzer'))) {
+          await signOut(auth);
+          showToast('This is not a quizzer account.');
+          return;
+        }
+
+        try {
+          await grantRole(response.user.uid, 'quizzer', secureCode);
+        } catch (error) {
+          await signOut(auth);
+          showToast(isWrongCode(error) ? 'Incorrect secure code.' : error.message);
+          return;
+        }
+
+        await rememberRole('quizzer');
+        navigation.navigate('Question');
       } catch (error) {
         console.log(error);
         showToast(error.message);

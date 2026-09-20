@@ -14,7 +14,7 @@ import { styles } from './style';
 export default function History({ navigation, route }) {
 
   const screenWidth = Dimensions.get("window").width;
-  const { studentName, studentYear, category, filteredCategories } = route?.params;
+  const { studentName, studentUid, category, filteredCategories } = route?.params;
   const isGuest = studentName === "guest";
   const [levels] = useState(isGuest ? filteredCategories : filteredCategories.map(item => item.level));
   const [selectedLevel, setSelectedLevel] = useState(levels[0]);
@@ -53,11 +53,11 @@ export default function History({ navigation, route }) {
         const historyData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
         const nameToFilter = isGuest ? selectedPlayer.name : studentName;
-        const yearToFilter = isGuest ? selectedPlayer.year : studentYear;
+        const uidToFilter = isGuest ? selectedPlayer.id : studentUid;
 
         const filteredData = historyData.filter((item) =>
           item.studentName === nameToFilter &&
-          item.studentYear === yearToFilter &&
+          item.studentUid === uidToFilter &&
           item.categoryName === category?.title &&
           item.difficultyLevel === selectedLevel
         );
@@ -78,7 +78,7 @@ export default function History({ navigation, route }) {
     };
 
     fetchHistory();
-  }, [category?.id, selectedLevel, selectedPlayer, isGuest, studentName, studentYear]);
+  }, [category?.id, selectedLevel, selectedPlayer, isGuest, studentName, studentUid]);
 
   const chartConfig = {
     backgroundGradientFrom: Colors.white,
@@ -124,7 +124,7 @@ export default function History({ navigation, route }) {
                 style={styles.select}
               >
                 {players.map((player) => (
-                  <Picker.Item key={player.id} label={`${player.name} (${player.year})`} value={player.id} />
+                  <Picker.Item key={player.id} label={player.name} value={player.id} />
                 ))}
               </Picker>
             </View>

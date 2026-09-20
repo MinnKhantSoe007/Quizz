@@ -1,323 +1,294 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, ScrollView } from "react-native";
-import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
-import { collection, addDoc, onSnapshot, doc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { ActivityIndicator } from "react-native-paper";
-import { styles } from "./style";
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableRipple } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
-import DatePicker from 'react-native-date-picker';
-import { Picker } from "@react-native-picker/picker";
-import RadioButtonGroup, { RadioButtonItem } from "expo-radio-button";
+import { Picker } from '@react-native-picker/picker';
+import { collection, addDoc, onSnapshot, doc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
+import AppButton from '../../components/AppButton';
+import BackButton from '../../components/BackButton';
+import DatePicker from '../../components/DateTimePickerModal';
+import InputField from '../../components/InputField';
+import Loader from '../../components/Loader';
+import Toast from '../../components/Toast';
+import { useToast } from '../../hooks/useToast';
+import { Colors } from '../../theme/theme';
+import { styles } from './style';
+
+const MIN_OPTIONS = 3;
+const DURATION_MINUTES = [...Array(60)].map((_, i) => i + 1).concat([75, 90, 105, 120, 150, 180]);
+const digitsOnly = (text) => text.replace(/[^0-9]/g, '');
+const NEW_LEVEL = '1';
+const EXISTING_LEVEL = '2';
+
+function Radio({ label, active, onPress }) {
+  return (
+    <TouchableOpacity style={styles.radio} onPress={onPress} activeOpacity={0.75}>
+      <View style={[styles.radioCircle, active && styles.radioCircleActive]}>
+        {active && <View style={styles.radioDot} />}
+      </View>
+      <Text style={[styles.radioText, active && styles.radioTextActive]}>{label}</Text>
+    </TouchableOpacity>
+  );
+}
+
+function TimeField({ value, placeholder, onPress, disabled }) {
+  return (
+    <TouchableOpacity
+      style={[styles.timeField, disabled && styles.timeFieldDisabled]}
+      onPress={onPress}
+      disabled={disabled}
+      activeOpacity={0.75}
+    >
+      <Text style={[styles.timeText, !value && styles.timePlaceholder]} numberOfLines={1}>
+        {value || placeholder}
+      </Text>
+      <Ionicons name="chevron-down" size={18} color={Colors.textSecondary} />
+    </TouchableOpacity>
+  );
+}
+
+const formatTime = (date) =>
+  date && date.toLocaleString() !== 'Invalid Date' ? date.toLocaleString() : '';
 
 export default function CreateQuiz({ route, navigation }) {
   const { categoryId } = route.params;
-  const [question, setQuestion] = useState("");
-  const [option1, setOption1] = useState("");
-  const [option2, setOption2] = useState("");
-  const [option3, setOption3] = useState("");
-  const [option4, setOption4] = useState("");
-  const [correctOption, setCorrectOption] = useState("");
-  const [level, setLevel] = useState("");
-  const [reason, setReason] = useState("");
-  const [score, setScore] = useState("");
-  const [duration, setDuration] = useState("");
+  const [question, setQuestion] = useState('');
+  const [options, setOptions] = useState(['', '', '']);
+  const [correctIndex, setCorrectIndex] = useState(0);
+  const [reason, setReason] = useState('');
+  const [score, setScore] = useState('');
+  const [levelMode, setLevelMode] = useState(NEW_LEVEL);
+  const [level, setLevel] = useState('');
+  const [duration, setDuration] = useState('');
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const [startTempTime, setStartTempTime] = useState(new Date());
-  const [endTempTime, setEndTempTime] = useState(new Date());
+  const [picking, setPicking] = useState(null); // 'start' | 'end' | null
   const [loading, setLoading] = useState(false);
-  const [loading1, setLoading1] = useState(false);
-  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
-  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
-  const [options, setOptions] = useState([]);
-  const [current, setCurrent] = useState("1");
+  const [saving, setSaving] = useState(false);
   const [quizData, setQuizData] = useState([]);
-  const [availableLevels, setAvailableLevels] = useState([])
+  const [availableLevels, setAvailableLevels] = useState([]);
+  const { toastMessage, showToast } = useToast();
+
+  const isExisting = levelMode === EXISTING_LEVEL;
 
   useEffect(() => {
     setLoading(true);
-    const unsubscribe = onSnapshot(collection(doc(firestore, "categories", categoryId), 'quizzes'), (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const unsubscribe = onSnapshot(collection(doc(firestore, 'categories', categoryId), 'quizzes'), (snapshot) => {
+      const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
       setQuizData(data);
-      const uniqueLevels = new Set(data.map(item => item.level));
-      const uniqueLevelsArray = Array.from(uniqueLevels);
-      setAvailableLevels(uniqueLevelsArray);
-      current === "2" ? setLevel(uniqueLevelsArray[0]) : console.log("");
+      setAvailableLevels(Array.from(new Set(data.map((item) => item.level))));
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [current]);
+  }, [categoryId]);
 
+  // Existing level: inherit its duration and window. New level: start blank.
   useEffect(() => {
-    setOptions([option1, option2, option3, option4].filter(option => option.trim() !== ""));
-    setCorrectOption(option1)
-  }, [option1, option2, option3, option4]);
-
-  useEffect(() => {
-    if (current === "2") {
-      const selectedLevelData = quizData.find(item => item.level === level);
-      if (selectedLevelData) {
-        setDuration(selectedLevelData.duration);
-        setStartTime(new Date(selectedLevelData.startTime));
-        setEndTime(new Date(selectedLevelData.endTime));
-      }
-    } else {
-      setDuration("");
+    if (!isExisting) {
+      setDuration('');
       setStartTime(null);
       setEndTime(null);
-    }
-  }, [current, level, quizData]);
-
-  const handleCreateQuiz = async () => {
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const userId = user ? user.uid : null;
-
-    if (question.trim() === "" || option1.trim() === "" || correctOption.trim() === "" || level.trim() === "" || score.trim() === "" || duration.trim() === "") {
-      alert("Please fill in related fields.");
-      return;
-    }
-    if (endTime && startTime) {
-      if (endTime <= startTime) {
-        alert("End time must be greater than start time.");
-        return;
-      }
-    }
-    if (current === "1" && quizData.some((quiz) => quiz.level === level)) {
-      alert("A level with the same name exists. Please choose the 'Add to existing level' option.");
       return;
     }
 
-    const quizzesCollectionRef = collection(firestore, "categories", categoryId, "quizzes");
-    setLoading1(true);
+    const selected = quizData.find((item) => item.level === level);
+    if (selected) {
+      setDuration(selected.duration);
+      setStartTime(new Date(selected.startTime));
+      setEndTime(new Date(selected.endTime));
+    }
+  }, [isExisting, level, quizData]);
 
-    await addDoc(quizzesCollectionRef, {
-      question,
-      options: [option1, option2, option3, option4],
-      correct_option: correctOption,
-      reason: reason,
-      level,
-      score: parseInt(score),
-      duration,
-      startTime: startTime ? startTime.toLocaleString() : null,
-      endTime: endTime ? endTime.toLocaleString() : null,
-      creatorUid: userId,
-    })
-      .then(() => {
-        setQuestion("");
-        setOption1("");
-        setOption2("");
-        setOption3("");
-        setOption4("");
-        setCorrectOption("");
-        setLevel("");
-        setScore("");
-        setDuration("");
-        setStartTime(null);
-        setEndTime(null);
-        navigation.goBack();
-      })
-      .catch((error) => {
-        alert("Error creating quiz: " + error.message);
-        console.log(error);
-      });
+  const chooseLevelMode = (mode) => {
+    setLevelMode(mode);
+    setLevel(mode === EXISTING_LEVEL ? availableLevels[0] || '' : '');
   };
 
-  const manageStartTimePicker = () => {
-    if (current === "1") {
-      setShowStartTimePicker(true);
-    }
-  }
+  const setOptionAt = (index, text) =>
+    setOptions((prev) => prev.map((option, i) => (i === index ? text : option)));
 
-  const manageEndTimePicker = () => {
-    if (current === "1") {
-      setShowEndTimePicker(true);
+  const removeOption = (index) => {
+    setOptions((prev) => prev.filter((_, i) => i !== index));
+    setCorrectIndex((prev) => (index < prev ? prev - 1 : index === prev ? 0 : prev));
+  };
+
+  // A level inherited from an older quiz may use a duration that isn't in the standard list.
+  const durationChoices = duration && !DURATION_MINUTES.includes(Number(duration))
+    ? [...DURATION_MINUTES, Number(duration)].sort((a, b) => a - b)
+    : DURATION_MINUTES;
+
+  const handleCreateQuiz = async () => {
+    const filledOptions = options.map((option) => option.trim()).filter(Boolean);
+    const correctOption = options[correctIndex].trim();
+
+    if (!question.trim() || !level.trim() || !score.trim() || !String(duration).trim()) {
+      return showToast('Please fill in related fields.');
     }
-  }
+    if (filledOptions.length < 2 || !correctOption) {
+      return showToast('Add at least two options and pick a filled one as correct.');
+    }
+    if (startTime && endTime && endTime <= startTime) {
+      return showToast('End time must be greater than start time.');
+    }
+    if (!isExisting && quizData.some((quiz) => quiz.level === level)) {
+      return showToast("A level with the same name exists. Choose 'Add to existing level'.");
+    }
+
+    setSaving(true);
+    try {
+      await addDoc(collection(firestore, 'categories', categoryId, 'quizzes'), {
+        question,
+        options: filledOptions,
+        correct_option: correctOption,
+        reason,
+        level,
+        score: parseInt(score, 10),
+        duration,
+        startTime: startTime ? startTime.toLocaleString() : null,
+        endTime: endTime ? endTime.toLocaleString() : null,
+        creatorUid: getAuth().currentUser?.uid ?? null,
+      });
+      navigation.goBack();
+    } catch (error) {
+      showToast('Error creating quiz: ' + error.message);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.goBack()} />
+      <BackButton disabled={saving} />
 
-      <ScrollView style={styles.inputs} showsVerticalScrollIndicator={false}>
-
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <DatePicker
-          modal
-          open={showStartTimePicker}
-          date={startTempTime}
-          onDateChange={setStartTempTime}
-          mode="datetime"
-          onCancel={() => setShowStartTimePicker(false)}
+          open={picking !== null}
+          date={(picking === 'start' ? startTime : endTime) || new Date()}
+          onCancel={() => setPicking(null)}
           onConfirm={(date) => {
-            setStartTime(date);
-            setShowStartTimePicker(false);
+            (picking === 'start' ? setStartTime : setEndTime)(date);
+            setPicking(null);
           }}
         />
 
-        <DatePicker
-          modal
-          open={showEndTimePicker}
-          date={endTempTime}
-          onDateChange={setEndTempTime}
-          mode="datetime"
-          onCancel={() => setShowEndTimePicker(false)}
-          onConfirm={(date) => {
-            setEndTime(date);
-            setShowEndTimePicker(false);
-          }}
-        />
+        <Text style={styles.title}>Add Question</Text>
 
-        <Text style={styles.label}>Question:</Text>
-        <TextInput
-          style={styles.input}
+        <InputField
+          label="Question :"
+          placeholder="Enter the question"
           value={question}
           onChangeText={setQuestion}
-          placeholder="Enter the question"
-          multiline={true}
         />
 
-        <Text style={styles.label}>Options:</Text>
-        <TextInput
-          style={styles.input}
-          value={option1}
-          onChangeText={setOption1}
-          placeholder="Enter option 1"
-        />
-        <TextInput
-          style={styles.input}
-          value={option2}
-          onChangeText={setOption2}
-          placeholder="Enter option 2"
-        />
-        <TextInput
-          style={styles.input}
-          value={option3}
-          onChangeText={setOption3}
-          placeholder="Enter option 3"
-        />
-        <TextInput
-          style={styles.input}
-          value={option4}
-          onChangeText={setOption4}
-          placeholder="Enter option 4"
-        />
+        <Text style={styles.label}>Options :</Text>
+        {options.map((option, index) => (
+          <View key={index} style={styles.optionRow}>
+            <InputField
+              style={styles.optionInput}
+              placeholder={`Option ${index + 1}`}
+              value={option}
+              onChangeText={(text) => setOptionAt(index, text)}
+            />
+            {options.length > MIN_OPTIONS && (
+              <TouchableOpacity style={styles.removeOption} onPress={() => removeOption(index)} hitSlop={8}>
+                <Ionicons name="trash-outline" size={22} color={Colors.error} />
+              </TouchableOpacity>
+            )}
+          </View>
+        ))}
+        <TouchableOpacity style={styles.addOption} onPress={() => setOptions((prev) => [...prev, ''])}>
+          <Ionicons name="add-circle-outline" size={32} color={Colors.primary} />
+          <Text style={styles.addOptionText}>Add Option</Text>
+        </TouchableOpacity>
 
-        <Text style={styles.label}>Correct Option:</Text>
-        <Picker
-          style={styles.input}
-          selectedValue={correctOption}
-          onValueChange={(itemValue) => setCorrectOption(itemValue)}
-        >
-          {options.map((option) => (
-            <Picker.Item key={option} label={option} value={option} />
+        <Text style={styles.label}>Correct Option :</Text>
+        <View style={styles.radioRow}>
+          {options.map((_, index) => (
+            <Radio
+              key={index}
+              label={`Option ${index + 1}`}
+              active={correctIndex === index}
+              onPress={() => setCorrectIndex(index)}
+            />
           ))}
-        </Picker>
-
-        <Text style={styles.label}>Reason:</Text>
-        <TextInput
-          style={styles.input}
-          value={reason}
-          onChangeText={setReason}
-          placeholder="Enter Reason"
-          multiline={true}
-        />
-
-        <Text style={styles.label}>Score:</Text>
-        <TextInput
-          style={styles.input}
-          value={score}
-          onChangeText={setScore}
-          placeholder="Enter Score"
-          keyboardType="numeric"
-        />
-
-        <View style={{ marginBottom: 20 }}>
-          <RadioButtonGroup
-            containerStyle={{ marginBottom: 10 }}
-            selected={current}
-            onSelected={(value) => setCurrent(value)}
-            radioBackground="#5E60CE"
-            size={25}
-          >
-            <RadioButtonItem
-              value="1"
-              label={
-                <Text style={styles.label}>Create New Level</Text>
-              }
-              style={{ marginBottom: 10 }}
-            />
-
-            <RadioButtonItem
-              value="2"
-              label={
-                <Text style={styles.Radiolabel}>Add to existing level</Text>
-              }
-            />
-          </RadioButtonGroup>
         </View>
 
-        <Text style={styles.label}>Level:</Text>
-        {current === "2" ? (
-          <Picker
-            style={styles.input}
-            selectedValue={level}
-            onValueChange={(itemValue) => setLevel(itemValue)}
-          >
-            {availableLevels.map((level) => (
-              <Picker.Item key={level} label={level} value={level} />
-            ))}
-          </Picker>
-        ) : (
-          <TextInput
-            style={styles.input}
-            value={level}
-            onChangeText={setLevel}
-            placeholder="Enter Level"
-          />
-        )}
+        <InputField label="Reason :" placeholder="Enter Reason" value={reason} onChangeText={setReason} />
 
-        <Text style={styles.label}>Duration:</Text>
-        <TextInput
-          style={styles.input}
-          value={duration}
-          onChangeText={setDuration}
-          placeholder="Enter Duration"
-          keyboardType="numeric"
+        <InputField
+          label="Score :"
+          placeholder="Enter Score"
+          value={score}
+          onChangeText={(text) => setScore(digitsOnly(text))}
+          keyboardType="number-pad"
         />
 
-        <Text style={styles.label}>Start Time:</Text>
-        <TouchableRipple onPress={manageStartTimePicker}>
-          <View pointerEvents="none">
-            <TextInput
-              style={styles.input}
-              value={startTime ? startTime.toLocaleString() == "Invalid Date" ? '' : startTime.toLocaleString() : ''}
+        <View style={styles.radioRow}>
+          <Radio label="Create New Level" active={!isExisting} onPress={() => chooseLevelMode(NEW_LEVEL)} />
+          <Radio label="Add to existing level" active={isExisting} onPress={() => chooseLevelMode(EXISTING_LEVEL)} />
+        </View>
+
+        {isExisting ? (
+          <>
+            <Text style={styles.label}>Level :</Text>
+            <View style={styles.levelSelect}>
+              <Picker selectedValue={level} onValueChange={setLevel}>
+                {availableLevels.map((item) => (
+                  <Picker.Item key={item} label={item} value={item} />
+                ))}
+              </Picker>
+            </View>
+          </>
+        ) : (
+          <InputField label="Level :" placeholder="Enter Level" value={level} onChangeText={setLevel} />
+        )}
+
+        <Text style={styles.label}>Duration :</Text>
+        <View style={[styles.levelSelect, isExisting && styles.timeFieldDisabled]}>
+          <Picker selectedValue={String(duration)} onValueChange={setDuration} enabled={!isExisting}>
+            <Picker.Item label="Select duration" value="" color={Colors.textPlaceholder} />
+            {durationChoices.map((minutes) => (
+              <Picker.Item key={minutes} label={`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`} value={String(minutes)} />
+            ))}
+          </Picker>
+        </View>
+
+        <View style={styles.timeRow}>
+          <View style={styles.timeCol}>
+            <Text style={styles.label}>Start Time :</Text>
+            <TimeField
+              value={formatTime(startTime)}
               placeholder="Select Start Time"
+              disabled={isExisting}
+              onPress={() => setPicking('start')}
             />
           </View>
-        </TouchableRipple>
-
-        <Text style={styles.label}>End Time:</Text>
-        <TouchableRipple onPress={manageEndTimePicker}>
-          <View pointerEvents="none">
-            <TextInput
-              style={styles.input}
-              value={endTime ? endTime.toLocaleString() == "Invalid Date" ? '' : endTime.toLocaleString() : ''}
+          <View style={styles.timeCol}>
+            <Text style={styles.label}>End Time :</Text>
+            <TimeField
+              value={formatTime(endTime)}
               placeholder="Select End Time"
+              disabled={isExisting}
+              onPress={() => setPicking('end')}
             />
           </View>
-        </TouchableRipple>
+        </View>
 
-        {loading || loading1 ? <ActivityIndicator animating={true} size="large" color="black" /> :
-          <TouchableRipple style={styles.createButton} onPress={handleCreateQuiz}>
-            <Text style={styles.createButtonText}>Create Quiz</Text>
-          </TouchableRipple>
-        }
-
+        {loading ? (
+          <Loader />
+        ) : (
+          <AppButton label="Create" onPress={handleCreateQuiz} variant="filled" loading={saving} style={styles.createButton} />
+        )}
       </ScrollView>
+
+      <Toast message={toastMessage} />
     </SafeAreaView>
   );
 }

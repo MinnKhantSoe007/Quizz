@@ -1,92 +1,132 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
+import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/theme';
 
 export const styles = StyleSheet.create({
-
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    padding: 20,
+    backgroundColor: Colors.background,
   },
-
+  scrollContent: {
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.xl,
+  },
+  title: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.lg,
+    color: Colors.textPrimary,
+    marginTop: Spacing.md,
+    marginBottom: Spacing.md,
+  },
   label: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 18,
-    marginBottom: 10,
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.sm,
   },
-
-  Radiolabel: {
-    fontFamily: 'RobotoRegular',
-    fontSize: 18,
+  optionRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
   },
-
-  input: {
-    borderWidth: 1,
-    borderColor: "#5E60CE",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 20,
-    fontFamily: 'RobotoRegular',
-  },
-
-  createButton: {
-    backgroundColor: "#5E60CE",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 30
-  },
-
-  createButtonText: {
-    fontFamily: 'RobotoRegular',
-    color: "#000",
-    fontSize: 20,
-  },
-
-  back: {
-    position: 'relative',
-    // top: "4%",
-    // left: "5%",
-    color: '#000',
-  },
-
-  inputs: {
-    marginTop: 30
-  },
-
-  centeredView: {
+  optionInput: {
     flex: 1,
+    marginBottom: Spacing.sm,
+  },
+  removeOption: {
+    height: 52,
+    paddingLeft: Spacing.md,
     justifyContent: 'center',
+  },
+  addOption: {
+    flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'flex-start',
+    marginBottom: Spacing.lg,
+    paddingVertical: Spacing.xs,
   },
-
-  modalView: {
-    marginTop: 30,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 40,
+  addOptionText: {
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+    marginLeft: Spacing.sm,
+  },
+  radioRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.md,
+  },
+  radio: {
+    flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 7,
-    elevation: 9,
+    paddingVertical: Spacing.xs,
+    marginBottom: Spacing.xs,
   },
-
-  ok: {
-    fontFamily: 'RobotoRegular',
-    color: '#E5383B',
-    fontSize: 20,
-    marginTop: 10
+  radioCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: Radius.full,
+    borderWidth: 2,
+    borderColor: Colors.textPlaceholder,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: Spacing.sm,
   },
-
-  no: {
-    fontFamily: 'RobotoRegular',
-    color: '#5E60CE',
-    fontSize: 20,
-    marginTop: 10
+  radioCircleActive: {
+    borderColor: Colors.primary,
   },
-
+  radioDot: {
+    width: 14,
+    height: 14,
+    borderRadius: Radius.full,
+    backgroundColor: Colors.primary,
+  },
+  radioText: {
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.md,
+    color: Colors.textSecondary,
+  },
+  radioTextActive: {
+    color: Colors.primary,
+  },
+  levelSelect: {
+    borderColor: Colors.border,
+    borderWidth: 1,
+    borderRadius: Radius.md,
+    backgroundColor: Colors.white,
+    marginBottom: Spacing.md,
+    overflow: 'hidden',
+  },
+  timeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  timeCol: {
+    width: '48%',
+  },
+  timeField: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderColor: Colors.border,
+    borderWidth: 1,
+    borderRadius: Radius.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
+    backgroundColor: Colors.white,
+  },
+  timeFieldDisabled: {
+    backgroundColor: Colors.searchBackground,
+  },
+  timeText: {
+    flex: 1,
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.sm,
+    color: Colors.textPrimary,
+  },
+  timePlaceholder: {
+    color: Colors.textPlaceholder,
+  },
+  createButton: {
+    marginTop: Spacing.lg,
+  },
 });
