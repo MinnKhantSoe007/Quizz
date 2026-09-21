@@ -11,7 +11,6 @@ import CreateAccount from "../screen/createAccount/createAccount";
 import QuizCategory from "../screen/quizCategory/quizCategory";
 import CreateCategory from "../screen/createCategory/createCategory";
 import CreateQuiz from "../screen/createQuiz/createQuiz";
-import EditQuiz from "../screen/editQuiz.js/editQuiz";
 import DetailAccount from "../screen/detailAccount/detailAccount";
 import UpdateAccount from "../screen/updateAccount/updateAccount";
 import StudentAuth from "../screen/auth/studentAuth";
@@ -34,7 +33,6 @@ export default function NavigationStack() {
         <Stack.Screen name="Question" component={Question} options={{gestureEnabled: false}} />
         <Stack.Screen name="QuizCategory" component={QuizCategory} />
         <Stack.Screen name="CreateCategory" component={CreateCategory} />
-        <Stack.Screen name="EditQuiz" component={EditQuiz} />
         <Stack.Screen name="Category" component={Category} options={{gestureEnabled: false}} />
         <Stack.Screen name="Auth" component={Auth} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />

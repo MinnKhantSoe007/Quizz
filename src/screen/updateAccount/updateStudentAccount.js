@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import {
   Text,
+  View,
+  Image,
   KeyboardAvoidingView,
   Alert,
   ScrollView,
@@ -13,6 +15,7 @@ import AppButton from '../../components/AppButton';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
 import Toast from '../../components/Toast';
+import { ImageResource } from '../../resource/imageResource';
 import { useToast } from '../../hooks/useToast';
 import { styles } from './updateStudentAccountStyle';
 
@@ -57,6 +60,10 @@ export default function UpdateStudentAccount({ navigation }) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        <View style={styles.logoWrapper}>
+          <Image source={ImageResource.logo.icon_logo} style={styles.logo} resizeMode="contain" />
+        </View>
+
         <Text style={styles.title}>Reset your password</Text>
 
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>

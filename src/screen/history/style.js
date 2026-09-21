@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Colors, FontFamily, FontSize, Radius, Spacing } from "../../theme/theme";
+import { Shadow, Colors, FontFamily, FontSize, Radius, Spacing } from "../../theme/theme";
 
 export const styles = StyleSheet.create({
 
@@ -50,10 +50,7 @@ export const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     padding: Spacing.lg,
     marginTop: Spacing.md,
-    shadowColor: Colors.cardShadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    elevation: 2,
+    ...Shadow.card,
   },
 
   overallLabel: {

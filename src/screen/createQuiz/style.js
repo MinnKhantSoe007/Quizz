@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/theme';
+import { Colors, FontFamily, FontSize, Spacing } from '../../theme/theme';
 
 export const styles = StyleSheet.create({
   container: {
@@ -55,47 +55,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: Spacing.md,
   },
-  radio: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: Spacing.xs,
-    marginBottom: Spacing.xs,
-  },
-  radioCircle: {
-    width: 26,
-    height: 26,
-    borderRadius: Radius.full,
-    borderWidth: 2,
-    borderColor: Colors.textPlaceholder,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: Spacing.sm,
-  },
-  radioCircleActive: {
-    borderColor: Colors.primary,
-  },
-  radioDot: {
-    width: 14,
-    height: 14,
-    borderRadius: Radius.full,
-    backgroundColor: Colors.primary,
-  },
-  radioText: {
-    fontFamily: FontFamily.regular,
-    fontSize: FontSize.md,
-    color: Colors.textSecondary,
-  },
-  radioTextActive: {
-    color: Colors.primary,
-  },
-  levelSelect: {
-    borderColor: Colors.border,
-    borderWidth: 1,
-    borderRadius: Radius.md,
-    backgroundColor: Colors.white,
-    marginBottom: Spacing.md,
-    overflow: 'hidden',
-  },
   timeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -103,30 +62,10 @@ export const styles = StyleSheet.create({
   timeCol: {
     width: '48%',
   },
-  timeField: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderColor: Colors.border,
-    borderWidth: 1,
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.md,
-    backgroundColor: Colors.white,
-  },
-  timeFieldDisabled: {
-    backgroundColor: Colors.searchBackground,
-  },
-  timeText: {
-    flex: 1,
-    fontFamily: FontFamily.regular,
-    fontSize: FontSize.sm,
-    color: Colors.textPrimary,
-  },
-  timePlaceholder: {
-    color: Colors.textPlaceholder,
-  },
-  createButton: {
+  primaryButton: {
     marginTop: Spacing.lg,
+  },
+  deleteButton: {
+    marginTop: Spacing.md,
   },
 });

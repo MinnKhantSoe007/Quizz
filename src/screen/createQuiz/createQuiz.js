@@ -2,76 +2,57 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
-import { collection, addDoc, onSnapshot, doc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, onSnapshot, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import AppButton from '../../components/AppButton';
 import BackButton from '../../components/BackButton';
-import DatePicker from '../../components/DateTimePickerModal';
+import ConfirmDialog from '../../components/ConfirmDialog';
+import DateTimeField from '../../components/DateTimeField';
+import DateTimePickerModal from '../../components/DateTimePickerModal';
 import InputField from '../../components/InputField';
 import Loader from '../../components/Loader';
+import RadioOption from '../../components/RadioOption';
+import SelectField from '../../components/SelectField';
 import Toast from '../../components/Toast';
 import { useToast } from '../../hooks/useToast';
 import { Colors } from '../../theme/theme';
+import { DURATION_MINUTES, LEVEL_MODE, MIN_OPTIONS } from '../../utils/constant';
+import { authenticateDevice } from '../../utils/localAuth';
+import { digitsOnly, formatDateTime, parseDateTime } from '../../utils/format';
 import { styles } from './style';
 
-const MIN_OPTIONS = 3;
-const DURATION_MINUTES = [...Array(60)].map((_, i) => i + 1).concat([75, 90, 105, 120, 150, 180]);
-const digitsOnly = (text) => text.replace(/[^0-9]/g, '');
-const NEW_LEVEL = '1';
-const EXISTING_LEVEL = '2';
+// Filled options first, padded with blank slots up to the minimum.
+const toOptionSlots = (saved = []) => {
+  const filled = saved.filter(Boolean);
+  return [...filled, ...Array(Math.max(0, MIN_OPTIONS - filled.length)).fill('')];
+};
 
-function Radio({ label, active, onPress }) {
-  return (
-    <TouchableOpacity style={styles.radio} onPress={onPress} activeOpacity={0.75}>
-      <View style={[styles.radioCircle, active && styles.radioCircleActive]}>
-        {active && <View style={styles.radioDot} />}
-      </View>
-      <Text style={[styles.radioText, active && styles.radioTextActive]}>{label}</Text>
-    </TouchableOpacity>
-  );
-}
-
-function TimeField({ value, placeholder, onPress, disabled }) {
-  return (
-    <TouchableOpacity
-      style={[styles.timeField, disabled && styles.timeFieldDisabled]}
-      onPress={onPress}
-      disabled={disabled}
-      activeOpacity={0.75}
-    >
-      <Text style={[styles.timeText, !value && styles.timePlaceholder]} numberOfLines={1}>
-        {value || placeholder}
-      </Text>
-      <Ionicons name="chevron-down" size={18} color={Colors.textSecondary} />
-    </TouchableOpacity>
-  );
-}
-
-const formatTime = (date) =>
-  date && date.toLocaleString() !== 'Invalid Date' ? date.toLocaleString() : '';
-
+/** Add Question form. Pass `quiz` in route params to edit that question instead. */
 export default function CreateQuiz({ route, navigation }) {
-  const { categoryId } = route.params;
-  const [question, setQuestion] = useState('');
-  const [options, setOptions] = useState(['', '', '']);
-  const [correctIndex, setCorrectIndex] = useState(0);
-  const [reason, setReason] = useState('');
-  const [score, setScore] = useState('');
-  const [levelMode, setLevelMode] = useState(NEW_LEVEL);
-  const [level, setLevel] = useState('');
-  const [duration, setDuration] = useState('');
+  const { categoryId, quiz } = route.params;
+  const isEdit = !!quiz;
+  const initialOptions = toOptionSlots(quiz?.options);
+
+  const [question, setQuestion] = useState(quiz?.question ?? '');
+  const [options, setOptions] = useState(initialOptions);
+  const [correctIndex, setCorrectIndex] = useState(Math.max(0, initialOptions.indexOf(quiz?.correct_option)));
+  const [reason, setReason] = useState(quiz?.reason ?? '');
+  const [score, setScore] = useState(quiz ? String(quiz.score) : '');
+  const [levelMode, setLevelMode] = useState(isEdit ? LEVEL_MODE.EXISTING : LEVEL_MODE.NEW);
+  const [level, setLevel] = useState(quiz?.level ?? '');
+  const [duration, setDuration] = useState(quiz ? String(quiz.duration) : '');
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [picking, setPicking] = useState(null); // 'start' | 'end' | null
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [quizData, setQuizData] = useState([]);
   const [availableLevels, setAvailableLevels] = useState([]);
   const { toastMessage, showToast } = useToast();
 
-  const isExisting = levelMode === EXISTING_LEVEL;
+  const isExisting = levelMode === LEVEL_MODE.EXISTING;
 
   useEffect(() => {
     setLoading(true);
@@ -96,15 +77,15 @@ export default function CreateQuiz({ route, navigation }) {
 
     const selected = quizData.find((item) => item.level === level);
     if (selected) {
-      setDuration(selected.duration);
-      setStartTime(new Date(selected.startTime));
-      setEndTime(new Date(selected.endTime));
+      setDuration(String(selected.duration));
+      setStartTime(parseDateTime(selected.startTime));
+      setEndTime(parseDateTime(selected.endTime));
     }
   }, [isExisting, level, quizData]);
 
   const chooseLevelMode = (mode) => {
     setLevelMode(mode);
-    setLevel(mode === EXISTING_LEVEL ? availableLevels[0] || '' : '');
+    setLevel(mode === LEVEL_MODE.EXISTING ? availableLevels[0] || '' : '');
   };
 
   const setOptionAt = (index, text) =>
@@ -120,11 +101,11 @@ export default function CreateQuiz({ route, navigation }) {
     ? [...DURATION_MINUTES, Number(duration)].sort((a, b) => a - b)
     : DURATION_MINUTES;
 
-  const handleCreateQuiz = async () => {
+  const handleSave = async () => {
     const filledOptions = options.map((option) => option.trim()).filter(Boolean);
     const correctOption = options[correctIndex].trim();
 
-    if (!question.trim() || !level.trim() || !score.trim() || !String(duration).trim()) {
+    if (!question.trim() || !level.trim() || !score.trim() || !duration.trim()) {
       return showToast('Please fill in related fields.');
     }
     if (filledOptions.length < 2 || !correctOption) {
@@ -133,27 +114,51 @@ export default function CreateQuiz({ route, navigation }) {
     if (startTime && endTime && endTime <= startTime) {
       return showToast('End time must be greater than start time.');
     }
-    if (!isExisting && quizData.some((quiz) => quiz.level === level)) {
+    if (!isExisting && quizData.some((item) => item.level === level)) {
       return showToast("A level with the same name exists. Choose 'Add to existing level'.");
     }
 
+    const data = {
+      question,
+      options: filledOptions,
+      correct_option: correctOption,
+      reason,
+      level,
+      score: parseInt(score, 10),
+      duration,
+      startTime: startTime ? startTime.toISOString() : null,
+      endTime: endTime ? endTime.toISOString() : null,
+    };
+
     setSaving(true);
     try {
-      await addDoc(collection(firestore, 'categories', categoryId, 'quizzes'), {
-        question,
-        options: filledOptions,
-        correct_option: correctOption,
-        reason,
-        level,
-        score: parseInt(score, 10),
-        duration,
-        startTime: startTime ? startTime.toLocaleString() : null,
-        endTime: endTime ? endTime.toLocaleString() : null,
-        creatorUid: getAuth().currentUser?.uid ?? null,
-      });
+      if (isEdit) {
+        await updateDoc(doc(firestore, 'categories', categoryId, 'quizzes', quiz.id), data);
+      } else {
+        await addDoc(collection(firestore, 'categories', categoryId, 'quizzes'), {
+          ...data,
+          creatorUid: getAuth().currentUser?.uid ?? null,
+        });
+      }
       navigation.goBack();
     } catch (error) {
-      showToast('Error creating quiz: ' + error.message);
+      showToast(`Error saving question: ${error.message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setConfirmDelete(false);
+    setSaving(true);
+    try {
+      if (!(await authenticateDevice('Authenticate to delete this question'))) {
+        return showToast('Authentication failed. Question not deleted.');
+      }
+      await deleteDoc(doc(firestore, 'categories', categoryId, 'quizzes', quiz.id));
+      navigation.goBack();
+    } catch (error) {
+      showToast(`Error deleting question: ${error.message}`);
     } finally {
       setSaving(false);
     }
@@ -168,7 +173,7 @@ export default function CreateQuiz({ route, navigation }) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <DatePicker
+        <DateTimePickerModal
           open={picking !== null}
           date={(picking === 'start' ? startTime : endTime) || new Date()}
           onCancel={() => setPicking(null)}
@@ -178,14 +183,9 @@ export default function CreateQuiz({ route, navigation }) {
           }}
         />
 
-        <Text style={styles.title}>Add Question</Text>
+        <Text style={styles.title}>{isEdit ? 'Edit Question' : 'Add Question'}</Text>
 
-        <InputField
-          label="Question :"
-          placeholder="Enter the question"
-          value={question}
-          onChangeText={setQuestion}
-        />
+        <InputField label="Question :" placeholder="Enter the question" value={question} onChangeText={setQuestion} />
 
         <Text style={styles.label}>Options :</Text>
         {options.map((option, index) => (
@@ -211,7 +211,7 @@ export default function CreateQuiz({ route, navigation }) {
         <Text style={styles.label}>Correct Option :</Text>
         <View style={styles.radioRow}>
           {options.map((_, index) => (
-            <Radio
+            <RadioOption
               key={index}
               label={`Option ${index + 1}`}
               active={correctIndex === index}
@@ -231,40 +231,38 @@ export default function CreateQuiz({ route, navigation }) {
         />
 
         <View style={styles.radioRow}>
-          <Radio label="Create New Level" active={!isExisting} onPress={() => chooseLevelMode(NEW_LEVEL)} />
-          <Radio label="Add to existing level" active={isExisting} onPress={() => chooseLevelMode(EXISTING_LEVEL)} />
+          <RadioOption label="Create New Level" active={!isExisting} onPress={() => chooseLevelMode(LEVEL_MODE.NEW)} />
+          <RadioOption label="Add to existing level" active={isExisting} onPress={() => chooseLevelMode(LEVEL_MODE.EXISTING)} />
         </View>
 
         {isExisting ? (
-          <>
-            <Text style={styles.label}>Level :</Text>
-            <View style={styles.levelSelect}>
-              <Picker selectedValue={level} onValueChange={setLevel}>
-                {availableLevels.map((item) => (
-                  <Picker.Item key={item} label={item} value={item} />
-                ))}
-              </Picker>
-            </View>
-          </>
+          <SelectField
+            label="Level :"
+            value={level}
+            onChange={setLevel}
+            items={availableLevels.map((item) => ({ label: item, value: item }))}
+          />
         ) : (
           <InputField label="Level :" placeholder="Enter Level" value={level} onChangeText={setLevel} />
         )}
 
-        <Text style={styles.label}>Duration :</Text>
-        <View style={[styles.levelSelect, isExisting && styles.timeFieldDisabled]}>
-          <Picker selectedValue={String(duration)} onValueChange={setDuration} enabled={!isExisting}>
-            <Picker.Item label="Select duration" value="" color={Colors.textPlaceholder} />
-            {durationChoices.map((minutes) => (
-              <Picker.Item key={minutes} label={`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`} value={String(minutes)} />
-            ))}
-          </Picker>
-        </View>
+        <SelectField
+          label="Duration :"
+          value={duration}
+          onChange={setDuration}
+          placeholder="Select duration"
+          disabled={isExisting}
+          items={durationChoices.map((minutes) => ({
+            label: `${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`,
+            value: String(minutes),
+          }))}
+        />
 
         <View style={styles.timeRow}>
           <View style={styles.timeCol}>
             <Text style={styles.label}>Start Time :</Text>
-            <TimeField
-              value={formatTime(startTime)}
+            <DateTimeField
+              value={formatDateTime(startTime)}
               placeholder="Select Start Time"
               disabled={isExisting}
               onPress={() => setPicking('start')}
@@ -272,8 +270,8 @@ export default function CreateQuiz({ route, navigation }) {
           </View>
           <View style={styles.timeCol}>
             <Text style={styles.label}>End Time :</Text>
-            <TimeField
-              value={formatTime(endTime)}
+            <DateTimeField
+              value={formatDateTime(endTime)}
               placeholder="Select End Time"
               disabled={isExisting}
               onPress={() => setPicking('end')}
@@ -284,9 +282,36 @@ export default function CreateQuiz({ route, navigation }) {
         {loading ? (
           <Loader />
         ) : (
-          <AppButton label="Create" onPress={handleCreateQuiz} variant="filled" loading={saving} style={styles.createButton} />
+          <>
+            <AppButton
+              label={isEdit ? 'Update' : 'Create'}
+              onPress={handleSave}
+              variant="filled"
+              loading={saving}
+              style={styles.primaryButton}
+            />
+            {isEdit && (
+              <AppButton
+                label="Delete"
+                onPress={() => setConfirmDelete(true)}
+                variant="outline"
+                color={Colors.error}
+                disabled={saving}
+                style={styles.deleteButton}
+              />
+            )}
+          </>
         )}
       </ScrollView>
+
+      <ConfirmDialog
+        visible={confirmDelete}
+        message="This question will be permanently deleted."
+        confirmLabel="Delete"
+        destructive
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmDelete(false)}
+      />
 
       <Toast message={toastMessage} />
     </SafeAreaView>

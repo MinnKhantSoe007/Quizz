@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../theme/theme';
+import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
+import { Shadow, Colors, FontFamily, FontSize, Radius, Spacing } from '../theme/theme';
+import { usePulse } from '../hooks/usePulse';
 import { getInitials } from '../utils/getInitials';
 
 /**
@@ -11,12 +12,23 @@ import { getInitials } from '../utils/getInitials';
  *  subtitle   {string}  – line under the title
  *  tag        {string}  – optional text pinned to the right
  *  badge      {string}  – optional text to derive initials for the left badge; omit to hide the badge
+ *  highlighted {bool}   – animated glowing purple border, used to mark special (e.g. time-limited) items
  *  onPress    {func}    – press handler
  *  style      {object}  – extra container overrides
  */
-export default function CategoryCard({ title, subtitle, tag, badge, onPress, style }) {
+export default function CategoryCard({ title, subtitle, tag, badge, highlighted = false, onPress, style }) {
+  const glow = usePulse({ enabled: highlighted });
+
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.card, style]} activeOpacity={0.75}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.card, highlighted && Shadow.floating, style]}
+      activeOpacity={0.75}
+    >
+      {highlighted ? (
+        <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.glowBorder, { opacity: glow }]} />
+      ) : null}
+
       {badge ? (
         <View style={styles.badge}>
           <Text style={styles.badgeText}>{getInitials(badge)}</Text>
@@ -45,10 +57,13 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     padding: Spacing.md,
     marginBottom: Spacing.md,
-    shadowColor: Colors.cardShadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    elevation: 3,
+    ...Shadow.card,
+  },
+
+  glowBorder: {
+    borderWidth: 2,
+    borderColor: Colors.primary,
+    borderRadius: Radius.lg,
   },
 
   badge: {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../theme/theme';
+import { Shadow, Colors, FontFamily, FontSize, Radius, Spacing } from '../theme/theme';
 
 /**
  * DropdownMenu — shared avatar-tap menu, anchored top-right, used by
@@ -40,11 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: Radius.lg,
     paddingVertical: Spacing.xs,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 6,
+    ...Shadow.floating,
   },
 
   item: {

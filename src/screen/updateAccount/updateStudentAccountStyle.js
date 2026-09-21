@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { Colors, FontFamily, FontSize, Spacing } from "../../theme/theme";
+import { DIMENSIONS } from "../../utils/constant";
 
 export const styles = StyleSheet.create({
   container: {
@@ -11,6 +12,16 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.xxl,
+  },
+
+  logoWrapper: {
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
+
+  logo: {
+    width: DIMENSIONS.width * 0.5,
+    height: DIMENSIONS.width * 0.5,
   },
 
   title: {

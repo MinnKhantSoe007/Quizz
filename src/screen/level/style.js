@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Colors, FontFamily, FontSize, Radius, Spacing } from "../../theme/theme";
+import { Shadow, Colors, FontFamily, FontSize, Radius, Spacing } from "../../theme/theme";
 
 export const styles = StyleSheet.create({
   container: {
@@ -53,10 +53,6 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.secondary,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 6,
+    ...Shadow.floating,
   },
 });

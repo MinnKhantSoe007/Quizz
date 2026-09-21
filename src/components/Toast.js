@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Text, StyleSheet } from 'react-native';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../theme/theme';
+import { Shadow, Colors, FontFamily, FontSize, Radius, Spacing } from '../theme/theme';
 
 /**
  * Toast — lightweight, non-blocking message pill. Pair with the useToast
@@ -42,11 +42,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,
     alignItems: 'center',
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 6,
+    ...Shadow.floating,
   },
 
   text: {

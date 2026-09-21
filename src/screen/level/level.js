@@ -12,6 +12,7 @@ import SortSheet from '../../components/SortSheet';
 import SearchBar from '../../components/SearchBar';
 import Loader from '../../components/Loader';
 import { Colors } from '../../theme/theme';
+import { formatShortDateTime, parseDateTime } from '../../utils/format';
 
 export default function Level({ navigation, route }) {
 
@@ -48,7 +49,7 @@ export default function Level({ navigation, route }) {
     try {
       return onSnapshot(quizzesRef, (snapshot) => {
         const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        const currentTime = new Date().toLocaleString();
+        const currentTime = new Date();
         // Extract unique 'level' values
         const uniqueLevels = Array.from(new Set(data.map(item => item.level)));
 
@@ -61,8 +62,8 @@ export default function Level({ navigation, route }) {
             level,
             score: parseInt(item.score), // Convert score to integer
             duration: item.duration,
-            startTime: item.startTime ?? null, // Parse string to Date
-            endTime: item.endTime ?? null // Parse string to Date
+            startTime: parseDateTime(item.startTime),
+            endTime: parseDateTime(item.endTime)
           };
         });
 
@@ -102,8 +103,8 @@ export default function Level({ navigation, route }) {
   const renderCategoryItem = ({ item }) => (
     <CategoryCard
       title={`Level: ${item.level}`}
-      subtitle={`Duration: ${item.duration} minutes`}
-      tag={item.endTime ? 'Closed' : undefined}
+      subtitle={`Duration: ${item.duration} minutes${item.endTime ? `\nEnds ${formatShortDateTime(item.endTime)}` : ''}`}
+      highlighted={!!(item.startTime || item.endTime)}
       onPress={() => handleLevel(item.level, item.duration)}
     />
   );
@@ -144,6 +145,7 @@ export default function Level({ navigation, route }) {
       </View>
 
       <SearchBar
+        placeholder="Search by level..."
         value={searchQuery}
         onChangeText={handleSearch}
         onFilterPress={() => setSortModalVisible(true)}

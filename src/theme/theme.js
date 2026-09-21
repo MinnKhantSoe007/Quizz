@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 export const Colors = {
   // Brand
   primary:          '#7F11E0',
@@ -63,4 +65,27 @@ export const Radius = {
   lg:     20,
   button: 28,
   full:   999,
+};
+
+
+// iOS draws shadows from shadowColor + shadowOpacity; Android draws `elevation` shadows and uses the
+// colour's own alpha, so the soft iOS colours vanish there. Use an opaque colour on Android instead.
+export const Shadow = {
+  card: Platform.select({
+    ios: {
+      shadowColor: Colors.cardShadow,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 1,
+    },
+    android: { elevation: 4, shadowColor: '#000000' },
+  }),
+  floating: Platform.select({
+    ios: {
+      shadowColor: Colors.shadow,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 1,
+      shadowRadius: 8,
+    },
+    android: { elevation: 6, shadowColor: Colors.primary },
+  }),
 };

@@ -12,6 +12,7 @@ import SortSheet from '../../components/SortSheet';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import Loader from '../../components/Loader';
 import { Colors } from '../../theme/theme';
+import { authenticateDevice } from '../../utils/localAuth';
 
 export default function QuizCategory({ navigation, route }) {
   const { category } = route.params;
@@ -54,6 +55,10 @@ export default function QuizCategory({ navigation, route }) {
 
   const handleDeleteCategory = async () => {
     try {
+      if (!(await authenticateDevice('Authenticate to delete this category'))) {
+        setDeleteModalVisible(false);
+        return alert('Authentication failed. Category not deleted.');
+      }
       await deleteDoc(doc(firestore, 'categories', category.id));
       navigation.goBack();
     } catch (error) {
@@ -63,7 +68,7 @@ export default function QuizCategory({ navigation, route }) {
   };
 
   const handleQuizPress = (quiz) => {
-    navigation.navigate('EditQuiz', { category, quiz });
+    navigation.navigate('CreateQuiz', { categoryId: category.id, quiz });
   };
 
   const handleSearch = (query) => {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, ScrollView } from "react-native";
+import { Text, View, Image, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { FIREBASE_AUTH as auth } from "../../../firebaseConfig";
@@ -7,6 +7,7 @@ import AppButton from "../../components/AppButton";
 import BackButton from "../../components/BackButton";
 import InputField from "../../components/InputField";
 import Toast from "../../components/Toast";
+import { ImageResource } from "../../resource/imageResource";
 import { useToast } from "../../hooks/useToast";
 import { styles } from "../updateAccount/updateStudentAccountStyle";
 
@@ -41,6 +42,10 @@ export default function ForgotPassword({ navigation }) {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
+        <View style={styles.logoWrapper}>
+          <Image source={ImageResource.logo.icon_logo} style={styles.logo} resizeMode="contain" />
+        </View>
+
         <Text style={styles.title}>Forgot your password?</Text>
         <InputField
           label="Email"
