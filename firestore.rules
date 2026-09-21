@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // Server-side secure code: config/quizzer { code: "..." }. No client rule, so it is unreadable
+    // from the app; only these rules can see it. Change it in the console to rotate.
+    function quizzerCode() {
+      return get(/databases/$(database)/documents/config/quizzer).data.code;
+    }
+
+    function isQuizzer() {
+      let role = get(/databases/$(database)/documents/roles/$(request.auth.uid)).data;
+      return request.auth != null && role.quizzer == true && role.secureCode == quizzerCode();
+    }
+
+    // Pre-check before signup: getDoc(codeCheck/<typed code>) is allowed only if it equals the
+    // server code (no listing, so the code can't be enumerated). The doc need not exist.
+    match /codeCheck/{code} {
+      allow get: if code == quizzerCode();
+    }
+
+    // One doc per account: { quizzer, player, secureCode }. Lets one email hold both roles.
+    // Any write that leaves quizzer == true must carry the current secure code.
+    match /roles/{uid} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && (request.resource.data.get('quizzer', false) != true
+            || request.resource.data.get('secureCode', '') == quizzerCode());
+    }
+
+    match /users/{id} {
+      allow read;
+      allow create: if isQuizzer() && isOwner(request.resource.data.creatorUid);
+      allow update, delete: if isOwner(resource.data.creatorUid);
+    }
+
+    match /players/{uid} {
+      allow read;
+      allow write: if isOwner(uid);
+    }
+
+    match /categories/{category} {
+      allow read;
+      allow create: if isQuizzer() && isOwner(request.resource.data.creatorUid);
+      allow update, delete: if isOwner(resource.data.creatorUid);
+    }
+
+    match /categories/{category}/quizzes/{quizz} {
+      allow read;
+      allow write: if isOwner(get(/databases/$(database)/documents/categories/$(category)).data.creatorUid);
+    }
+
+    match /categoryNameList/{categoryName} {
+      allow read: if request.auth != null;
+    }
+
+    // Guests play too, so creating history stays open; it is never editable.
+    match /history/{entry} {
+      allow read, create;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Quiz",
+    "name": "Quiz Lab",
     "slug": "Quiz",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,16 +15,37 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Allow $(PRODUCT_NAME) to use Face ID"
+      },
+      "bundleIdentifier": "com.minnkhant.BrainStormer"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.minnkhant.BrainStormer"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3027f1d1-2e94-49da-9427-bef6b999e530"
+      }
+    },
+    "plugins": [
+      "expo-font",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID",
+          "NSFaceIDUsageDescription": "Allow $(PRODUCT_NAME) to use Face ID"
+        }
+      ],
+      "expo-audio"
+    ]
   }
 }
