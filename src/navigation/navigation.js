@@ -1,5 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../screen/home/home";
 import Splash from "../screen/splash/splash";
 import Level from "../screen/level/level";
@@ -9,7 +9,6 @@ import Auth from "../screen/auth/auth";
 import QuizTest from "../screen/quizTest/quizTest";
 import CreateAccount from "../screen/createAccount/createAccount";
 import QuizCategory from "../screen/quizCategory/quizCategory";
-import CreateCategory from "../screen/createCategory/createCategory";
 import CreateQuiz from "../screen/createQuiz/createQuiz";
 import DetailAccount from "../screen/detailAccount/detailAccount";
 import UpdateAccount from "../screen/updateAccount/updateAccount";
@@ -18,7 +17,7 @@ import UpdateStudentAccount from "../screen/updateAccount/updateStudentAccount";
 import ForgotPassword from "../screen/auth/forgotPassword";
 import History from "../screen/history/history";
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function NavigationStack() {
 
@@ -32,7 +31,6 @@ export default function NavigationStack() {
         <Stack.Screen name="Level" component={Level} />
         <Stack.Screen name="Question" component={Question} options={{gestureEnabled: false}} />
         <Stack.Screen name="QuizCategory" component={QuizCategory} />
-        <Stack.Screen name="CreateCategory" component={CreateCategory} />
         <Stack.Screen name="Category" component={Category} options={{gestureEnabled: false}} />
         <Stack.Screen name="Auth" component={Auth} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />

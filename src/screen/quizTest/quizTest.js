@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, Modal, Image, Animated } from "react-native";
+import { Text, View, TouchableOpacity, Modal, Image, Animated, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./style";
 import { Colors } from "../../theme/theme";
@@ -67,9 +67,10 @@ export default function QuizTest({ navigation, route }) {
 
   useEffect(() => {
     setAudioModeAsync({
+      playsInSilentMode: true, // iOS rejects duckOthers unless this is true
       interruptionMode: 'duckOthers',
       shouldRouteThroughEarpiece: false,
-    });
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -284,7 +285,7 @@ export default function QuizTest({ navigation, route }) {
 
               <View style={{ flexDirection: 'row' }}>
 
-                <TouchableOpacity onPress={() => navigation.navigate("Category")}>
+                <TouchableOpacity onPress={() => navigation.popTo("Category")}>
                   <Text style={styles.yes}>
                     Yes
                   </Text>
@@ -342,7 +343,7 @@ export default function QuizTest({ navigation, route }) {
 
             <Text style={styles.questionText}>{currentQuestion.question}</Text>
 
-            <View>
+            <ScrollView style={styles.optionsScroll} showsVerticalScrollIndicator={false}>
               {currentQuestion.options.filter(Boolean).map((option, index) => (
                 <AnswerOption
                   key={index}
@@ -355,11 +356,11 @@ export default function QuizTest({ navigation, route }) {
                   onPress={validateAnswer}
                 />
               ))}
-            </View>
 
-            {quizEnded && currentQuestion.reason ? (
-              <Text style={styles.reasonText}>{currentQuestion.reason}</Text>
-            ) : null}
+              {quizEnded && currentQuestion.reason ? (
+                <Text style={styles.reasonText}>{currentQuestion.reason}</Text>
+              ) : null}
+            </ScrollView>
           </Animated.View>
 
           <View style={styles.navRow}>

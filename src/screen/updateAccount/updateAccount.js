@@ -65,7 +65,7 @@ export default function UpdateAccount({ navigation }) {
       });
 
       Alert.alert("Success", "Profile updated successfully.");
-      navigation.navigate("Home");
+      navigation.popTo("Home");
 
     } catch (error) {
       console.error("Error updating profile:", error);

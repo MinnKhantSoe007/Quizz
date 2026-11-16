@@ -4,10 +4,8 @@ import {
   Text,
   FlatList,
   Image,
-  Modal,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
@@ -30,6 +28,7 @@ import SearchBar from '../../components/SearchBar';
 import Loader from '../../components/Loader';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import DropdownMenu from '../../components/DropdownMenu';
+import BottomSheet, { BottomSheetView } from '@expo/ui/community/bottom-sheet';
 import Toast from '../../components/Toast';
 import { useToast } from '../../hooks/useToast';
 import { Colors } from '../../theme/theme';
@@ -48,10 +47,7 @@ export default function Question({ navigation }) {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [deckName, setDeckName] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [categoryNameList, setCategoryNameList] = useState([]);
   const [creating, setCreating] = useState(false);
-  const [menuVisible, setMenuVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [signOutModalVisible, setSignOutModalVisible] = useState(false);
   const auth = getAuth();
@@ -107,26 +103,6 @@ export default function Question({ navigation }) {
     };
   }, [auth, fetchCategoriesWithCounts]);
 
-  useEffect(() => {
-    const fetchCategoryNameLists = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(firestore, 'categoryNameList'));
-        const categoriesData = querySnapshot.docs
-          .map((doc) => ({ id: doc.id, ...doc.data() }))
-          .sort((a, b) => a.title.localeCompare(b.title));
-
-        setCategoryNameList(categoriesData);
-        if (categoriesData.length > 0) {
-          setSelectedCategory(categoriesData[0].title);
-        }
-      } catch (error) {
-        console.log('Error fetching categoryNameList:', error);
-      }
-    };
-
-    fetchCategoryNameLists();
-  }, []);
-
   const handleRefresh = () => {
     setRefreshing(true);
     setTimeout(() => setRefreshing(false), 600);
@@ -150,15 +126,11 @@ export default function Question({ navigation }) {
     navigation.navigate('QuizCategory', { category });
   };
 
-  const closeMenu = () => setMenuVisible(false);
-
   const handleUpdateProfile = () => {
-    closeMenu();
     navigation.navigate('UpdateAccount');
   };
 
   const handleSignOutPress = () => {
-    closeMenu();
     setSignOutModalVisible(true);
   };
 
@@ -167,14 +139,13 @@ export default function Question({ navigation }) {
     try {
       await forgetRole();
       await signOut(auth);
-      navigation.navigate('Home');
+      navigation.popTo('Home');
     } catch (error) {
       console.log(error.message);
     }
   };
 
   const handleDeleteProfilePress = () => {
-    closeMenu();
     setDeleteModalVisible(true);
   };
 
@@ -199,7 +170,7 @@ export default function Question({ navigation }) {
       await forgetRole();
 
       setDeleteModalVisible(false);
-      navigation.navigate('Home');
+      navigation.popTo('Home');
     } catch (error) {
       setDeleteModalVisible(false);
       showToast(error.message);
@@ -256,9 +227,6 @@ export default function Question({ navigation }) {
 
   const openAddModal = () => {
     setDeckName('');
-    if (categoryNameList.length > 0) {
-      setSelectedCategory(categoryNameList[0].title);
-    }
     setAddModalVisible(true);
   };
 
@@ -268,10 +236,10 @@ export default function Question({ navigation }) {
   };
 
   const handleCreateCategory = async () => {
-    const title = deckName.trim() || selectedCategory;
+    const title = deckName.trim();
 
     if (!title) {
-      showToast('Please enter a deck name or select a category.');
+      showToast('Please enter a category name.');
       return;
     }
 
@@ -307,13 +275,21 @@ export default function Question({ navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.welcomeText}>Welcome!</Text>
-        <TouchableOpacity onPress={() => setMenuVisible(true)} activeOpacity={0.75}>
+        <DropdownMenu
+          items={[
+            { label: 'Update Profile', onPress: handleUpdateProfile },
+            { label: 'Sign Out', onPress: handleSignOutPress },
+            { label: 'Delete Profile', onPress: handleDeleteProfilePress, danger: true },
+          ]}
+        >
+          <View>
           {userProfilePicture ? (
             <Image source={{ uri: userProfilePicture }} style={styles.avatar} />
           ) : (
             <Ionicons name="person-circle-sharp" size={40} color={Colors.primary} />
           )}
-        </TouchableOpacity>
+          </View>
+        </DropdownMenu>
       </View>
 
       <SearchBar
@@ -360,75 +336,39 @@ export default function Question({ navigation }) {
         onClear={clearSort}
       />
 
-      <Modal
-        animationType="slide"
-        transparent
-        visible={addModalVisible}
-        onRequestClose={closeAddModal}
+      <BottomSheet
+        index={addModalVisible ? 0 : -1}
+        enableDynamicSizing
+        enablePanDownToClose
+        onClose={closeAddModal}
       >
-        <View style={styles.sheetOverlay}>
-          <View style={styles.addModalCard}>
-            <View style={styles.sheetHandle} />
-            <Text style={styles.addModalTitle}>Add Categories</Text>
+        <BottomSheetView style={styles.addModalCard}>
+          <Text style={styles.addModalTitle}>Add Categories</Text>
 
-            <InputField
-              label="Custom Category"
-              placeholder="Enter your custom name"
-              value={deckName}
-              onChangeText={setDeckName}
-            />
+          <InputField
+            label="Custom Category"
+            placeholder="Enter your custom name"
+            value={deckName}
+            onChangeText={setDeckName}
+          />
 
-            <Text style={styles.listLabel}>Categories Title</Text>
-            <ScrollView style={styles.categoryList} showsVerticalScrollIndicator>
-              {categoryNameList.map((category) => {
-                const isSelected = selectedCategory === category.title;
-                return (
-                  <TouchableOpacity
-                    key={category.id}
-                    style={[styles.categoryOption, isSelected && styles.categoryOptionSelected]}
-                    onPress={() => setSelectedCategory(category.title)}
-                    activeOpacity={0.75}
-                  >
-                    <Text
-                      style={[
-                        styles.categoryOptionText,
-                        isSelected && styles.categoryOptionTextSelected,
-                      ]}
-                    >
-                      {category.title}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
+          <AppButton
+            label="Create"
+            onPress={handleCreateCategory}
+            variant="filled"
+            loading={creating}
+            style={styles.modalActionButton}
+          />
+          <AppButton
+            label="Cancel"
+            onPress={closeAddModal}
+            variant="outline"
+            disabled={creating}
+            style={styles.modalActionButton}
+          />
+        </BottomSheetView>
+      </BottomSheet>
 
-            <AppButton
-              label="Create"
-              onPress={handleCreateCategory}
-              variant="filled"
-              loading={creating}
-              style={styles.modalActionButton}
-            />
-            <AppButton
-              label="Cancel"
-              onPress={closeAddModal}
-              variant="outline"
-              disabled={creating}
-              style={styles.modalActionButton}
-            />
-          </View>
-        </View>
-      </Modal>
-
-      <DropdownMenu
-        visible={menuVisible}
-        onClose={closeMenu}
-        items={[
-          { label: 'Update Profile', onPress: handleUpdateProfile },
-          { label: 'Sign Out', onPress: handleSignOutPress },
-          { label: 'Delete Profile', onPress: handleDeleteProfilePress, danger: true },
-        ]}
-      />
 
       <ConfirmDialog
         visible={deleteModalVisible}

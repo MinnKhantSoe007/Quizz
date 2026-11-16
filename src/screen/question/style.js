@@ -62,27 +62,9 @@ export const styles = StyleSheet.create({
     marginTop: Spacing.xxl,
   },
 
-  sheetOverlay: {
-    flex: 1,
-    backgroundColor: Colors.overlay,
-    justifyContent: 'flex-end',
-  },
 
-  sheetHandle: {
-    width: 40,
-    height: 4,
-    borderRadius: Radius.full,
-    backgroundColor: Colors.border,
-    alignSelf: 'center',
-    marginBottom: Spacing.md,
-  },
 
   addModalCard: {
-    width: '100%',
-    maxHeight: '85%',
-    backgroundColor: Colors.white,
-    borderTopLeftRadius: Radius.lg,
-    borderTopRightRadius: Radius.lg,
     padding: Spacing.lg,
   },
 
@@ -94,39 +76,11 @@ export const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
 
-  listLabel: {
-    fontFamily: FontFamily.bold,
-    fontSize: FontSize.md,
-    color: Colors.textPrimary,
-    marginBottom: Spacing.sm,
-  },
 
-  categoryList: {
-    maxHeight: 180,
-    marginBottom: Spacing.lg,
-  },
 
-  categoryOption: {
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.md,
-    borderRadius: Radius.md,
-    marginBottom: Spacing.xs,
-  },
 
-  categoryOptionSelected: {
-    backgroundColor: Colors.primaryHighlight,
-  },
 
-  categoryOptionText: {
-    fontFamily: FontFamily.regular,
-    fontSize: FontSize.md,
-    color: Colors.textPrimary,
-  },
 
-  categoryOptionTextSelected: {
-    fontFamily: FontFamily.bold,
-    color: Colors.primary,
-  },
 
   modalActionButton: {
     width: '100%',

@@ -1,11 +1,12 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { Host, Button, Icon } from '@expo/ui';
 import { Colors, Spacing } from '../theme/theme';
 
 /**
- * BackButton — shared back navigation control for all screens.
+ * BackButton — shared back navigation control for all screens (native button:
+ * SwiftUI on iOS, Jetpack Compose on Android).
  *
  * Props:
  *  onPress        {func}    – custom press handler (defaults to navigation.goBack())
@@ -40,19 +41,17 @@ export default function BackButton({
   };
 
   return (
-    <TouchableOpacity
-      style={[styles.button, disabled && styles.disabled, style]}
-      onPress={handlePress}
-      disabled={disabled}
-      hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-      activeOpacity={0.75}
-    >
-      <Ionicons
-        name="chevron-back-outline"
-        size={iconSize}
-        color={disabled ? Colors.textPlaceholder : Colors.textPrimary}
-      />
-    </TouchableOpacity>
+    <View style={[styles.button, disabled && styles.disabled, style]}>
+      <Host matchContents>
+        <Button variant="text" onPress={handlePress} disabled={disabled}>
+          <Icon
+            name={{ ios: 'chevron.left', android: require('../../assets/icons/chevron_left.xml') }}
+            size={iconSize}
+            color={disabled ? Colors.textPlaceholder : Colors.textPrimary}
+          />
+        </Button>
+      </Host>
+    </View>
   );
 }
 

@@ -67,6 +67,10 @@ export const styles = StyleSheet.create({
         marginBottom: Spacing.lg,
     },
 
+    optionsScroll: {
+        flexShrink: 1, // lets long option lists scroll inside the card instead of overflowing under navRow
+    },
+
     rippleWrapper: {
         borderRadius: Radius.md,
     },

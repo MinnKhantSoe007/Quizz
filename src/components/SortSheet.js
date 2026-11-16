@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import BottomSheet, { BottomSheetView } from '@expo/ui/community/bottom-sheet';
 import { Colors, FontFamily, FontSize, Radius, Spacing } from '../theme/theme';
 import AppButton from './AppButton';
 
@@ -17,56 +18,39 @@ import AppButton from './AppButton';
  */
 export default function SortSheet({ visible, onClose, title = 'Sort By', options, value, onSelect, onClear }) {
   return (
-    <Modal animationType="slide" transparent visible={visible} onRequestClose={onClose}>
-      <View style={styles.overlay}>
-        <View style={styles.sheet}>
-          <View style={styles.handle} />
-          <Text style={styles.title}>{title}</Text>
+    <BottomSheet
+      index={visible ? 0 : -1}
+      enableDynamicSizing
+      enablePanDownToClose
+      onClose={onClose}
+    >
+      <BottomSheetView style={styles.sheet}>
+        <Text style={styles.title}>{title}</Text>
 
-          {options.map((option) => {
-            const selected = option.value === value;
-            return (
-              <TouchableOpacity
-                key={option.value}
-                style={styles.option}
-                onPress={() => onSelect(option.value)}
-                activeOpacity={0.75}
-              >
-                <Text style={styles.optionLabel}>{option.label}</Text>
-                <View style={styles.radioOuter}>{selected ? <View style={styles.radioInner} /> : null}</View>
-              </TouchableOpacity>
-            );
-          })}
+        {options.map((option) => {
+          const selected = option.value === value;
+          return (
+            <TouchableOpacity
+              key={option.value}
+              style={styles.option}
+              onPress={() => onSelect(option.value)}
+              activeOpacity={0.75}
+            >
+              <Text style={styles.optionLabel}>{option.label}</Text>
+              <View style={styles.radioOuter}>{selected ? <View style={styles.radioInner} /> : null}</View>
+            </TouchableOpacity>
+          );
+        })}
 
-          <AppButton label="Clear" onPress={onClear} variant="outline" style={styles.clearButton} />
-        </View>
-      </View>
-    </Modal>
+        <AppButton label="Clear" onPress={onClear} variant="outline" style={styles.clearButton} />
+      </BottomSheetView>
+    </BottomSheet>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: Colors.overlay,
-    justifyContent: 'flex-end',
-  },
-
   sheet: {
-    width: '100%',
-    backgroundColor: Colors.white,
-    borderTopLeftRadius: Radius.lg,
-    borderTopRightRadius: Radius.lg,
     padding: Spacing.lg,
-  },
-
-  handle: {
-    width: 40,
-    height: 4,
-    borderRadius: Radius.full,
-    backgroundColor: Colors.border,
-    alignSelf: 'center',
-    marginBottom: Spacing.md,
   },
 
   title: {

@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
 import { getDocs, collection } from 'firebase/firestore';
 import { LineChart } from 'react-native-chart-kit';
-import { Picker } from '@react-native-picker/picker';
+import { Picker } from '@expo/ui/community/picker';
 import BackButton from '../../components/BackButton';
 import Loader from '../../components/Loader';
 import { fetchAllPlayers } from '../../utils/fetchAllPlayers';

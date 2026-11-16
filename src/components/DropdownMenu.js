@@ -1,61 +1,27 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Shadow, Colors, FontFamily, FontSize, Radius, Spacing } from '../theme/theme';
+import MenuView from '@expo/ui/community/menu';
 
 /**
- * DropdownMenu — shared avatar-tap menu, anchored top-right, used by
- * question.js and category.js.
+ * DropdownMenu — native menu (SwiftUI on iOS, Compose on Android) that opens
+ * when its child (the trigger) is tapped.
  *
  * Props:
- *  visible  {bool}    – menu visibility
- *  onClose  {func}    – backdrop / hardware-back dismiss handler
- *  items    {Array<{ label: string, onPress: func, danger?: bool }>}
+ *  items     {Array<{ label: string, onPress: func, danger?: bool }>}
+ *  children  – the trigger element
  */
-export default function DropdownMenu({ visible, onClose, items }) {
+export default function DropdownMenu({ items, children }) {
+  const actions = items.map(({ label, danger }) => ({
+    id: label,
+    title: label,
+    attributes: { destructive: !!danger },
+  }));
+
   return (
-    <Modal animationType="fade" transparent visible={visible} onRequestClose={onClose}>
-      <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose} />
-      <View style={styles.card}>
-        {items.map((item) => (
-          <TouchableOpacity key={item.label} style={styles.item} onPress={item.onPress} activeOpacity={0.75}>
-            <Text style={[styles.itemText, item.danger && styles.itemTextDanger]}>{item.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </Modal>
+    <MenuView
+      actions={actions}
+      onPressAction={({ nativeEvent }) => items.find((i) => i.label === nativeEvent.event)?.onPress()}
+    >
+      {children}
+    </MenuView>
   );
 }
-
-const styles = StyleSheet.create({
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.overlay,
-  },
-
-  card: {
-    position: 'absolute',
-    top: 84,
-    right: Spacing.lg,
-    minWidth: 190,
-    backgroundColor: Colors.white,
-    borderRadius: Radius.lg,
-    paddingVertical: Spacing.xs,
-    ...Shadow.floating,
-  },
-
-  item: {
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-  },
-
-  itemText: {
-    fontFamily: FontFamily.bold,
-    fontSize: FontSize.md,
-    color: Colors.textPrimary,
-    textAlign: 'center',
-  },
-
-  itemTextDanger: {
-    color: Colors.error,
-  },
-});

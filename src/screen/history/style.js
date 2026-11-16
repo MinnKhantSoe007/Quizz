@@ -35,6 +35,7 @@ export const styles = StyleSheet.create({
 
   select: {
     color: Colors.textPrimary,
+    width: '100%', // Android's dropdown field wraps to content width unless told to fill
   },
 
   emptyText: {

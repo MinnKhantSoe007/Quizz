@@ -39,7 +39,7 @@ export default function DetailAccount({ navigation }) {
       await forgetRole();
 
       alert('Account and related data deleted successfully.');
-      navigation.navigate("Home");
+      navigation.popTo("Home");
 
     } catch (error) {
       alert(error.message);
@@ -52,7 +52,7 @@ export default function DetailAccount({ navigation }) {
       // await AsyncStorage.removeItem('userToken');
       await forgetRole();
       await FIREBASE_AUTH.signOut();
-      navigation.navigate("Home");
+      navigation.popTo("Home");
     } catch (error) {
       console.log(error.message);
     }
@@ -148,7 +148,7 @@ export default function DetailAccount({ navigation }) {
   return (
     <View style={styles.container}>
 
-      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.navigate("Question")} />
+      <Ionicons name="chevron-back-outline" size={30} style={styles.back} onPress={() => navigation.popTo("Question")} />
 
       <TouchableRipple style={styles.button} onPress={() => navigation.navigate("UpdateAccount")}>
         <Text style={styles.buttonText}>Update Profile</Text>

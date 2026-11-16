@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Text, TouchableOpacity, FlatList, Alert, View } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./style";
-import { Ionicons } from '@expo/vector-icons';
-import { FIREBASE_FIRESTORE as firestore } from '../../../firebaseConfig';
-import { collection, doc, onSnapshot } from 'firebase/firestore';
-import { authenticateDevice } from '../../utils/localAuth';
-import BackButton from '../../components/BackButton';
-import CategoryCard from '../../components/CategoryCard';
-import SortSheet from '../../components/SortSheet';
-import SearchBar from '../../components/SearchBar';
-import Loader from '../../components/Loader';
-import { Colors } from '../../theme/theme';
-import { formatShortDateTime, parseDateTime } from '../../utils/format';
+import { Ionicons } from "@expo/vector-icons";
+import { FIREBASE_FIRESTORE as firestore } from "../../../firebaseConfig";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import { authenticateDevice } from "../../utils/localAuth";
+import BackButton from "../../components/BackButton";
+import CategoryCard from "../../components/CategoryCard";
+import SortSheet from "../../components/SortSheet";
+import SearchBar from "../../components/SearchBar";
+import Loader from "../../components/Loader";
+import { Colors } from "../../theme/theme";
+import { formatShortDateTime, parseDateTime } from "../../utils/format";
 
 export default function Level({ navigation, route }) {
-
   const { category, studentName, studentUid } = route.params;
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortModalVisible, setSortModalVisible] = useState(false);
-  const [sortOption, setSortOption] = useState('');
+  const [sortOption, setSortOption] = useState("");
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -31,12 +30,19 @@ export default function Level({ navigation, route }) {
 
   const handleLevel = async (difficultyLevel, timeLimit) => {
     if (studentName != "guest") {
-      const authenticated = await authenticateDevice('Authenticate to play');
-    if (authenticated) {
-      navigation.navigate("QuizTest", { difficultyLevel, timeLimit, category });
-    } else {
-      Alert.alert('Authentication Failed', 'You need to authenticate to play.');
-    }
+      const authenticated = await authenticateDevice("Authenticate to play");
+      if (authenticated) {
+        navigation.navigate("QuizTest", {
+          difficultyLevel,
+          timeLimit,
+          category,
+        });
+      } else {
+        Alert.alert(
+          "Authentication Failed",
+          "You need to authenticate to play.",
+        );
+      }
     } else {
       navigation.navigate("QuizTest", { difficultyLevel, timeLimit, category });
     }
@@ -44,18 +50,26 @@ export default function Level({ navigation, route }) {
 
   const fetchData = async () => {
     setLoading(true);
-    const quizzesRef = collection(doc(firestore, "categories", category.id), 'quizzes');
+    const quizzesRef = collection(
+      doc(firestore, "categories", category.id),
+      "quizzes",
+    );
 
     try {
       return onSnapshot(quizzesRef, (snapshot) => {
-        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
         const currentTime = new Date();
         // Extract unique 'level' values
-        const uniqueLevels = Array.from(new Set(data.map(item => item.level)));
+        const uniqueLevels = Array.from(
+          new Set(data.map((item) => item.level)),
+        );
 
         // Map each unique level to include score, duration, startTime, and endTime
-        const formattedCategories = uniqueLevels.map(level => {
-          const items = data.filter(item => item.level === level);
+        const formattedCategories = uniqueLevels.map((level) => {
+          const items = data.filter((item) => item.level === level);
           // Assuming all items for a level have the same score, duration, startTime, and endTime
           const item = items[0];
           return {
@@ -63,12 +77,12 @@ export default function Level({ navigation, route }) {
             score: parseInt(item.score), // Convert score to integer
             duration: item.duration,
             startTime: parseDateTime(item.startTime),
-            endTime: parseDateTime(item.endTime)
+            endTime: parseDateTime(item.endTime),
           };
         });
 
         // Filter levels based on startTime, endTime, and studentName
-        const filteredLevels = formattedCategories.filter(level => {
+        const filteredLevels = formattedCategories.filter((level) => {
           const { startTime, endTime } = level;
 
           if (studentName === "guest" && endTime) {
@@ -94,16 +108,16 @@ export default function Level({ navigation, route }) {
     }
   };
 
-  const handleRefresh = async() => {
+  const handleRefresh = async () => {
     setRefreshing(true);
     await fetchData();
     setRefreshing(false);
-  }
+  };
 
   const renderCategoryItem = ({ item }) => (
     <CategoryCard
       title={`Level: ${item.level}`}
-      subtitle={`Duration: ${item.duration} minutes${item.endTime ? `\nEnds ${formatShortDateTime(item.endTime)}` : ''}`}
+      subtitle={`Duration: ${item.duration} minutes${item.endTime ? `\nEnds ${formatShortDateTime(item.endTime)}` : ""}`}
       highlighted={!!(item.startTime || item.endTime)}
       onPress={() => handleLevel(item.level, item.duration)}
     />
@@ -112,7 +126,7 @@ export default function Level({ navigation, route }) {
   const handleSearch = (query) => {
     setSearchQuery(query);
     const filtered = categories.filter((category) =>
-      category.level.toLowerCase().includes(query.toLowerCase())
+      category.level.toLowerCase().includes(query.toLowerCase()),
     );
     setFilteredCategories(filtered);
   };
@@ -133,14 +147,17 @@ export default function Level({ navigation, route }) {
 
   const clearSort = () => {
     setFilteredCategories(categories);
-    setSortOption('');
+    setSortOption("");
     setSortModalVisible(false);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <BackButton onPress={() => navigation.navigate("Category")} style={{ position: 'absolute', left: 0, paddingHorizontal: 0 }} />
+        <BackButton
+          onPress={() => navigation.popTo("Category")}
+          style={{ position: "absolute", left: 0, paddingHorizontal: 0 }}
+        />
         <Text style={styles.headerTitle}>Choose Level</Text>
       </View>
 
@@ -172,7 +189,14 @@ export default function Level({ navigation, route }) {
       {studentName != "guest" && (
         <TouchableOpacity
           style={styles.historyFab}
-          onPress={() => navigation.navigate("History", { studentName, studentUid, category, filteredCategories })}
+          onPress={() =>
+            navigation.navigate("History", {
+              studentName,
+              studentUid,
+              category,
+              filteredCategories,
+            })
+          }
           activeOpacity={0.85}
         >
           <Ionicons name="podium-outline" size={24} color={Colors.white} />
@@ -183,8 +207,8 @@ export default function Level({ navigation, route }) {
         visible={sortModalVisible}
         onClose={() => setSortModalVisible(false)}
         options={[
-          { label: 'Level', value: 'level' },
-          { label: 'Duration', value: 'duration' },
+          { label: "Level", value: "level" },
+          { label: "Duration", value: "duration" },
         ]}
         value={sortOption}
         onSelect={handleSort}

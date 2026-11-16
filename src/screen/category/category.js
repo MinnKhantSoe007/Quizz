@@ -27,7 +27,6 @@ export default function Category({ navigation }) {
   const [refreshing, setRefreshing] = useState(false)
   const [studentName, setStudentName] = useState("")
   const [studentUid, setStudentYear] = useState("")
-  const [menuVisible, setMenuVisible] = useState(false);
   const [signOutModalVisible, setSignOutModalVisible] = useState(false);
 
   useEffect(() => {
@@ -126,10 +125,7 @@ export default function Category({ navigation }) {
     );
   };
 
-  const closeMenu = () => setMenuVisible(false);
-
   const handleSignOutPress = () => {
-    closeMenu();
     setSignOutModalVisible(true);
   };
 
@@ -139,16 +135,25 @@ export default function Category({ navigation }) {
     await AsyncStorage.setItem("studentUid", "guest")
     await forgetRole()
     await FIREBASE_AUTH.signOut()
-    navigation.navigate("Home")
+    navigation.popTo("Home")
   }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.welcomeText}>Welcome{studentName ? ` ${studentName}` : ''}!</Text>
-        <TouchableOpacity onPress={() => setMenuVisible(true)} activeOpacity={0.75}>
+        <DropdownMenu
+          items={[
+            ...(studentName && studentName !== 'guest'
+              ? [{ label: 'Reset Password', onPress: () => { navigation.navigate('UpdateStudentAccount'); } }]
+              : []),
+            { label: 'Sign Out', onPress: handleSignOutPress },
+          ]}
+        >
+          <View>
           <Ionicons name="person-circle-sharp" size={40} color={Colors.primary} />
-        </TouchableOpacity>
+          </View>
+        </DropdownMenu>
       </View>
 
       <SearchBar
@@ -187,16 +192,6 @@ export default function Category({ navigation }) {
         onClear={clearSort}
       />
 
-      <DropdownMenu
-        visible={menuVisible}
-        onClose={closeMenu}
-        items={[
-          ...(studentName && studentName !== 'guest'
-            ? [{ label: 'Reset Password', onPress: () => { closeMenu(); navigation.navigate('UpdateStudentAccount'); } }]
-            : []),
-          { label: 'Sign Out', onPress: handleSignOutPress },
-        ]}
-      />
 
       <ConfirmDialog
         visible={signOutModalVisible}
